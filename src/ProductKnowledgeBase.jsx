@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { products } from "./data/products-tagged";
+import Fuse from "fuse.js";
+import { useMemo } from "react"; // should already be at the top
 
 export default function ProductKnowledgeBase() {
   const [selected, setSelected] = useState(null);
@@ -19,16 +21,29 @@ export default function ProductKnowledgeBase() {
     }));
   };
 
-  const filtered = products.filter(
-    (p) =>
-      (!filters.company || p.company === filters.company) &&
-      (!filters.type || p.type === filters.type) &&
-      (!filters.buyerTags || (p.buyerTags && p.buyerTags.includes(filters.buyerTags))) &&
-      (!filters.industryTags || (p.industryTags && p.industryTags.includes(filters.industryTags))) &&
-      (p.title + p.company + p.keywords + p.useCases)
-        .toLowerCase()
-        .includes(query.toLowerCase())
-  );
+const fuse = useMemo(() => {
+  return new Fuse(products, {
+    threshold: 0.35,
+    keys: [
+      "title",
+      "company",
+      "problem",
+      "villain",
+      "keywords",
+      "useCases"
+    ],
+  });
+}, []);
+
+const searched = query ? fuse.search(query).map(r => r.item) : products;
+
+const filtered = searched.filter(
+  (p) =>
+    (!filters.company || p.company === filters.company) &&
+    (!filters.type || p.type === filters.type) &&
+    (!filters.buyerTags || (p.buyerTags && p.buyerTags.includes(filters.buyerTags))) &&
+    (!filters.industryTags || (p.industryTags && p.industryTags.includes(filters.industryTags)))
+);
 
   return (
     <div className="p-8 bg-[#f7f7f7] min-h-screen">
