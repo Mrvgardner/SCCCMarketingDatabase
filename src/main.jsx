@@ -2,8 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import Home from './Home'
-import ClearChoice from './ClearChoice'
-import SwitchCommerce from './SwitchCommerce'
+import ClearChoice from './ClearChoice.jsx'
+import SwitchCommerce from './SwitchCommerce.jsx'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
