@@ -42,7 +42,7 @@ export const products = [
     "title": "Watchdog",
     "resources": [
       { "label": "Landing Page", "url": "https://www.clearchoicepay.com/watchdog" },
-      { "label": "One-Pager PDF", "url": "/pdfs/CC%20WatchDogOnline.pdf" },
+      { "label": "One-Pager PDF", "url": "/pdfs/CC-WatchDogOnline.pdf" },
       { "label": "Demo Video", "url": "https://www.youtube.com/watch?v=AjwtY5XujII&list=TLGG-9uJUBRpvVgxOTA3MjAyNQ&t=1s" }
     ],
     "description": "Keep Your ATMs Safe from Threats \u2014 Without Lifting a Finger\nATM crime is on the rise \u2014 fast. With over 43,000 incidents already logged in 2025, and tactics like cash trapping dominating the scene, operators are losing millions to fraud and downtime.\nYou shouldn\u2019t have to be a security expert to keep your machines protected. That\u2019s why Clear Choice built Watchdog \u2014 your always-on ATM bodyguard.\nWatchdog monitors, protects, and supports your entire network 24/7, automatically catching threats and fixing issues before they become costly problems.\nWith Watchdog, you get:\n\u2022 Stronger, Safer Connections \u2013 Manufacturer-approved hardware with optimized wireless.\n\u2022 Real-Time Threat Protection \u2013 Against hackers, fraud, and third-party tampering.\n\u2022 24/7 Monitoring & Expert Support \u2013 So you can stay ahead without staying up all night.\nNo sketchy Wi-Fi. No mystery failures. Just safer, smarter uptime.\nStay protected. Stay profitable. Let Watchdog take it from here.",
