@@ -110,11 +110,7 @@ export default function ProductKnowledgeBase() {
       </div>
 
       {selected && (
-        <Dialog
-          open={true}
-          onClose={() => setSelected(null)}
-          className="fixed inset-0 z-50 bg-black/50"
-        >
+        <Dialog open={true} onClose={() => setSelected(null)} className="fixed inset-0 z-50 bg-black/50">
           <div className="bg-white rounded-lg max-w-2xl mx-auto mt-20 p-6 relative">
             <button
               onClick={() => setSelected(null)}
@@ -125,16 +121,15 @@ export default function ProductKnowledgeBase() {
             <h2 className="text-2xl font-bold mb-2">{selected.title}</h2>
             <p className="text-sm text-gray-500 mb-1">{selected.company}</p>
             <p className="mb-4 italic">{selected.description}</p>
-            <ul className="text-sm space-y-1">
-              <li><strong>Problem:</strong> {selected.problem}</li>
-              <li><strong>Villain:</strong> {selected.villain}</li>
-              <li><strong>Plan:</strong> {selected.plan}</li>
-              <li><strong>Call to Action:</strong> {selected.cta}</li>
-              <li><strong>Success Outcome:</strong> {selected.success}</li>
-              <li><strong>Failure Avoided:</strong> {selected.failure}</li>
-              <li><strong>Transformation:</strong> {selected.transformation}</li>
-              <li><strong>Use Cases:</strong> {selected.useCases}</li>
-              <li><strong>Keywords:</strong> {selected.keywords}</li>
+            <ul className="text-sm space-y-2">
+              <li>
+                <strong>The Challenge:</strong><br />
+                {selected.problem} {selected.villain}
+              </li>
+              <li>
+                <strong>Solution:</strong><br />
+                {selected.plan}
+              </li>
             </ul>
           </div>
         </Dialog>
