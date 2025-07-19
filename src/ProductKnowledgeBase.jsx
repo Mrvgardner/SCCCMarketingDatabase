@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Dialog } from "@headlessui/react";
-import { products } from "./data/products-tagged";
 import Fuse from "fuse.js";
-import { useMemo } from "react"; // should already be at the top
+import { products } from "./data/products-tagged";
 
 export default function ProductKnowledgeBase() {
   const [selected, setSelected] = useState(null);
@@ -21,29 +20,37 @@ export default function ProductKnowledgeBase() {
     }));
   };
 
-const fuse = useMemo(() => {
-  return new Fuse(products, {
-    threshold: 0.35,
-    keys: [
-      "title",
-      "company",
-      "problem",
-      "villain",
-      "keywords",
-      "useCases"
-    ],
+  const fuse = useMemo(() => {
+    return new Fuse(products, {
+      threshold: 0.35,
+      keys: [
+        "title",
+        "company",
+        "problem",
+        "villain",
+        "keywords",
+        "useCases",
+      ],
+    });
+  }, []);
+
+  const searched = query ? fuse.search(query).map((r) => r.item) : products;
+
+  const filtered = searched.filter(
+    (p) =>
+      (!filters.company || p.company === filters.company) &&
+      (!filters.type || p.type === filters.type) &&
+      (!filters.buyerTags ||
+        (p.buyerTags && p.buyerTags.includes(filters.buyerTags))) &&
+      (!filters.industryTags ||
+        (p.industryTags && p.industryTags.includes(filters.industryTags)))
+  );
+
+  const sorted = [...filtered].sort((a, b) => {
+    if (a.company === "Switch Commerce" && b.company === "Clear Choice") return -1;
+    if (a.company === "Clear Choice" && b.company === "Switch Commerce") return 1;
+    return 0;
   });
-}, []);
-
-const searched = query ? fuse.search(query).map(r => r.item) : products;
-
-const filtered = searched.filter(
-  (p) =>
-    (!filters.company || p.company === filters.company) &&
-    (!filters.type || p.type === filters.type) &&
-    (!filters.buyerTags || (p.buyerTags && p.buyerTags.includes(filters.buyerTags))) &&
-    (!filters.industryTags || (p.industryTags && p.industryTags.includes(filters.industryTags)))
-);
 
   return (
     <div className="p-8 bg-[#f7f7f7] min-h-screen">
@@ -52,7 +59,7 @@ const filtered = searched.filter(
       <div className="flex justify-center mb-6">
         <input
           type="text"
-          placeholder="Search product name, use case, or keywords..."
+          placeholder="Search pain points, product names, or use cases..."
           className="w-full max-w-xl px-4 py-2 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -60,7 +67,7 @@ const filtered = searched.filter(
       </div>
 
       <div className="flex flex-wrap justify-center gap-2 mb-8">
-        {["Clear Choice", "Switch Commerce"].map((name) => (
+        {["Switch Commerce", "Clear Choice"].map((name) => (
           <button
             key={name}
             onClick={() => toggleFilter("company", name)}
@@ -89,7 +96,7 @@ const filtered = searched.filter(
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filtered.map((p, idx) => (
+        {sorted.map((p, idx) => (
           <div
             key={idx}
             className="bg-[#e8e7e7] rounded-lg shadow-md p-6 hover:bg-[#dcdcdc] cursor-pointer transition"
@@ -103,7 +110,11 @@ const filtered = searched.filter(
       </div>
 
       {selected && (
-        <Dialog open={true} onClose={() => setSelected(null)} className="fixed inset-0 z-50 bg-black/50">
+        <Dialog
+          open={true}
+          onClose={() => setSelected(null)}
+          className="fixed inset-0 z-50 bg-black/50"
+        >
           <div className="bg-white rounded-lg max-w-2xl mx-auto mt-20 p-6 relative">
             <button
               onClick={() => setSelected(null)}
