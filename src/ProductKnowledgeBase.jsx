@@ -73,7 +73,9 @@ export default function ProductKnowledgeBase() {
             onClick={() => toggleFilter("company", name)}
             className={`px-3 py-1 rounded-full text-sm ${
               filters.company === name
-                ? "bg-blue-600 text-white"
+                ? name === "Clear Choice"
+                  ? "bg-[#ff4f00] text-white"
+                  : "bg-blue-600 text-white"
                 : "border border-gray-300 text-gray-700"
             }`}
           >
@@ -131,6 +133,27 @@ export default function ProductKnowledgeBase() {
                 {selected.plan}
               </li>
             </ul>
+            {selected.resources && selected.resources.length > 0 && (
+              <div className="mt-4">
+                <h3 className="font-semibold mb-1">Resources:</h3>
+                <ul className="space-y-1">
+                  {selected.resources.map((res, i) => (
+                    <li key={i}>
+                      <a href={res.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline hover:text-blue-800">{res.label}</a>
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={() => {
+                    const links = selected.resources.map(r => `${r.label}: ${window.location.origin}${r.url.startsWith('http') ? '' : r.url}`).join('\n');
+                    navigator.clipboard.writeText(links);
+                  }}
+                  className="mt-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+                >
+                  Share All Resources
+                </button>
+              </div>
+            )}
           </div>
         </Dialog>
       )}
