@@ -1,4 +1,5 @@
 import ClearChoiceLayout from './layouts/ClearChoiceLayout';
+import ThemeToggle from "./components/ThemeToggle";
 
 const assets = [
   {
@@ -20,6 +21,9 @@ const assets = [
 export default function ClearChoice() {
   return (
     <ClearChoiceLayout>
+      <div className="flex justify-end mb-2">
+        <ThemeToggle />
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {assets.map((asset, index) => (
           <div key={index} className="bg-white p-4 shadow rounded">
