@@ -1,8 +1,5 @@
 import { useState } from "react";
 import Fuse from "fuse.js";
-import { Input } from "../components/ui/input";
-import { Card, CardContent } from "../components/ui/card";
-import ThemeToggle from "./components/ThemeToggle.jsx";
 
 const assets = [
 	{
@@ -32,35 +29,33 @@ export default function Home() {
 
 	return (
 		<div className="p-6 max-w-5xl mx-auto">
-			<h1 className="text-3xl font-bold mb-4">Switch Team Portal</h1>
-			{/* Theme toggle moved to navbar */}
-			<Input
+			<h1 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">Switch Team Portal</h1>
+			<input
+				type="text"
 				placeholder="Search assets by keyword or tag..."
 				value={query}
 				onChange={(e) => setQuery(e.target.value)}
-				className="mb-6"
+				className="w-full px-4 py-2 mb-6 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
 			/>
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 				{results.map((asset, index) => (
-					<Card key={index}>
-						<CardContent className="p-4">
-							<h2 className="text-xl font-semibold">{asset.title}</h2>
-							<p className="text-sm text-gray-500">
-								{asset.type} • {asset.category}
-							</p>
-							<p className="text-sm mt-1">
-								Tags: {asset.tags.join(", ")}
-							</p>
-							<a
-								href={asset.url}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="text-blue-500 mt-2 inline-block"
-							>
-								View / Download
-							</a>
-						</CardContent>
-					</Card>
+					<div key={index} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 border border-gray-200 dark:border-gray-700">
+						<h2 className="text-xl font-semibold text-gray-900 dark:text-white">{asset.title}</h2>
+						<p className="text-sm text-gray-500 dark:text-gray-400">
+							{asset.type} • {asset.category}
+						</p>
+						<p className="text-sm mt-1 text-gray-700 dark:text-gray-300">
+							Tags: {asset.tags.join(", ")}
+						</p>
+						<a
+							href={asset.url}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 mt-2 inline-block"
+						>
+							View / Download
+						</a>
+					</div>
 				))}
 			</div>
 		</div>

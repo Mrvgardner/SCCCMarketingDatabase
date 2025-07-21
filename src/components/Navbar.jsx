@@ -6,14 +6,14 @@ export default function Navbar() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   return (
-    <nav className="bg-base-200 py-2 px-4 mb-4">
+    <nav className="bg-white dark:bg-gray-800 shadow-sm py-2 px-4 mb-4">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <div className="text-xl font-bold">Switch Team Portal</div>
+        <div className="text-xl font-bold text-gray-900 dark:text-white">Switch Team Portal</div>
         
         <div className="relative">
           <button 
             onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-            className="btn btn-ghost btn-sm"
+            className="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
             aria-label="Settings"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -23,13 +23,13 @@ export default function Navbar() {
           </button>
           
           {isSettingsOpen && (
-            <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-base-100 ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+            <div className="absolute right-0 mt-2 w-48 rounded-lg shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
               <div className="py-1">
-                <div className="px-4 py-2 text-sm font-medium">Settings</div>
+                <div className="px-4 py-2 text-sm font-medium text-gray-900 dark:text-white">Settings</div>
                 <div className="px-4 py-2 flex justify-between items-center">
-                  <span className="text-sm">Theme</span>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">Theme</span>
                   <button
-                    className="btn btn-sm btn-ghost"
+                    className="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
                     onClick={toggleTheme}
                     aria-label="Toggle theme"
                   >

@@ -16,10 +16,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Navbar />
         <div className="max-w-5xl mx-auto px-4">
           <div className="flex gap-6 mb-6">
-            <Link to="/" className="text-lg font-semibold hover:text-blue-600">Home</Link>
-            <Link to="/switch-commerce" className="text-lg hover:text-blue-600">Switch Commerce</Link>
-            <Link to="/clear-choice" className="text-lg hover:text-orange-600">Clear Choice</Link>
-            <Link to="/products" className="text-lg hover:text-blue-600">Knowledge Base</Link>
+            <Link to="/" className="text-lg font-semibold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400">Home</Link>
+            <Link to="/switch-commerce" className="text-lg text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400">Switch Commerce</Link>
+            <Link to="/clear-choice" className="text-lg text-gray-900 dark:text-white hover:text-brand-orange">Clear Choice</Link>
+            <Link to="/products" className="text-lg text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400">Knowledge Base</Link>
           </div>
         </div>
         <Routes>
