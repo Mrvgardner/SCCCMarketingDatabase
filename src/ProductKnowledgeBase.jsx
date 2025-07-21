@@ -53,8 +53,8 @@ export default function ProductKnowledgeBase() {
   });
 
   return (
-    <div className="p-8 min-h-screen bg-white dark:bg-gray-900">
-      <h1 className="text-4xl font-bold mb-6 text-center text-gray-900 dark:text-white">Product Knowledge Base</h1>
+    <div className="p-8 min-h-screen bg-gradient-to-b from-gray-900 to-black">
+      <h1 className="text-4xl font-bold mb-6 text-center text-white">Product Knowledge Base</h1>
 
       <div className="flex justify-center mb-8">
         <div className="relative w-full max-w-2xl">
@@ -136,12 +136,14 @@ export default function ProductKnowledgeBase() {
           {sorted.map((p, idx) => (
             <div
               key={idx}
-              className="bg-white dark:bg-gray-800/50 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl p-6 cursor-pointer transition-all duration-300 border border-gray-200/50 dark:border-gray-700/50 hover:border-gray-300 dark:hover:border-gray-600 group hover:-translate-y-1"
+              className={`rounded-xl p-6 cursor-pointer shadow-xl backdrop-blur-sm bg-opacity-90 hover:scale-105 transition-transform duration-300 ${
+                p.company === "Switch Commerce" ? "bg-blue-600" : "bg-orange-500"
+              }`}
               onClick={() => setSelected(p)}
             >
-              <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{p.title}</h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">{p.company}</p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700/50 py-1 px-2 rounded-full inline-block">{p.keywords}</p>
+              <h2 className="text-xl font-semibold mb-2 text-white text-center">{p.title}</h2>
+              <p className="text-sm text-gray-200 text-center mb-3">{p.company}</p>
+              <p className="text-xs text-white bg-white/20 py-1 px-2 rounded-full text-center">{p.keywords}</p>
             </div>
           ))}
         </div>
