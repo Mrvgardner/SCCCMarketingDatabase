@@ -41,13 +41,6 @@ const tools = [
 
 const resources = [
   {
-    name: "Switch Commerce Logo Story",
-    type: "video",
-    url: "/assets/switch-commerce-logo-story.mp4",
-    thumbnail: "/thumbnails/logo-story.jpg",
-    description: "Learn about our brand evolution",
-  },
-  {
     name: "Email Signatures",
     type: "tool",
     url: "/email-signatures",
@@ -128,13 +121,15 @@ export default function Home() {
                 href={tool.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`block rounded-xl p-6 ${tool.color} hover:scale-105 transition-transform duration-300 shadow-xl backdrop-blur-sm bg-opacity-90`}
+                className={`block rounded-xl p-6 ${tool.color} hover:scale-105 transition-transform duration-300 shadow-xl backdrop-blur-sm bg-opacity-90 h-full flex flex-col justify-between`}
               >
-                <div className="w-16 h-16 mb-4 mx-auto bg-white rounded-lg p-2 shadow-lg">
-                  <img src={tool.icon} alt={tool.name} className="w-full h-full object-contain" />
+                <div className="flex-1 flex flex-col items-center">
+                  <div className="w-16 h-16 mb-4 bg-white rounded-lg p-2 shadow-lg">
+                    <img src={tool.icon} alt={tool.name} className="w-full h-full object-contain" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2 text-center">{tool.name}</h3>
+                  <p className="text-sm text-gray-200 text-center">{tool.description}</p>
                 </div>
-                <h3 className="text-lg font-semibold mb-2 text-center">{tool.name}</h3>
-                <p className="text-sm text-gray-200 text-center">{tool.description}</p>
               </a>
             </FloatingTile>
           ))}
