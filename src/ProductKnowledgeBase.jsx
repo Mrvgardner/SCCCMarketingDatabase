@@ -18,7 +18,7 @@ function getInitialTheme() {
 import { Dialog } from "@headlessui/react";
 import Fuse from "fuse.js";
 import { products } from "./data/products-tagged";
-import ThemeToggle from "../components/ThemeToggle";
+import ThemeToggle from "./components/ThemeToggle";
 
 export default function ProductKnowledgeBase() {
   const [theme, setTheme] = useState(getInitialTheme());
