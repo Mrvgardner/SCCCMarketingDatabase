@@ -191,21 +191,23 @@ export default function Home() {
             <FloatingTile key={resource.name} delay={index * 0.2}>
               <Link
                 to={resource.url}
-                className="block rounded-xl bg-gray-800 p-6 hover:bg-gray-700 transition-colors shadow-xl"
+                className="block rounded-xl bg-gray-800 p-6 hover:bg-gray-700 transition-colors shadow-xl h-full"
               >
-                {resource.thumbnail && (
-                  <div className="mb-4 rounded-lg overflow-hidden">
-                    <img
-                      src={resource.thumbnail}
-                      alt={resource.name}
-                      className="w-full h-48 object-cover"
-                    />
+                <div className="h-full flex flex-col items-center text-center">
+                  {resource.thumbnail && (
+                    <div className="mb-4 rounded-lg overflow-hidden">
+                      <img
+                        src={resource.thumbnail}
+                        alt={resource.name}
+                        className="w-full h-48 object-cover"
+                      />
+                    </div>
+                  )}
+                  <h3 className="text-lg font-semibold mb-2">{resource.name}</h3>
+                  <p className="text-sm text-gray-400 mb-4">{resource.description}</p>
+                  <div className="mt-auto px-3 py-1 bg-gray-700 rounded-full text-xs uppercase tracking-wide">
+                    {resource.type}
                   </div>
-                )}
-                <h3 className="text-lg font-semibold mb-2">{resource.name}</h3>
-                <p className="text-sm text-gray-400">{resource.description}</p>
-                <div className="mt-4 inline-block px-3 py-1 bg-gray-700 rounded-full text-xs uppercase tracking-wide">
-                  {resource.type}
                 </div>
               </Link>
             </FloatingTile>
