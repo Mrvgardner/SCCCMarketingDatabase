@@ -79,7 +79,7 @@ export default function ProductKnowledgeBase() {
             <button
               key={name}
               onClick={() => toggleFilter("company", name)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+              className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                 filters.company === name
                   ? name === "Clear Choice"
                     ? "bg-gradient-to-r from-[#ff4f00] to-[#ff4f00]/90 text-white shadow-lg shadow-[#ff4f00]/30"
@@ -96,10 +96,10 @@ export default function ProductKnowledgeBase() {
             <button
               key={type}
               onClick={() => toggleFilter("type", type)}
-              className={`px-3 py-1.5 rounded-lg text-sm transition-all duration-200 ${
+              className={`px-6 py-2 rounded-full text-sm transition-all duration-300 ${
                 filters.type === type
-                  ? "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/30"
-                  : "bg-gray-100/50 dark:bg-gray-800/30 backdrop-blur-sm hover:bg-gray-200/50 dark:hover:bg-gray-700/50 text-gray-700 dark:text-gray-300"
+                  ? "bg-[#0951fa] text-white shadow-lg shadow-[#0951fa]/30"
+                  : "bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200"
               }`}
             >
               {type}
@@ -122,7 +122,7 @@ export default function ProductKnowledgeBase() {
           {Object.values(filters).some(f => f !== null) && (
             <button
               onClick={() => setFilters({ company: null, type: null, buyerTags: null, industryTags: null })}
-              className="mt-4 inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800/50 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700/50 transition-colors"
+              className="mt-4 inline-flex items-center px-6 py-2 text-sm font-medium bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200 rounded-full transition-all duration-300"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
