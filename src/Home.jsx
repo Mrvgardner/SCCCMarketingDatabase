@@ -11,7 +11,7 @@ const tools = [
   },
   {
     name: "Assembly",
-    icon: "/logos/assembly-logo.png",
+    icon: "/logos/assembly-hr.png",
     url: "https://assembly.com",
     description: "Recognition and rewards",
     color: "bg-orange-500",
@@ -34,7 +34,7 @@ const tools = [
     name: "TMS",
     icon: "/logos/tms-logo.png",
     url: "https://tms.switchcommerce.com",
-    description: "Transaction Management System",
+    description: "Terminal Management System",
     color: "bg-blue-800",
   },
 ];
@@ -121,13 +121,13 @@ export default function Home() {
                 href={tool.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`block rounded-xl p-6 ${tool.color} hover:scale-105 transition-transform duration-300 shadow-xl backdrop-blur-sm bg-opacity-90 h-full flex flex-col justify-between`}
+                className={`block rounded-xl p-6 ${tool.color} hover:scale-105 transition-transform duration-300 shadow-xl backdrop-blur-sm bg-opacity-90 h-full`}
               >
-                <div className="flex-1 flex flex-col items-center">
+                <div className="h-full flex flex-col items-center">
                   <div className="w-16 h-16 mb-4 bg-white rounded-lg p-2 shadow-lg">
                     <img src={tool.icon} alt={tool.name} className="w-full h-full object-contain" />
                   </div>
-                  <h3 className="text-lg font-semibold mb-2 text-center">{tool.name}</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-center">{tool.name}</h3>
                   <p className="text-sm text-gray-200 text-center">{tool.description}</p>
                 </div>
               </a>
