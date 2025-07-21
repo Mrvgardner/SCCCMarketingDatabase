@@ -1,45 +1,12 @@
-import { useState, useEffect } from "react";
-const THEME_KEY = "theme";
-const THEMES = ["light", "night"];
-
-function getSystemTheme() {
-  if (typeof window !== "undefined" && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    return "night";
-  }
-  return "light";
-}
-
-function getInitialTheme() {
-  if (typeof window === "undefined") return "light";
-  const stored = localStorage.getItem(THEME_KEY);
-  if (stored && THEMES.includes(stored)) return stored;
-  return getSystemTheme();
-}
+import { useTheme } from "../contexts/ThemeContext";
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState(getInitialTheme());
-
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem(THEME_KEY, theme);
-  }, [theme]);
-
-  // Listen for system theme changes
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    const handler = (e) => {
-      if (!localStorage.getItem(THEME_KEY)) {
-        setTheme(e.matches ? "night" : "light");
-      }
-    };
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
-  }, []);
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <button
       className="btn btn-sm btn-outline"
-      onClick={() => setTheme(theme === "light" ? "night" : "light")}
+      onClick={toggleTheme}
       aria-label="Toggle theme"
     >
       {theme === "light" ? (

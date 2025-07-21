@@ -89,9 +89,7 @@ export default function ProductKnowledgeBase() {
 
   return (
     <div className="p-8 min-h-screen">
-      <div className="flex justify-end mb-2">
-        <ThemeToggle />
-      </div>
+      {/* Theme toggle moved to navbar */}
       <h1 className="text-4xl font-bold mb-6 text-center">Product Knowledge Base</h1>
 
       <div className="flex justify-center mb-6">

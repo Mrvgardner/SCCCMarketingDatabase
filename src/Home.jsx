@@ -33,9 +33,7 @@ export default function Home() {
 	return (
 		<div className="p-6 max-w-5xl mx-auto">
 			<h1 className="text-3xl font-bold mb-4">Switch Team Portal</h1>
-			<div className="flex justify-end mb-2">
-				<ThemeToggle />
-			</div>
+			{/* Theme toggle moved to navbar */}
 			<Input
 				placeholder="Search assets by keyword or tag..."
 				value={query}
