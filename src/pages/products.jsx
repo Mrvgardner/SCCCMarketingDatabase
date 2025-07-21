@@ -1,5 +1,5 @@
 import ProductKnowledgeBase from '../ProductKnowledgeBase';
-import ThemeToggle from '../components/ThemeToggle';
+import ThemeToggle from '../components/ThemeToggle.jsx';
 
 export default function ProductsPage() {
   return (
