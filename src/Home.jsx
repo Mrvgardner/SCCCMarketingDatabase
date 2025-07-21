@@ -192,12 +192,12 @@ export default function Home() {
           activeFilter === "all" || activeFilter === "resources" ? "block" : "hidden"
         }`}
       >
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {resources.map((resource, index) => (
             <FloatingTile key={resource.name} delay={index * 0.2}>
               <Link
                 to={resource.url}
-                className="block rounded-xl bg-gray-800 p-6 hover:scale-105 transition-transform duration-300 shadow-xl h-full backdrop-blur-sm bg-opacity-90"
+                className="block rounded-xl bg-gray-800 p-5 hover:scale-105 transition-transform duration-300 shadow-xl h-full backdrop-blur-sm bg-opacity-90"
               >
                 <div className="h-full flex flex-col items-center text-center">
                   {resource.thumbnail && (
