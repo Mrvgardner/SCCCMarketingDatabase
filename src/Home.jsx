@@ -2,7 +2,7 @@ import { useState } from "react";
 import Fuse from "fuse.js";
 import { Input } from "../components/ui/input";
 import { Card, CardContent } from "../components/ui/card";
-import ThemeToggle from "../components/ThemeToggle.jsx";
+import ThemeToggle from "./components/ThemeToggle.jsx";
 
 const assets = [
 	{
