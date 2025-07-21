@@ -60,22 +60,19 @@ const resources = [
   },
 ];
 
-const FloatingTile = ({ delay = 0, children }) => {
-  return (
-    <div
-      className="animate-float transform transition-transform"
-      style={{
-        animationDelay: `${delay}s`,
-      }}
-    >
-      {children}
-    </div>
-  );
-};
+const FloatingTile = ({ delay = 0, children }) => (
+  <div
+    className="animate-float transform transition-transform"
+    style={{ animationDelay: `${delay}s` }}
+  >
+    {children}
+  </div>
+);
 
 export default function Home() {
   const [activeFilter, setActiveFilter] = useState("all");
   const sections = ["All", "Quick Tools", "Branding Assets", "Resources"];
+  const isVisible = (section) => activeFilter === "all" || activeFilter === section.toLowerCase();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8">
@@ -109,9 +106,7 @@ export default function Home() {
 
       {/* Quick Tools Section */}
       <div
-        className={`mb-16 ${
-          activeFilter === "all" || activeFilter === "quick tools" ? "block" : "hidden"
-        }`}
+        className={`mb-16 ${isVisible("quick tools") ? "block" : "hidden"}`}
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 max-w-7xl mx-auto">
           {tools.map((tool, index) => (
@@ -137,9 +132,7 @@ export default function Home() {
 
       {/* Branding Assets Section */}
       <div
-        className={`mb-16 ${
-          activeFilter === "all" || activeFilter === "branding assets" ? "block" : "hidden"
-        }`}
+        className={`mb-16 ${isVisible("branding assets") ? "block" : "hidden"}`}
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {/* Switch Commerce Assets */}
@@ -188,9 +181,7 @@ export default function Home() {
 
       {/* Resources Section */}
       <div
-        className={`${
-          activeFilter === "all" || activeFilter === "resources" ? "block" : "hidden"
-        }`}
+        className={`${isVisible("resources") ? "block" : "hidden"}`}
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {resources.map((resource, index) => (
