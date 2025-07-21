@@ -52,6 +52,12 @@ const resources = [
     url: "/wallpapers",
     description: "Branded desktop and mobile wallpapers",
   },
+  {
+    name: "Knowledge Base",
+    type: "resource",
+    url: "/knowledge-base",
+    description: "Product features, use cases, and sales resources",
+  },
 ];
 
 const FloatingTile = ({ delay = 0, children }) => {
