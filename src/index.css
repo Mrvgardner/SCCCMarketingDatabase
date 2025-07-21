@@ -3,6 +3,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+}
+
 @layer base {
   html {
     @apply bg-white dark:bg-gray-900;
