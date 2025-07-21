@@ -190,7 +190,7 @@ export default function Home() {
           activeFilter === "all" || activeFilter === "resources" ? "block" : "hidden"
         }`}
       >
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {resources.map((resource, index) => (
             <FloatingTile key={resource.name} delay={index * 0.2}>
               <Link
@@ -207,9 +207,9 @@ export default function Home() {
                       />
                     </div>
                   )}
-                  <h3 className="text-lg font-semibold mb-2">{resource.name}</h3>
+                  <h3 className="text-xl font-semibold mb-3">{resource.name}</h3>
                   <p className="text-sm text-gray-400 mb-4">{resource.description}</p>
-                  <div className="mt-auto px-3 py-1 bg-gray-700 rounded-full text-xs uppercase tracking-wide">
+                  <div className="mt-auto px-4 py-1.5 bg-gray-700 rounded-full text-xs uppercase tracking-wide">
                     {resource.type}
                   </div>
                 </div>
