@@ -93,9 +93,9 @@ const Navbar = () => {
 
           {/* Knowledge Base Link */}
           <Link 
-            to="/knowledge-base"
+            to="/products"
             className={`text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors ${
-              location.pathname === '/knowledge-base' ? 'text-blue-600 dark:text-blue-400' : ''
+              location.pathname === '/products' ? 'text-blue-600 dark:text-blue-400' : ''
             }`}
           >
             Knowledge Base
