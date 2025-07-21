@@ -4,9 +4,11 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [require("daisyui")],
   daisyui: {
     themes: [
+      "light",
+      "night",
       {
         scteamslight: {
           'primary': '#002b5e',

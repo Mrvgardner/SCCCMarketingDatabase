@@ -1,44 +1,9 @@
-import { useState, useMemo, useEffect } from "react";
-// DaisyUI theme toggle helper
-const THEME_KEY = "theme";
-const THEMES = ["light", "night"];
-
-function getSystemTheme() {
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    return "night";
-  }
-  return "light";
-}
-
-function getInitialTheme() {
-  const stored = localStorage.getItem(THEME_KEY);
-  if (stored && THEMES.includes(stored)) return stored;
-  return getSystemTheme();
-}
+import { useState, useMemo } from "react";
 import { Dialog } from "@headlessui/react";
 import Fuse from "fuse.js";
 import { products } from "./data/products-tagged";
-import ThemeToggle from "./components/ThemeToggle.jsx";
 
 export default function ProductKnowledgeBase() {
-  const [theme, setTheme] = useState(getInitialTheme());
-
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem(THEME_KEY, theme);
-  }, [theme]);
-
-  // Listen for system theme changes
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    const handler = (e) => {
-      if (!localStorage.getItem(THEME_KEY)) {
-        setTheme(e.matches ? "night" : "light");
-      }
-    };
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
-  }, []);
   const [selected, setSelected] = useState(null);
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState({
