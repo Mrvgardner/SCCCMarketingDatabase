@@ -82,8 +82,8 @@ export default function ProductKnowledgeBase() {
               className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                 filters.company === name
                   ? name === "Clear Choice"
-                    ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg shadow-orange-500/30"
-                    : "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30"
+                    ? "bg-gradient-to-r from-[#ff4f00] to-[#ff4f00]/90 text-white shadow-lg shadow-[#ff4f00]/30"
+                    : "bg-gradient-to-r from-[#0951fa] to-[#0951fa]/90 text-white shadow-lg shadow-[#0951fa]/30"
                   : "bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700/50"
               }`}
             >
@@ -137,7 +137,7 @@ export default function ProductKnowledgeBase() {
             <div
               key={idx}
               className={`rounded-xl p-6 cursor-pointer shadow-xl backdrop-blur-sm bg-opacity-90 hover:scale-105 transition-transform duration-300 ${
-                p.company === "Switch Commerce" ? "bg-blue-600" : "bg-orange-500"
+                p.company === "Switch Commerce" ? "bg-[#0951fa]" : "bg-[#ff4f00]"
               }`}
               onClick={() => setSelected(p)}
             >
@@ -163,7 +163,7 @@ export default function ProductKnowledgeBase() {
                 </svg>
               </button>
               <div className="mb-6">
-                <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-400 dark:to-blue-300 bg-clip-text text-transparent">{selected.title}</h2>
+                <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-[#0951fa] to-[#0951fa]/70 bg-clip-text text-transparent">{selected.title}</h2>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">{selected.company}</p>
                 <p className="text-gray-700 dark:text-gray-300 italic">{selected.description}</p>
               </div>

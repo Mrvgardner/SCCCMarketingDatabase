@@ -14,7 +14,7 @@ const tools = [
     icon: "/logos/assembly-logo.png",
     url: "https://assembly.com",
     description: "Recognition and rewards",
-    color: "bg-orange-500",
+    color: "bg-[#ff4f00]",
   },
   {
     name: "BambooHR",
@@ -75,7 +75,7 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8">
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto text-center mb-16">
-        <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+        <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-[#0951fa] to-purple-500 bg-clip-text text-transparent">
           Welcome to the Resource Portal
         </h1>
         <p className="text-xl text-gray-300 max-w-3xl mx-auto">
@@ -92,7 +92,7 @@ export default function Home() {
             onClick={() => setActiveFilter(section.toLowerCase())}
             className={`px-6 py-2 rounded-full transition-all duration-300 ${
               activeFilter === section.toLowerCase()
-                ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30"
+                ? "bg-[#0951fa] text-white shadow-lg shadow-[#0951fa]/30"
                 : "bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200"
             }`}
           >
@@ -138,7 +138,7 @@ export default function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {/* Switch Commerce Assets */}
           <FloatingTile delay={0.2}>
-            <div className="rounded-xl overflow-hidden bg-gradient-to-br from-blue-600 to-blue-800 p-6 shadow-xl">
+            <div className="rounded-xl overflow-hidden bg-gradient-to-br from-[#0951fa] to-[#0951fa]/70 p-6 shadow-xl">
               <h3 className="text-2xl font-bold mb-4">Switch Commerce</h3>
               <div className="space-y-4">
                 <Link
@@ -159,7 +159,7 @@ export default function Home() {
 
           {/* Clear Choice Assets */}
           <FloatingTile delay={0.4}>
-            <div className="rounded-xl overflow-hidden bg-gradient-to-br from-orange-500 to-orange-700 p-6 shadow-xl">
+            <div className="rounded-xl overflow-hidden bg-gradient-to-br from-[#ff4f00] to-[#ff4f00]/70 p-6 shadow-xl">
               <h3 className="text-2xl font-bold mb-4">Clear Choice</h3>
               <div className="space-y-4">
                 <Link
