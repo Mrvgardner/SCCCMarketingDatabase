@@ -11,7 +11,7 @@ const tools = [
   },
   {
     name: "Assembly",
-    icon: "/logos/assembly-hr.png",
+    icon: "/logos/assembly-logo.png",
     url: "https://assembly.com",
     description: "Recognition and rewards",
     color: "bg-orange-500",
@@ -68,15 +68,8 @@ const FloatingTile = ({ delay = 0, children }) => {
 };
 
 export default function Home() {
-  const [activeSection, setActiveSection] = useState(0);
-  const sections = ["Quick Tools", "Branding Assets", "Resources"];
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveSection((prev) => (prev + 1) % sections.length);
-    }, 8000);
-    return () => clearInterval(timer);
-  }, [sections.length]);
+  const [activeFilter, setActiveFilter] = useState("all");
+  const sections = ["All", "Quick Tools", "Branding Assets", "Resources"];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8">
@@ -93,12 +86,12 @@ export default function Home() {
 
       {/* Section Navigation */}
       <div className="flex justify-center gap-4 mb-12">
-        {sections.map((section, index) => (
+        {sections.map((section) => (
           <button
             key={section}
-            onClick={() => setActiveSection(index)}
+            onClick={() => setActiveFilter(section.toLowerCase())}
             className={`px-6 py-2 rounded-full transition-all duration-300 ${
-              activeSection === index
+              activeFilter === section.toLowerCase()
                 ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30"
                 : "bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200"
             }`}
@@ -110,8 +103,8 @@ export default function Home() {
 
       {/* Quick Tools Section */}
       <div
-        className={`transition-opacity duration-500 ${
-          activeSection === 0 ? "opacity-100" : "opacity-0 hidden"
+        className={`mb-16 ${
+          activeFilter === "all" || activeFilter === "quick tools" ? "block" : "hidden"
         }`}
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 max-w-7xl mx-auto">
@@ -138,8 +131,8 @@ export default function Home() {
 
       {/* Branding Assets Section */}
       <div
-        className={`transition-opacity duration-500 ${
-          activeSection === 1 ? "opacity-100" : "opacity-0 hidden"
+        className={`mb-16 ${
+          activeFilter === "all" || activeFilter === "branding assets" ? "block" : "hidden"
         }`}
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -189,8 +182,8 @@ export default function Home() {
 
       {/* Resources Section */}
       <div
-        className={`transition-opacity duration-500 ${
-          activeSection === 2 ? "opacity-100" : "opacity-0 hidden"
+        className={`${
+          activeFilter === "all" || activeFilter === "resources" ? "block" : "hidden"
         }`}
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
