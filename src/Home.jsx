@@ -5,39 +5,39 @@ const tools = [
   {
     name: "Slack",
     icon: "/logos/slack-logo.png",
-    url: "https://switchcommerce.slack.com",
+    url: "https://switch-commerce.slack.com/",
     description: "Team communication and collaboration",
     color: "bg-purple-900",
   },
   {
     name: "Assembly",
     icon: "/logos/assembly-logo.png",
-    url: "https://assembly.com",
+    url: "https://app.joinassembly.com/",
     description: "Recognition and rewards",
     color: "bg-[#ff4f00]",
   },
   {
     name: "BambooHR",
     icon: "/logos/bamboohr-logo.png",
-    url: "https://switchcommerce.bamboohr.com",
+    url: "https://switch.bamboohr.com/home/",
     description: "HR and employee management",
     color: "bg-green-600",
   },
   {
     name: "Jira",
     icon: "/logos/jira-logo.png",
-    url: "https://switchcommerce.atlassian.net",
+    url: "https://switchcommerce.atlassian.net/jira/your-work",
     description: "Project and task management",
     color: "bg-blue-600",
   },
   {
     name: "TMS",
     icon: "/logos/tms-logo.png",
-    url: "https://tms.switchcommerce.com",
+    url: "https://www.switchcommerce.net/",
     description: "Terminal Management System",
     color: "bg-blue-800",
   },
-];
+]
 
 const resources = [
   {
@@ -138,11 +138,13 @@ export default function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {/* Switch Commerce Assets */}
           <FloatingTile delay={0.2}>
-            <div className="rounded-xl overflow-hidden bg-gradient-to-br from-[#0951fa] to-[#0951fa]/70 p-6 shadow-xl">
+            <Link
+              to="/switch-brochure"
+              className="block rounded-xl overflow-hidden bg-gradient-to-br from-[#0951fa] to-[#0951fa]/70 p-6 shadow-xl hover:scale-105 transition-transform duration-300 h-full"
+            >
               <h3 className="text-2xl font-bold mb-4">Switch Commerce</h3>
               <div className="space-y-4">
-                <Link
-                  to="/switch-brochure"
+                <div
                   className="block p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
                 >
                   <span className="text-lg font-medium">Brochure</span>
@@ -159,11 +161,13 @@ export default function Home() {
 
           {/* Clear Choice Assets */}
           <FloatingTile delay={0.4}>
-            <div className="rounded-xl overflow-hidden bg-gradient-to-br from-[#ff4f00] to-[#ff4f00]/70 p-6 shadow-xl">
+            <Link
+              to="/clear-choice-brochure"
+              className="block rounded-xl overflow-hidden bg-gradient-to-br from-[#ff4f00] to-[#ff4f00]/70 p-6 shadow-xl hover:scale-105 transition-transform duration-300 h-full"
+            >
               <h3 className="text-2xl font-bold mb-4">Clear Choice</h3>
               <div className="space-y-4">
-                <Link
-                  to="/clear-choice-brochure"
+                <div
                   className="block p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
                 >
                   <span className="text-lg font-medium">Brochure</span>
@@ -191,7 +195,7 @@ export default function Home() {
             <FloatingTile key={resource.name} delay={index * 0.2}>
               <Link
                 to={resource.url}
-                className="block rounded-xl bg-gray-800 p-6 hover:bg-gray-700 transition-colors shadow-xl h-full"
+                className="block rounded-xl bg-gray-800 p-6 hover:scale-105 transition-transform duration-300 shadow-xl h-full backdrop-blur-sm bg-opacity-90"
               >
                 <div className="h-full flex flex-col items-center text-center">
                   {resource.thumbnail && (
