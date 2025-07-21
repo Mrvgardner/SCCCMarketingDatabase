@@ -138,13 +138,11 @@ export default function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {/* Switch Commerce Assets */}
           <FloatingTile delay={0.2}>
-            <Link
-              to="/switch-brochure"
-              className="block rounded-xl overflow-hidden bg-gradient-to-br from-[#0951fa] to-[#0951fa]/70 p-6 shadow-xl hover:scale-105 transition-transform duration-300 h-full"
-            >
+            <div className="block rounded-xl overflow-hidden bg-gradient-to-br from-[#0951fa] to-[#0951fa]/70 p-6 shadow-xl hover:scale-105 transition-transform duration-300 h-full">
               <h3 className="text-2xl font-bold mb-4">Switch Commerce</h3>
               <div className="space-y-4">
-                <div
+                <Link
+                  to="/switch-brochure"
                   className="block p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
                 >
                   <span className="text-lg font-medium">Brochure</span>
@@ -161,13 +159,11 @@ export default function Home() {
 
           {/* Clear Choice Assets */}
           <FloatingTile delay={0.4}>
-            <Link
-              to="/clear-choice-brochure"
-              className="block rounded-xl overflow-hidden bg-gradient-to-br from-[#ff4f00] to-[#ff4f00]/70 p-6 shadow-xl hover:scale-105 transition-transform duration-300 h-full"
-            >
+            <div className="block rounded-xl overflow-hidden bg-gradient-to-br from-[#ff4f00] to-[#ff4f00]/70 p-6 shadow-xl hover:scale-105 transition-transform duration-300 h-full">
               <h3 className="text-2xl font-bold mb-4">Clear Choice</h3>
               <div className="space-y-4">
-                <div
+                <Link
+                  to="/clear-choice-brochure"
                   className="block p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
                 >
                   <span className="text-lg font-medium">Brochure</span>
