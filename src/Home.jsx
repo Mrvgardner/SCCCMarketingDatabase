@@ -83,10 +83,10 @@ export default function Home() {
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto text-center mb-16">
         <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-          Welcome to the Marketing Portal
+          Welcome to the Resource Portal
         </h1>
         <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-          Your central hub for all Switch Commerce and Clear Choice marketing resources,
+          Your central hub for all Switch Commerce and Clear Choice resources,
           tools, and brand assets.
         </p>
       </div>
