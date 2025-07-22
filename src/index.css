@@ -3,6 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import Safari-specific fixes */
+@import './safari-fixes.css';
+
 @layer components {
   .animate-float {
     animation: float 3s ease-in-out infinite;

@@ -3,13 +3,14 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
-// Configure PDF.js worker
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+// Configure PDF.js worker with absolute HTTPS URL to prevent CORS issues
+pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 export default function PDFViewer({ pdfUrl, title }) {
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
   const [scale, setScale] = useState(1.0);
   const [rotation, setRotation] = useState(0);
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -21,8 +22,17 @@ export default function PDFViewer({ pdfUrl, title }) {
 
   // Handle document load success
   function onDocumentLoadSuccess({ numPages }) {
+    console.log('PDF loaded successfully with', numPages, 'pages');
     setNumPages(numPages);
     setLoading(false);
+    setLoadError(null);
+  }
+  
+  // Handle document load error
+  function onDocumentLoadError(error) {
+    console.error('Error loading PDF:', error);
+    setLoading(false);
+    setLoadError(error);
   }
 
   // Page navigation
@@ -111,7 +121,8 @@ export default function PDFViewer({ pdfUrl, title }) {
           <button 
             onClick={goToPreviousPage} 
             disabled={pageNumber <= 1}
-            className="px-4 py-2 bg-[#0951fa] text-white rounded-full disabled:opacity-50"
+            className="px-4 py-2 bg-[#0951fa] text-white rounded-full disabled:opacity-50 appearance-none"
+            style={{ WebkitAppearance: 'none' }}
           >
             ← Previous
           </button>
@@ -135,14 +146,16 @@ export default function PDFViewer({ pdfUrl, title }) {
           <button 
             onClick={goToNextPage} 
             disabled={pageNumber >= numPages}
-            className="px-4 py-2 bg-[#0951fa] text-white rounded-full disabled:opacity-50"
+            className="px-4 py-2 bg-[#0951fa] text-white rounded-full disabled:opacity-50 appearance-none"
+            style={{ WebkitAppearance: 'none' }}
           >
             Next →
           </button>
           <button 
             onClick={() => setPageNumber(numPages || 1)} 
             disabled={!numPages || pageNumber >= numPages}
-            className="px-3 py-2 bg-[#0951fa] text-white rounded-full disabled:opacity-50"
+            className="px-3 py-2 bg-[#0951fa] text-white rounded-full disabled:opacity-50 appearance-none"
+            style={{ WebkitAppearance: 'none' }}
             title="Last Page"
           >
             →→
@@ -151,7 +164,8 @@ export default function PDFViewer({ pdfUrl, title }) {
         
         <button
           onClick={toggleThumbnails}
-          className="flex items-center px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+          className="flex items-center px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors appearance-none"
+          style={{ WebkitAppearance: 'none' }}
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
             <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
@@ -232,9 +246,20 @@ export default function PDFViewer({ pdfUrl, title }) {
             <Document
               file={pdfUrl}
               onLoadSuccess={onDocumentLoadSuccess}
+              onLoadError={onDocumentLoadError}
               loading={<div className="flex justify-center py-10"><div className="animate-spin rounded-full h-10 w-10 border-4 border-[#0951fa] border-t-transparent"></div></div>}
-              error={<div className="text-red-500 py-4">Failed to load PDF. Please make sure the URL is correct.</div>}
+              error={<div className="text-red-500 py-4 text-center">
+                <p>Failed to load PDF. Please check the console for details.</p>
+                <p className="mt-2 text-sm">Error: {loadError?.message || "Unknown error"}</p>
+                <button 
+                  onClick={() => window.location.reload()} 
+                  className="mt-4 px-4 py-2 bg-[#0951fa] text-white rounded-full"
+                >
+                  Reload Page
+                </button>
+              </div>}
               className="shadow-xl"
+              options={{ cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/cmaps/', cMapPacked: true }}
             >
               <div 
                 onTouchStart={handleTouchStart}
