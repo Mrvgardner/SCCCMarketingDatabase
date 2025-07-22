@@ -6,6 +6,24 @@ import 'react-pdf/dist/Page/TextLayer.css';
 // Configure PDF.js worker with absolute HTTPS URL to prevent CORS issues
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
+// Preload PDF worker
+const preloadWorker = () => {
+  try {
+    const workerBlob = new Blob(
+      [`importScripts("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js");`],
+      { type: 'application/javascript' }
+    );
+    const workerUrl = URL.createObjectURL(workerBlob);
+    pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
+    console.log('PDF Worker preloaded');
+  } catch (error) {
+    console.error('Failed to preload PDF worker:', error);
+  }
+};
+
+// Initialize when the module loads
+preloadWorker();
+
 export default function PDFViewer({ pdfUrl, title }) {
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
@@ -15,10 +33,50 @@ export default function PDFViewer({ pdfUrl, title }) {
   const [rotation, setRotation] = useState(0);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showThumbnails, setShowThumbnails] = useState(false);
+  const [fileUrl, setFileUrl] = useState(null);
   
   // For touch gestures
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
+  
+  // Load the PDF file
+  useEffect(() => {
+    const loadPdf = async () => {
+      try {
+        setLoading(true);
+        setLoadError(null);
+        
+        // Create a timestamp to bust cache
+        const timestamp = new Date().getTime();
+        const url = `${pdfUrl}?t=${timestamp}`;
+        
+        // Fetch the PDF first to ensure it's available and cache it
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch PDF: ${response.status} ${response.statusText}`);
+        }
+        
+        const blob = await response.blob();
+        const fileUrl = URL.createObjectURL(blob);
+        setFileUrl(fileUrl);
+        setLoading(false);
+        console.log('PDF loaded successfully, created object URL:', fileUrl);
+      } catch (error) {
+        console.error('Error loading PDF:', error);
+        setLoadError(error);
+        setLoading(false);
+      }
+    };
+    
+    loadPdf();
+    
+    // Cleanup function to revoke object URL
+    return () => {
+      if (fileUrl) {
+        URL.revokeObjectURL(fileUrl);
+      }
+    };
+  }, [pdfUrl]);
 
   // Handle document load success
   function onDocumentLoadSuccess({ numPages }) {
@@ -113,7 +171,8 @@ export default function PDFViewer({ pdfUrl, title }) {
           <button 
             onClick={() => setPageNumber(1)} 
             disabled={pageNumber <= 1}
-            className="px-3 py-2 bg-[#0951fa] text-white rounded-full disabled:opacity-50"
+            className="px-3 py-2 bg-[#0951fa] text-white rounded-full disabled:opacity-50 appearance-none"
+            style={{ WebkitAppearance: 'none' }}
             title="First Page"
           >
             ←←
@@ -174,20 +233,20 @@ export default function PDFViewer({ pdfUrl, title }) {
         </button>
         
         <div className="flex items-center space-x-2">
-          <button onClick={zoomOut} className="p-2 bg-gray-200 dark:bg-gray-700 rounded-full">
+          <button onClick={zoomOut} className="p-2 bg-gray-200 dark:bg-gray-700 rounded-full appearance-none" style={{ WebkitAppearance: 'none' }}>
             <span className="sr-only">Zoom Out</span>
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clipRule="evenodd" />
             </svg>
           </button>
           <span className="text-sm">{Math.round(scale * 100)}%</span>
-          <button onClick={zoomIn} className="p-2 bg-gray-200 dark:bg-gray-700 rounded-full">
+          <button onClick={zoomIn} className="p-2 bg-gray-200 dark:bg-gray-700 rounded-full appearance-none" style={{ WebkitAppearance: 'none' }}>
             <span className="sr-only">Zoom In</span>
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
             </svg>
           </button>
-          <button onClick={resetZoom} className="p-2 bg-gray-200 dark:bg-gray-700 rounded-full">
+          <button onClick={resetZoom} className="p-2 bg-gray-200 dark:bg-gray-700 rounded-full appearance-none" style={{ WebkitAppearance: 'none' }}>
             <span className="sr-only">Reset Zoom</span>
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
@@ -196,14 +255,14 @@ export default function PDFViewer({ pdfUrl, title }) {
         </div>
         
         <div className="flex items-center space-x-2">
-          <button onClick={rotateCounterClockwise} className="p-2 bg-gray-200 dark:bg-gray-700 rounded-full">
+          <button onClick={rotateCounterClockwise} className="p-2 bg-gray-200 dark:bg-gray-700 rounded-full appearance-none" style={{ WebkitAppearance: 'none' }}>
             <span className="sr-only">Rotate Counter-Clockwise</span>
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1z" clipRule="evenodd" />
             </svg>
           </button>
           <span className="text-sm">{rotation}°</span>
-          <button onClick={rotateClockwise} className="p-2 bg-gray-200 dark:bg-gray-700 rounded-full">
+          <button onClick={rotateClockwise} className="p-2 bg-gray-200 dark:bg-gray-700 rounded-full appearance-none" style={{ WebkitAppearance: 'none' }}>
             <span className="sr-only">Rotate Clockwise</span>
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M16 3a1 1 0 011 1v5a1 1 0 01-1 1h-5a1 1 0 010-2h2.586l-4.293-4.293a1 1 0 011.414-1.414L15 6.586V4a1 1 0 011-1z" clipRule="evenodd" />
@@ -217,7 +276,7 @@ export default function PDFViewer({ pdfUrl, title }) {
         {showThumbnails && numPages && (
           <div className="hidden md:block w-48 mr-4 bg-gray-100 dark:bg-gray-800 p-2 rounded-lg shadow-inner overflow-y-auto max-h-[800px]">
             <Document
-              file={pdfUrl}
+              file={fileUrl || pdfUrl}
               loading={<div className="flex justify-center py-4"><div className="animate-spin rounded-full h-6 w-6 border-2 border-[#0951fa] border-t-transparent"></div></div>}
               error={<div className="text-red-500 py-2 text-xs">Failed to load thumbnails</div>}
             >
@@ -243,41 +302,65 @@ export default function PDFViewer({ pdfUrl, title }) {
         
         <div className="max-w-full overflow-auto bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-inner flex-1">
           <div className="flex justify-center">
-            <Document
-              file={pdfUrl}
-              onLoadSuccess={onDocumentLoadSuccess}
-              onLoadError={onDocumentLoadError}
-              loading={<div className="flex justify-center py-10"><div className="animate-spin rounded-full h-10 w-10 border-4 border-[#0951fa] border-t-transparent"></div></div>}
-              error={<div className="text-red-500 py-4 text-center">
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-10">
+                <div className="animate-spin rounded-full h-10 w-10 border-4 border-[#0951fa] border-t-transparent"></div>
+                <p className="mt-4 text-gray-600 dark:text-gray-400">Loading PDF...</p>
+              </div>
+            ) : loadError ? (
+              <div className="text-red-500 py-4 text-center">
                 <p>Failed to load PDF. Please check the console for details.</p>
                 <p className="mt-2 text-sm">Error: {loadError?.message || "Unknown error"}</p>
                 <button 
                   onClick={() => window.location.reload()} 
-                  className="mt-4 px-4 py-2 bg-[#0951fa] text-white rounded-full"
+                  className="mt-4 px-4 py-2 bg-[#0951fa] text-white rounded-full appearance-none"
+                  style={{ WebkitAppearance: 'none' }}
                 >
                   Reload Page
                 </button>
-              </div>}
-              className="shadow-xl"
-              options={{ cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/cmaps/', cMapPacked: true }}
-            >
-              <div 
-                onTouchStart={handleTouchStart}
-                onTouchEnd={handleTouchEnd}
-              >
-                <Page
-                  pageNumber={pageNumber}
-                  scale={scale}
-                  rotate={rotation}
-                  renderTextLayer={true}
-                  renderAnnotationLayer={true}
-                  className="pdf-page"
-                  loading={<div className="animate-pulse bg-gray-300 dark:bg-gray-700 h-[800px] w-[600px]"></div>}
-                  error="An error occurred while loading the page."
-                  canvasBackground="transparent"
-                />
               </div>
-            </Document>
+            ) : (
+              <Document
+                file={fileUrl}
+                onLoadSuccess={onDocumentLoadSuccess}
+                onLoadError={onDocumentLoadError}
+                loading={<div className="flex justify-center py-10"><div className="animate-spin rounded-full h-10 w-10 border-4 border-[#0951fa] border-t-transparent"></div></div>}
+                error={<div className="text-red-500 py-4 text-center">
+                  <p>Failed to load PDF. Please check the console for details.</p>
+                  <p className="mt-2 text-sm">Error: {loadError?.message || "Unknown error"}</p>
+                  <button 
+                    onClick={() => window.location.reload()} 
+                    className="mt-4 px-4 py-2 bg-[#0951fa] text-white rounded-full appearance-none"
+                    style={{ WebkitAppearance: 'none' }}
+                  >
+                    Reload Page
+                  </button>
+                </div>}
+                className="shadow-xl"
+                options={{ 
+                  cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/cmaps/', 
+                  cMapPacked: true,
+                  standardFontDataUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/standard_fonts/'
+                }}
+              >
+                <div 
+                  onTouchStart={handleTouchStart}
+                  onTouchEnd={handleTouchEnd}
+                >
+                  <Page
+                    pageNumber={pageNumber}
+                    scale={scale}
+                    rotate={rotation}
+                    renderTextLayer={true}
+                    renderAnnotationLayer={true}
+                    className="pdf-page"
+                    loading={<div className="animate-pulse bg-gray-300 dark:bg-gray-700 h-[800px] w-[600px]"></div>}
+                    error="An error occurred while loading the page."
+                    canvasBackground="transparent"
+                  />
+                </div>
+              </Document>
+            )}
           </div>
         </div>
       </div>
@@ -287,7 +370,8 @@ export default function PDFViewer({ pdfUrl, title }) {
         <button
           onClick={goToPreviousPage}
           disabled={pageNumber <= 1}
-          className="flex items-center justify-center h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700 disabled:opacity-50"
+          className="flex items-center justify-center h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700 disabled:opacity-50 appearance-none"
+          style={{ WebkitAppearance: 'none' }}
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -297,7 +381,8 @@ export default function PDFViewer({ pdfUrl, title }) {
         <button
           onClick={goToNextPage}
           disabled={pageNumber >= numPages}
-          className="flex items-center justify-center h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700 disabled:opacity-50"
+          className="flex items-center justify-center h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700 disabled:opacity-50 appearance-none"
+          style={{ WebkitAppearance: 'none' }}
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -308,7 +393,8 @@ export default function PDFViewer({ pdfUrl, title }) {
       <div className="flex justify-center gap-4 mt-4">
         <button
           onClick={() => window.print()}
-          className="flex items-center px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+          className="flex items-center px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors appearance-none"
+          style={{ WebkitAppearance: 'none' }}
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clipRule="evenodd" />
@@ -318,7 +404,8 @@ export default function PDFViewer({ pdfUrl, title }) {
         
         <button
           onClick={toggleFullScreen}
-          className="flex items-center px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+          className="flex items-center px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors appearance-none"
+          style={{ WebkitAppearance: 'none' }}
         >
           {isFullScreen ? (
             <>
