@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import PDFBrochureViewer from '../components/PDFBrochureViewer';
+import BrochurePage from '../components/BrochurePage';
 
 export default function ClearChoiceBrochurePage() {
   useEffect(() => {
@@ -7,12 +7,9 @@ export default function ClearChoiceBrochurePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-6">
-      <PDFBrochureViewer 
-        pdfUrl="/brochures/clearchoice-brochure.pdf" 
-        title="Clear Choice Brochure"
-        fallbackUrl="/brochures/clear-choice-brochure.pdf" 
-      />
-    </div>
+    <BrochurePage 
+      pdfUrl="/brochures/clearchoice-brochure.pdf" 
+      title="Clear Choice Brochure" 
+    />
   );
 }
