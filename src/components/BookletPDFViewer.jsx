@@ -2,8 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { Link } from 'react-router-dom';
 
-// Set worker source from the installed package
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+// Set up the pdf.js worker source with multiple fallbacks
+try {
+  // Try CDN first with version match
+  pdfjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+  
+  // Add error handler to fallback to local
+  window.addEventListener('error', function(e) {
+    if (e.target.src && e.target.src.includes('pdf.worker')) {
+      console.log('PDF worker failed to load from CDN, using local fallback');
+      pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
+    }
+  }, true);
+} catch (error) {
+  console.error('Error setting up PDF worker:', error);
+  // Fallback to local
+  pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
+}
 
 /**
  * BookletPDFViewer - A PDF viewer that displays PDFs in a true booklet-like format
@@ -30,8 +45,21 @@ export default function BookletPDFViewer({ pdfUrl, title }) {
 
   const onDocumentLoadError = (error) => {
     console.error("Failed to load PDF:", error);
-    setError("Failed to load PDF");
+    setError(`Failed to load PDF: ${error.message || 'Unknown error'}`);
     setIsLoading(false);
+    
+    // Try to diagnose the error
+    fetch(pdfUrl, { method: 'HEAD' })
+      .then(response => {
+        if (!response.ok) {
+          console.error(`PDF file not accessible: ${response.status} ${response.statusText}`);
+          setError(`PDF not accessible (${response.status}). Please check if the file exists.`);
+        }
+      })
+      .catch(fetchError => {
+        console.error("Error checking PDF existence:", fetchError);
+        setError("Network error. Please check your connection.");
+      });
   };
 
   const changePage = (offset) => {

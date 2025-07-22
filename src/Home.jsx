@@ -41,16 +41,10 @@ const tools = [
 
 const resources = [
   {
-    name: "Product Catalog",
+    name: "Email Signature",
     type: "resource",
-    url: "/products",
-    description: "Browse our complete product catalog",
-  },
-  {
-    name: "Logos",
-    type: "download",
-    url: "/logos",
-    description: "Download brand logos in various formats",
+    url: "/email-signature",
+    description: "Create your branded email signature",
   },
   {
     name: "Wallpapers",
@@ -63,18 +57,6 @@ const resources = [
     type: "resource",
     url: "/knowledge-base",
     description: "Product features, use cases, and sales resources",
-  },
-  {
-    name: "Switch Commerce Brochure",
-    type: "download",
-    url: "/switch-brochure",
-    description: "Download our latest Switch Commerce brochure",
-  },
-  {
-    name: "Clear Choice Brochure",
-    type: "download",
-    url: "/clearchoice-brochure",
-    description: "Download our latest Clear Choice brochure",
   },
 ];
 
