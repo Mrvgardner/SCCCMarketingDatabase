@@ -8,6 +8,8 @@ import './index.css'
 import ProductsPage from './pages/products'
 import SwitchBrochure from './pages/SwitchBrochure'
 import ClearChoiceBrochure from './pages/ClearChoiceBrochure'
+import SwitchCommerceBranding from './pages/SwitchCommerceBranding'
+import ClearChoiceBranding from './pages/ClearChoiceBranding'
 import ProductKnowledgeBase from './ProductKnowledgeBase'
 import { ThemeProvider } from './contexts/ThemeContext'
 import Navbar from './components/Navbar'
@@ -25,6 +27,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/switch-brochure" element={<SwitchBrochure />} />
           <Route path="/clear-choice-brochure" element={<ClearChoiceBrochure />} />
           <Route path="/knowledge-base" element={<ProductKnowledgeBase />} />
+          <Route path="/switch-commerce/branding" element={<SwitchCommerceBranding />} />
+          <Route path="/clear-choice/branding" element={<ClearChoiceBranding />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
