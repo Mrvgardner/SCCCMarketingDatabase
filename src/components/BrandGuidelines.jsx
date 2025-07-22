@@ -14,6 +14,7 @@ export default function BrandGuidelines({
   typographySection,
   logosSection,
   styleKitDownload,
+  usageGuidelinesSection,
   heroBackground = "from-gray-900 to-gray-800",
   primaryColor,
   accentColor
@@ -215,6 +216,13 @@ export default function BrandGuidelines({
                 </div>
               </div>
             </div>
+            
+            {usageGuidelinesSection && (
+              <div className="mt-8">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Additional Brand Guidelines</h3>
+                {usageGuidelinesSection}
+              </div>
+            )}
           </div>
         )}
       </div>
