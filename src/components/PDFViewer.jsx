@@ -2,11 +2,17 @@ import { useState, useEffect, useRef } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
-// Import PDF.js worker directly from node_modules
-import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
 
-// Set worker path to use the bundled worker
-pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+// Setup PDF.js worker
+if (typeof window !== 'undefined') {
+  // Use a CDN hosted worker for production, or attempt to use bundled worker for development
+  const workerSrc = import.meta.env.PROD 
+    ? `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`
+    : `/pdf.worker.min.js`;
+  
+  pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
+  console.log('PDF.js worker set to:', workerSrc);
+}
 
 export default function PDFViewer({ pdfUrl, title }) {
   const [numPages, setNumPages] = useState(null);

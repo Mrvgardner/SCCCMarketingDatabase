@@ -12,13 +12,12 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-      }
+      },
     },
     commonjsOptions: {
       include: [/node_modules/],
     }
   },
-  optimizeDeps: {
-    include: ['react-pdf']
-  }
+  // Add public base path for production to ensure assets are correctly referenced
+  base: '/'
 })
