@@ -9,8 +9,10 @@
   "dependencies": {
     "@headlessui/react": "^2.2.4",
     "fuse.js": "^6.6.2",
+    "pdfjs-dist": "^5.3.93",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-pdf": "^10.0.1",
     "react-router-dom": "^7.7.0"
   },
   "devDependencies": {

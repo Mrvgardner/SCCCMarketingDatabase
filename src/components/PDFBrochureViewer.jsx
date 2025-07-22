@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import SimpleFramePDFViewer from './SimpleFramePDFViewer';
+import BookletPDFViewer from './BookletPDFViewer';
 
 /**
  * PDFBrochureViewer - A component that renders a brochure PDF with fallbacks
- * Now supports booklet-style viewing
+ * Now uses BookletPDFViewer for true booklet-style experience
  */
 export default function PDFBrochureViewer({ pdfUrl, title, fallbackUrl = null }) {
   const [pdfError, setPdfError] = useState(false);
@@ -94,5 +94,5 @@ export default function PDFBrochureViewer({ pdfUrl, title, fallbackUrl = null })
     );
   }
 
-  return <SimpleFramePDFViewer pdfUrl={currentUrl} title={title} />;
+  return <BookletPDFViewer pdfUrl={currentUrl} title={title} />;
 }
