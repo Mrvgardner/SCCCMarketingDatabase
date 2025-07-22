@@ -164,6 +164,18 @@ export default function PDFViewer({ pdfUrl, title }) {
         </button>
       </div>
 
+      <div className="flex justify-center mt-4">
+        <button
+          onClick={() => window.print()}
+          className="flex items-center px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clipRule="evenodd" />
+          </svg>
+          Print
+        </button>
+      </div>
+
       <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
         Use arrow keys for page navigation, + and - for zoom, 0 to reset zoom
       </p>
