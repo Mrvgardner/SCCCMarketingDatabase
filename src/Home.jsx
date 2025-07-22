@@ -147,7 +147,7 @@ export default function Home() {
                   <span className="text-lg font-medium">Brochure</span>
                 </Link>
                 <Link
-                  to="/switch-branding"
+                  to="/switch-commerce"
                   className="block p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
                 >
                   <span className="text-lg font-medium">Brand Guidelines</span>
@@ -168,7 +168,7 @@ export default function Home() {
                   <span className="text-lg font-medium">Brochure</span>
                 </Link>
                 <Link
-                  to="/clear-choice-branding"
+                  to="/clear-choice"
                   className="block p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
                 >
                   <span className="text-lg font-medium">Brand Guidelines</span>
