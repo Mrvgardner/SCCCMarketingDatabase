@@ -2,18 +2,21 @@
 
 ## Current Implementation
 
-We now use a simplified iframe-based PDF viewer that avoids PDF.js compatibility issues:
+We now use a booklet-style iframe-based PDF viewer that avoids PDF.js compatibility issues:
 
-1. `SimpleFramePDFViewer`: Uses browser's built-in PDF rendering via iframe
+1. `SimpleFramePDFViewer`: Uses browser's built-in PDF rendering via iframe with booklet-like experience
    - Advantages: Works across all browsers, no version mismatches
-   - Has download and print functionality
-   - Simple, lightweight implementation
+   - Page-by-page navigation with previous/next controls
+   - Zoom controls for better readability
+   - Single/double page view options
+   - Download and print functionality
 
 2. `PDFBrochureViewer`: A wrapper for `SimpleFramePDFViewer` that adds:
    - PDF existence validation
    - Fallback URL support
    - Error handling UI
    - Automatic PDF detection
+   - Loading state management
 
 ## How It Works
 
@@ -21,6 +24,11 @@ We now use a simplified iframe-based PDF viewer that avoids PDF.js compatibility
 2. If primary PDF is not found, tries loading the fallback PDF
 3. If neither exists, shows a user-friendly error
 4. Uses the browser's native PDF viewing capabilities through an iframe
+5. Enhances the experience with custom navigation and viewing controls:
+   - Page navigation buttons to move forward/backward
+   - Zoom in/out buttons
+   - Single/double page toggle
+   - Page number indicator
 
 ## Available PDF Files
 
@@ -35,14 +43,17 @@ We now use a simplified iframe-based PDF viewer that avoids PDF.js compatibility
 1. No dependency on PDF.js or its worker files
 2. No version compatibility issues
 3. Works consistently across browsers
-4. Simpler implementation and maintenance
-5. Removed complex build configurations
+4. Booklet-style viewing experience for marketing materials
+5. Responsive design that works on mobile and desktop
 6. Better error handling and fallbacks
-7. Reduced bundle size (removed multiple PDF.js related packages)
+7. Page-by-page navigation for a more natural reading experience
+8. Reduced bundle size (removed multiple PDF.js related packages)
 
 ## Future Enhancements
 
-If needed, we could add:
-1. Custom PDF viewer controls
-2. PDF thumbnails via HTML5 Canvas
-3. Analytics for PDF viewing/downloading
+Possible future enhancements include:
+1. Thumbnails sidebar for quick navigation
+2. Page flip animation for more realistic booklet feel
+3. Table of contents extraction
+4. Analytics for PDF viewing/downloading
+5. Annotation capabilities for team collaboration
