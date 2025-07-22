@@ -4,10 +4,12 @@ import SimpleFramePDFViewer from './SimpleFramePDFViewer';
 
 /**
  * PDFBrochureViewer - A component that renders a brochure PDF with fallbacks
+ * Now supports booklet-style viewing
  */
 export default function PDFBrochureViewer({ pdfUrl, title, fallbackUrl = null }) {
   const [pdfError, setPdfError] = useState(false);
   const [currentUrl, setCurrentUrl] = useState(pdfUrl);
+  const [isLoading, setIsLoading] = useState(true);
   
   // Check if the PDF exists
   const checkPdfExists = async (url) => {
@@ -22,9 +24,13 @@ export default function PDFBrochureViewer({ pdfUrl, title, fallbackUrl = null })
 
   React.useEffect(() => {
     const validatePdf = async () => {
+      setIsLoading(true);
+      
+      // Try primary URL
       const exists = await checkPdfExists(pdfUrl);
       
       if (!exists && fallbackUrl) {
+        // Try fallback URL
         const fallbackExists = await checkPdfExists(fallbackUrl);
         if (fallbackExists) {
           console.log('Primary PDF not found, using fallback PDF');
@@ -36,7 +42,12 @@ export default function PDFBrochureViewer({ pdfUrl, title, fallbackUrl = null })
       } else if (!exists) {
         console.error('PDF not found and no fallback provided');
         setPdfError(true);
+      } else {
+        // Primary PDF found
+        setCurrentUrl(pdfUrl);
       }
+      
+      setIsLoading(false);
     };
     
     validatePdf();
@@ -70,6 +81,15 @@ export default function PDFBrochureViewer({ pdfUrl, title, fallbackUrl = null })
             </button>
           </div>
         </div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#0951fa] border-t-transparent"></div>
+        <p className="mt-4 text-gray-600 dark:text-gray-400">Loading brochure...</p>
       </div>
     );
   }
