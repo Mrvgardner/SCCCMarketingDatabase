@@ -14,6 +14,7 @@ export default function BrandGuidelines({
   typographySection,
   logosSection,
   styleKitDownload,
+  actionButtons,
   usageGuidelinesSection,
   heroBackground = "from-gray-900 to-gray-800",
   primaryColor,
@@ -53,7 +54,7 @@ export default function BrandGuidelines({
                 {brandDescription}
               </p>
               
-              {styleKitDownload && (
+              {actionButtons ? actionButtons : styleKitDownload && (
                 <a
                   href={styleKitDownload.url}
                   download
@@ -88,10 +89,10 @@ export default function BrandGuidelines({
               <button
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}
-                className={`px-6 py-4 font-medium text-sm transition-colors whitespace-nowrap ${
+                className={`px-6 py-4 font-bold text-base transition-colors whitespace-nowrap ${
                   activeSection === section.id
                     ? `border-b-2 border-${primaryColor} text-white`
-                    : 'text-gray-400 hover:text-white'
+                    : 'text-gray-300 hover:text-white'
                 }`}
               >
                 {section.label}
@@ -112,7 +113,6 @@ export default function BrandGuidelines({
                 Our color palette reinforces our brand identity. These colors should be used consistently across all materials.
               </p>
             </div>
-            
             {colorSection}
           </div>
         )}
@@ -126,7 +126,6 @@ export default function BrandGuidelines({
                 Typography plays a crucial role in our brand identity. Consistent use of our brand fonts ensures recognition and reinforces our brand values.
               </p>
             </div>
-            
             {typographySection}
           </div>
         )}
@@ -140,13 +139,12 @@ export default function BrandGuidelines({
                 Our logo is the most visible element of our brand identity. Follow these guidelines to ensure consistent and proper usage.
               </p>
             </div>
-            
             {logosSection}
           </div>
         )}
         
         {/* Usage Guidelines Section */}
-        {activeSection === 'usage' && (
+        {activeSection === 'usage' && usageGuidelinesSection && (
           <div className="space-y-12">
             <div className="mb-8">
               <h2 className="text-3xl font-bold mb-4">Usage Guidelines</h2>
@@ -154,75 +152,7 @@ export default function BrandGuidelines({
                 Proper application of our brand elements is crucial for maintaining brand integrity and recognition.
               </p>
             </div>
-            
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Do's and Don'ts</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-4">
-                  <h4 className="text-green-500 font-semibold flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    Do's
-                  </h4>
-                  <ul className="list-disc pl-5 text-gray-700 dark:text-gray-300 space-y-2">
-                    <li>Use the approved color palette consistently</li>
-                    <li>Maintain proper spacing around the logo</li>
-                    <li>Use the recommended font pairings</li>
-                    <li>Follow the sizing guidelines for the logo</li>
-                    <li>Request approval for new design applications</li>
-                  </ul>
-                </div>
-                
-                <div className="space-y-4">
-                  <h4 className="text-red-500 font-semibold flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                    </svg>
-                    Don'ts
-                  </h4>
-                  <ul className="list-disc pl-5 text-gray-700 dark:text-gray-300 space-y-2">
-                    <li>Alter the logo colors or proportions</li>
-                    <li>Add effects like shadows or outlines to the logo</li>
-                    <li>Use unapproved fonts in official communications</li>
-                    <li>Crowd the logo with other elements</li>
-                    <li>Use outdated versions of brand assets</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Minimum Size Requirements</h3>
-              <p className="text-gray-700 dark:text-gray-300 mb-6">
-                To ensure legibility and brand integrity, follow these minimum size requirements when using our logo.
-              </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded">
-                  <div className="text-center mb-2 text-gray-700 dark:text-gray-300 text-sm">Print</div>
-                  <div className="font-semibold text-center text-gray-900 dark:text-gray-100">25mm width</div>
-                </div>
-                
-                <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded">
-                  <div className="text-center mb-2 text-gray-700 dark:text-gray-300 text-sm">Digital</div>
-                  <div className="font-semibold text-center text-gray-900 dark:text-gray-100">100px width</div>
-                </div>
-                
-                <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded">
-                  <div className="text-center mb-2 text-gray-700 dark:text-gray-300 text-sm">Social Media</div>
-                  <div className="font-semibold text-center text-gray-900 dark:text-gray-100">60px width</div>
-                </div>
-              </div>
-            </div>
-            
-            {usageGuidelinesSection && (
-              <div className="mt-8">
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Additional Brand Guidelines</h3>
-                {usageGuidelinesSection}
-              </div>
-            )}
+            {usageGuidelinesSection}
           </div>
         )}
       </div>

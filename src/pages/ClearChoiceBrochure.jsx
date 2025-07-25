@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import BrochurePage from '../components/BrochurePage';
+import DirectPDFLink from '../components/DirectPDFLink';
 
 export default function ClearChoiceBrochurePage() {
   useEffect(() => {
@@ -7,7 +7,7 @@ export default function ClearChoiceBrochurePage() {
   }, []);
 
   return (
-    <BrochurePage 
+    <DirectPDFLink 
       pdfUrl="/brochures/clearchoice-brochure.pdf" 
       title="Clear Choice Brochure" 
     />

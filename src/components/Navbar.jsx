@@ -61,28 +61,30 @@ const Navbar = () => {
               <div className="py-1">
                 <Menu.Item>
                   {({ active }) => (
-                    <Link to="/switch-brochure" className={`${active ? 'bg-gray-100 dark:bg-gray-600' : ''} block px-4 py-2 text-sm text-gray-700 dark:text-gray-200`}>
-                      Switch Brochure
-                    </Link>
+                    <a href="/brochures/switch-brochure.pdf" target="_blank" rel="noopener noreferrer" className={`${active ? 'bg-gray-100 dark:bg-gray-600' : ''} block px-4 py-2 text-sm text-gray-700 dark:text-gray-200`}>
+                      <div>Switch Brochure</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">Opens PDF in new window</div>
+                    </a>
                   )}
                 </Menu.Item>
                 <Menu.Item>
                   {({ active }) => (
-                    <Link to="/clear-choice-brochure" className={`${active ? 'bg-gray-100 dark:bg-gray-600' : ''} block px-4 py-2 text-sm text-gray-700 dark:text-gray-200`}>
-                      Clear Choice Brochure
-                    </Link>
+                    <a href="/brochures/clearchoice-brochure.pdf" target="_blank" rel="noopener noreferrer" className={`${active ? 'bg-gray-100 dark:bg-gray-600' : ''} block px-4 py-2 text-sm text-gray-700 dark:text-gray-200`}>
+                      <div>Clear Choice Brochure</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">Opens PDF in new window</div>
+                    </a>
                   )}
                 </Menu.Item>
                 <Menu.Item>
                   {({ active }) => (
-                    <Link to="/switch-branding" className={`${active ? 'bg-gray-100 dark:bg-gray-600' : ''} block px-4 py-2 text-sm text-gray-700 dark:text-gray-200`}>
+                    <Link to="/switch-commerce/branding" className={`${active ? 'bg-gray-100 dark:bg-gray-600' : ''} block px-4 py-2 text-sm text-gray-700 dark:text-gray-200`}>
                       Switch Branding Guidelines
                     </Link>
                   )}
                 </Menu.Item>
                 <Menu.Item>
                   {({ active }) => (
-                    <Link to="/clear-choice-branding" className={`${active ? 'bg-gray-100 dark:bg-gray-600' : ''} block px-4 py-2 text-sm text-gray-700 dark:text-gray-200`}>
+                    <Link to="/clear-choice/branding" className={`${active ? 'bg-gray-100 dark:bg-gray-600' : ''} block px-4 py-2 text-sm text-gray-700 dark:text-gray-200`}>
                       Clear Choice Branding Guidelines
                     </Link>
                   )}

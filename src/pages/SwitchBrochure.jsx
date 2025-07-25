@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import BrochurePage from '../components/BrochurePage';
+import DirectPDFLink from '../components/DirectPDFLink';
 
 export default function SwitchBrochurePage() {
   useEffect(() => {
@@ -7,7 +7,7 @@ export default function SwitchBrochurePage() {
   }, []);
 
   return (
-    <BrochurePage 
+    <DirectPDFLink 
       pdfUrl="/brochures/switch-brochure.pdf" 
       title="Switch Commerce Brochure" 
     />

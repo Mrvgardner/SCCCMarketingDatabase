@@ -1,0 +1,16 @@
+/* Font imports for Switch Commerce brand */
+@font-face {
+  font-family: 'SWITCH COMMERCE BOLD';
+  src: url('/fonts/SWITCHCOMMERCEBOLD.otf') format('opentype');
+  font-weight: 700; /* Using numeric value for better browser compatibility */
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SWITCH COMMERCE REG';
+  src: url('/fonts/SWITCHCOMMERCEREG.otf') format('opentype');
+  font-weight: 400; /* Using numeric value for better browser compatibility */
+  font-style: normal;
+  font-display: swap;
+}

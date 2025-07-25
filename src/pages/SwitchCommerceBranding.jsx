@@ -1,9 +1,10 @@
 import React from 'react';
 import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import BrandGuidelines from '../components/BrandGuidelines';
 import ColorPalette from '../components/ColorPalette';
 import FontDisplay from '../components/FontDisplay';
-import LogoDisplay from '../components/LogoDisplay';
+import EnhancedLogoDisplay from '../components/EnhancedLogoDisplay';
 import UsageGuidelines from '../components/UsageGuidelines';
 
 export default function SwitchCommerceBrandingPage() {
@@ -11,49 +12,42 @@ export default function SwitchCommerceBrandingPage() {
     document.title = 'Switch Commerce Brand Guidelines';
   }, []);
 
-  // Define Switch Commerce brand colors - Updated with official brand colors
+  // Define Switch Commerce brand colors - Official brand colors
   const switchColors = [
     {
       name: 'Primary Blue',
+      hex: '#0951fa',
+      rgb: 'rgb(9, 81, 250)',
+      cmyk: 'C97 M68 Y0 K0',
+      description: 'Main brand color, used to stand out in the design and for interactive elements'
+    },
+    {
+      name: 'Dark Blue',
       hex: '#002b5e',
       rgb: 'rgb(0, 43, 94)',
       cmyk: 'C100 M80 Y35 K21',
-      description: 'Main brand color, used for primary elements, headers, and key UI components'
+      description: 'Used for heavy titles, backgrounds, and areas needing visual weight'
     },
     {
-      name: 'Secondary Blue',
-      hex: '#0047ab',
-      rgb: 'rgb(0, 71, 171)',
-      cmyk: 'C100 M70 Y0 K0',
-      description: 'Used for secondary elements, call-to-action buttons, and active states'
+      name: 'Light Gray',
+      hex: '#e8e7e7',
+      rgb: 'rgb(232, 231, 231)',
+      cmyk: 'C0 M0 Y0 K10',
+      description: 'Used for backgrounds, cards, and subtle separations'
     },
     {
-      name: 'Accent Blue',
-      hex: '#1E90FF',
-      rgb: 'rgb(30, 144, 255)',
-      cmyk: 'C74 M35 Y0 K0',
-      description: 'Used for highlights, links, and interactive elements'
+      name: 'Medium Gray',
+      hex: '#c2c2c2',
+      rgb: 'rgb(194, 194, 194)',
+      cmyk: 'C0 M0 Y0 K24',
+      description: 'Used for borders, dividers, and secondary UI elements'
     },
     {
-      name: 'Dark Navy',
-      hex: '#001133',
-      rgb: 'rgb(0, 17, 51)',
-      cmyk: 'C100 M95 Y45 K45',
-      description: 'Used for dark backgrounds, footers, and text on light backgrounds'
-    },
-    {
-      name: 'Light Blue',
-      hex: '#E6F0FF',
-      rgb: 'rgb(230, 240, 255)',
-      cmyk: 'C10 M5 Y0 K0',
-      description: 'Used for backgrounds, cards, and highlighting content areas'
-    },
-    {
-      name: 'Gray',
-      hex: '#6b7280',
-      rgb: 'rgb(107, 114, 128)',
-      cmyk: 'C16 M11 Y0 K50',
-      description: 'Used for secondary text, borders, and dividers'
+      name: 'Dark Gray',
+      hex: '#75808d',
+      rgb: 'rgb(117, 128, 141)',
+      cmyk: 'C17 M9 Y0 K45',
+      description: 'Used for text, icons, and UI elements requiring subtle emphasis'
     },
     {
       name: 'Success Green',
@@ -69,34 +63,42 @@ export default function SwitchCommerceBrandingPage() {
     }
   ];
 
-  // Define Switch Commerce typography - Updated with official brand fonts
+  // Define Switch Commerce typography - Official brand fonts
   const switchFonts = [
     {
-      name: 'Montserrat',
-      family: 'Montserrat, sans-serif',
-      cssFamily: "'Montserrat', sans-serif",
-      description: 'Primary font for all headings, navigation, and key UI elements',
-      usage: 'Used for all headings (H1-H4), navigation items, buttons, and high-emphasis text',
+      name: 'SWITCH COMMERCE BOLD',
+      family: 'SWITCH COMMERCE BOLD, sans-serif',
+      cssFamily: "SWITCH COMMERCE BOLD, sans-serif",
+      description: 'Primary font for all headings and titles',
+      usage: 'Used for all primary headings, titles, and high-emphasis text',
       weights: [
-        { name: 'Regular', value: 400 },
-        { name: 'Medium', value: 500 },
-        { name: 'Semi-bold', value: 600 },
-        { name: 'Bold', value: 700 },
-        { name: 'Extra Bold', value: 800 }
+        { name: 'Bold', value: 700 }
       ],
       samples: [
-        { name: 'Heading 1', size: '2.5rem', weight: 800, lineHeight: 1.2, text: 'Next Generation Payment Solutions' },
-        { name: 'Heading 2', size: '2rem', weight: 700, lineHeight: 1.3, text: 'Enterprise Processing' },
-        { name: 'Heading 3', size: '1.5rem', weight: 600, lineHeight: 1.4, text: 'Security & Compliance' },
-        { name: 'Heading 4', size: '1.25rem', weight: 600, lineHeight: 1.4, text: 'Integration Options' },
-        { name: 'Button', size: '0.875rem', weight: 600, lineHeight: 1.25, text: 'GET STARTED' }
+        { name: 'Heading 1', size: '2.5rem', weight: 700, lineHeight: 1.2, text: 'GLOBAL TRANSACTIONS. CONNECTED.' },
+        { name: 'Heading 2', size: '2rem', weight: 700, lineHeight: 1.3, text: 'ENTERPRISE PROCESSING' },
+        { name: 'Heading 3', size: '1.5rem', weight: 700, lineHeight: 1.4, text: 'SECURITY & COMPLIANCE' }
       ]
     },
     {
-      name: 'Open Sans',
-      family: 'Open Sans, sans-serif',
-      cssFamily: "'Open Sans', sans-serif",
-      description: 'Secondary font used for body text and longer content',
+      name: 'SWITCH COMMERCE REG',
+      family: 'SWITCH COMMERCE REG, sans-serif',
+      cssFamily: "SWITCH COMMERCE REG, sans-serif",
+      description: 'Font for sub-titles and secondary headings',
+      usage: 'Used for sub-titles, secondary headings, and medium-emphasis text',
+      weights: [
+        { name: 'Regular', value: 400 }
+      ],
+      samples: [
+        { name: 'Sub-heading', size: '1.25rem', weight: 400, lineHeight: 1.4, text: 'INNOVATIVE PAYMENT SOLUTIONS' },
+        { name: 'Caption', size: '1rem', weight: 400, lineHeight: 1.5, text: 'CONNECTING BUSINESSES GLOBALLY' }
+      ]
+    },
+    {
+      name: 'Lato',
+      family: 'Lato, sans-serif',
+      cssFamily: "'Lato', sans-serif",
+      description: 'Body text font',
       usage: 'Used for paragraphs, descriptions, tables, form labels, and general content',
       weights: [
         { name: 'Light', value: 300 },
@@ -112,63 +114,168 @@ export default function SwitchCommerceBrandingPage() {
     }
   ];
 
-  // Define Switch Commerce logos - Updated with official usage guidelines
+  // Define Switch Commerce logos - Using actual logo files from the project
   const switchLogos = [
+    // Main Logos
     {
-      name: 'Primary Logo (Full Color)',
-      src: '/logos/switch-commerce-logo.png',
-      description: 'Official full-color logo for standard brand applications',
+      name: 'Primary Logo',
+      src: '/logos/switch/Logo Main/SC Logo Main.png',
+      description: 'Official logo for standard brand applications',
       bgClass: 'bg-white',
-      clearSpace: '30px (minimum) on all sides',
+      clearSpace: '25px (minimum) on all sides',
       minSize: 'Print: 1.5" wide; Digital: 120px wide',
       formats: [
-        { type: 'PNG', url: '/downloads/switch-commerce-logo.png' },
-        { type: 'SVG', url: '/downloads/switch-commerce-logo.svg' },
-        { type: 'EPS', url: '/downloads/switch-commerce-logo.eps' }
+        { type: 'PNG', url: '/logos/switch/Logo Main/SC Logo Main.png' }
       ],
-      usage: 'Use the primary logo on white or light backgrounds. Always maintain proper clear space around the logo. Never distort, rotate, or alter the colors of the logo.'
+      usage: 'Use the main logo as the primary representation of our brand. Always maintain proper clear space around the logo.',
+      category: 'Main Logos'
     },
     {
-      name: 'Inverted Logo (White)',
-      src: '/logos/switch-commerce-logo-white.png',
-      description: 'White version for use on dark backgrounds and colored backgrounds',
+      name: 'Primary Logo (Blue)',
+      src: '/logos/switch/Logo Main/SC Logo Main - Blue.png',
+      description: 'Blue version of the main logo',
+      bgClass: 'bg-[#75808d]',
+      clearSpace: '25px (minimum) on all sides',
+      minSize: 'Print: 1.5" wide; Digital: 120px wide',
+      formats: [
+        { type: 'PNG', url: '/logos/switch/Logo Main/SC Logo Main - Blue.png' }
+      ],
+      usage: 'Use the blue logo on white or light backgrounds.',
+      category: 'Main Logos'
+    },
+    {
+      name: 'Primary Logo (White)',
+      src: '/logos/switch/Logo Main/SC Logo Main - White.png',
+      description: 'White version for use on dark backgrounds',
       bgClass: 'bg-[#002b5e]',
-      clearSpace: '30px (minimum) on all sides',
+      clearSpace: '25px (minimum) on all sides',
       minSize: 'Print: 1.5" wide; Digital: 120px wide',
       formats: [
-        { type: 'PNG', url: '/downloads/switch-commerce-logo-white.png' },
-        { type: 'SVG', url: '/downloads/switch-commerce-logo-white.svg' },
-        { type: 'EPS', url: '/downloads/switch-commerce-logo-white.eps' }
+        { type: 'PNG', url: '/logos/switch/Logo Main/SC Logo Main - White.png' }
       ],
-      usage: 'Use the white logo on dark backgrounds, colored backgrounds, or photographic backgrounds with sufficient contrast. Never place on backgrounds with inadequate contrast.'
+      usage: 'Use the white logo on dark or colored backgrounds where sufficient contrast is ensured.',
+      category: 'Main Logos'
     },
+    
+    // Icon Only Logos
     {
-      name: 'Icon Only (Mark)',
-      src: '/logos/switch-commerce-icon.png',
+      name: 'Icon Only',
+      src: '/logos/switch/Logo Icon/SC Logo.png',
       description: 'The Switch Commerce icon for space-constrained applications',
-      bgClass: 'bg-gray-100',
+      bgClass: 'bg-white',
       clearSpace: '20px (minimum) on all sides',
       minSize: 'Print: 0.5" tall; Digital: 48px tall',
       formats: [
-        { type: 'PNG', url: '/downloads/switch-commerce-icon.png' },
-        { type: 'SVG', url: '/downloads/switch-commerce-icon.svg' },
-        { type: 'EPS', url: '/downloads/switch-commerce-icon.eps' }
+        { type: 'PNG', url: '/logos/switch/Logo Icon/SC Logo.png' }
       ],
-      usage: 'Use the icon only when space is limited, for app icons, favicons, or when the full logo would be illegible at small sizes. The icon should only be used when the Switch Commerce name is already established in context.'
+      usage: 'Use the icon only when space is limited or when the brand is already well established in context.',
+      category: 'Icon Logos'
     },
     {
-      name: 'Horizontal Logo',
-      src: '/logos/switch-commerce-horizontal.png',
-      description: 'For use in horizontal space constraints',
-      bgClass: 'bg-white',
-      clearSpace: '30px (minimum) on all sides',
-      minSize: 'Print: 1.5" wide; Digital: 120px wide',
+      name: 'Icon Only (Blue)',
+      src: '/logos/switch/Logo Icon/SC Logo - Blue.png',
+      description: 'Blue version of the icon',
+      bgClass: 'bg-[#75808d]',
+      clearSpace: '20px (minimum) on all sides',
+      minSize: 'Print: 0.5" tall; Digital: 48px tall',
       formats: [
-        { type: 'PNG', url: '/downloads/switch-commerce-horizontal.png' },
-        { type: 'SVG', url: '/downloads/switch-commerce-horizontal.svg' },
-        { type: 'EPS', url: '/downloads/switch-commerce-horizontal.eps' }
+        { type: 'PNG', url: '/logos/switch/Logo Icon/SC Logo - Blue.png' }
       ],
-      usage: 'Use the horizontal logo when vertical space is limited, such as in website headers, email signatures, or narrow banner ads.'
+      usage: 'Use the blue icon on white or light backgrounds.',
+      category: 'Icon Logos'
+    },
+    {
+      name: 'Icon Only (White)',
+      src: '/logos/switch/Logo Icon/SC Logo - White.png',
+      description: 'White version of the icon for dark backgrounds',
+      bgClass: 'bg-[#002b5e]',
+      clearSpace: '20px (minimum) on all sides',
+      minSize: 'Print: 0.5" tall; Digital: 48px tall',
+      formats: [
+        { type: 'PNG', url: '/logos/switch/Logo Icon/SC Logo - White.png' }
+      ],
+      usage: 'Use the white icon on dark or colored backgrounds.',
+      category: 'Icon Logos'
+    },
+    
+    // Stacked Logos
+    {
+      name: 'Stacked Logo',
+      src: '/logos/switch/Logo Stacked/SC Logo Stacked large.png',
+      description: 'Stacked version of the logo for vertical layouts',
+      bgClass: 'bg-white',
+      clearSpace: '25px (minimum) on all sides',
+      minSize: 'Print: 1.25" wide; Digital: 100px wide',
+      formats: [
+        { type: 'PNG', url: '/logos/switch/Logo Stacked/SC Logo Stacked large.png' }
+      ],
+      usage: 'Use the stacked logo when vertical space is plentiful but horizontal space is limited.',
+      category: 'Stacked Logos'
+    },
+    {
+      name: 'Stacked Logo (Blue)',
+      src: '/logos/switch/Logo Stacked/SC Logo Stacked large - Blue.png',
+      description: 'Blue version of the stacked logo',
+      bgClass: 'bg-[#75808d]',
+      clearSpace: '25px (minimum) on all sides',
+      minSize: 'Print: 1.25" wide; Digital: 100px wide',
+      formats: [
+        { type: 'PNG', url: '/logos/switch/Logo Stacked/SC Logo Stacked large - Blue.png' }
+      ],
+      usage: 'Use the blue stacked logo on white or light backgrounds.',
+      category: 'Stacked Logos'
+    },
+    {
+      name: 'Stacked Logo (White)',
+      src: '/logos/switch/Logo Stacked/SC Logo Stacked large - White.png',
+      description: 'White version of the stacked logo',
+      bgClass: 'bg-[#002b5e]',
+      clearSpace: '25px (minimum) on all sides',
+      minSize: 'Print: 1.25" wide; Digital: 100px wide',
+      formats: [
+        { type: 'PNG', url: '/logos/switch/Logo Stacked/SC Logo Stacked large - White.png' }
+      ],
+      usage: 'Use the white stacked logo on dark or colored backgrounds.',
+      category: 'Stacked Logos'
+    },
+    {
+      name: 'Small Stacked Logo',
+      src: '/logos/switch/Logo Stacked/SC Logo Stacked Smalll.png',
+      description: 'Smaller version of the stacked logo',
+      bgClass: 'bg-white',
+      clearSpace: '20px (minimum) on all sides',
+      minSize: 'Print: 1" wide; Digital: 80px wide',
+      formats: [
+        { type: 'PNG', url: '/logos/switch/Logo Stacked/SC Logo Stacked Smalll.png' }
+      ],
+      usage: 'Use the small stacked logo when space is more limited.',
+      category: 'Stacked Logos'
+    },
+    {
+      name: 'Small Stacked Logo (Blue)',
+      src: '/logos/switch/Logo Stacked/SC Logo Stacked Smalll - Blue.png',
+      description: 'Blue version of the small stacked logo',
+      bgClass: 'bg-[#75808d]',
+      clearSpace: '20px (minimum) on all sides',
+      minSize: 'Print: 1" wide; Digital: 80px wide',
+      formats: [
+        { type: 'PNG', url: '/logos/switch/Logo Stacked/SC Logo Stacked Smalll - Blue.png' }
+      ],
+      usage: 'Use the blue small stacked logo on white or light backgrounds.',
+      category: 'Stacked Logos'
+    },
+    {
+      name: 'Small Stacked Logo (White)',
+      src: '/logos/switch/Logo Stacked/SC Logo Stacked Smalll - White.png',
+      description: 'White version of the small stacked logo',
+      bgClass: 'bg-[#002b5e]',
+      clearSpace: '20px (minimum) on all sides',
+      minSize: 'Print: 1" wide; Digital: 80px wide',
+      formats: [
+        { type: 'PNG', url: '/logos/switch/Logo Stacked/SC Logo Stacked Smalll - White.png' }
+      ],
+      usage: 'Use the white small stacked logo on dark or colored backgrounds.',
+      category: 'Stacked Logos'
     }
   ];
 
@@ -196,21 +303,33 @@ export default function SwitchCommerceBrandingPage() {
     }
   ];
 
+  const ActionButtons = () => (
+    <div className="flex flex-wrap gap-4 mb-6">
+      <a 
+        href="/downloads/BrandingKit.zip" 
+        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#0951fa] hover:bg-[#0038cc] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0951fa]"
+        download
+      >
+        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        Download Brand Kit
+      </a>
+    </div>
+  );
+
   return (
     <BrandGuidelines 
       brandName="Switch Commerce"
-      brandDescription="Switch Commerce delivers innovative payment processing solutions that prioritize security, reliability, and merchant success. Our brand identity projects professionalism, technological expertise, and trustworthiness in the financial technology sector."
-      brandLogo="/logos/switch-commerce-logo.png"
-      heroBackground="from-[#002b5e] to-[#001f44]"
-      primaryColor="[#002b5e]"
-      accentColor="[#0047ab]"
-      styleKitDownload={{
-        url: '/downloads/switch-commerce-brand-kit.zip',
-        label: 'Download Brand Style Kit'
-      }}
+      brandDescription="Switch Commerce delivers innovative payment processing solutions that prioritize security, reliability, and merchant success. Our brand tagline is 'Global Transactions. Connected.'"
+      brandLogo="/logos/switch/Logo Main/SC Logo Main - White.png"
+      heroBackground="from-[#002b5e] to-[#0951fa]"
+      primaryColor="[#0951fa]"
+      accentColor="[#002b5e]"
+      actionButtons={<ActionButtons />}
       colorSection={<ColorPalette colors={switchColors} />}
       typographySection={<FontDisplay fonts={switchFonts} />}
-      logosSection={<LogoDisplay logos={switchLogos} />}
+      logosSection={<EnhancedLogoDisplay logos={switchLogos} />}
       usageGuidelinesSection={<UsageGuidelines guidelines={usageGuidelines} />}
     />
   );

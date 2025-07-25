@@ -66,7 +66,7 @@ export default function ProductKnowledgeBase() {
           <input
             type="text"
             placeholder="Search pain points, product names, or use cases..."
-            className="w-full pl-11 pr-4 py-3 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800/50 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 backdrop-blur-sm transition-shadow duration-200"
+            className="w-full pl-11 pr-4 py-3 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800/50 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-shadow duration-200"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -137,7 +137,17 @@ export default function ProductKnowledgeBase() {
             <div
               key={idx}
               className={`rounded-xl p-6 cursor-pointer shadow-xl backdrop-blur-sm bg-opacity-90 hover:scale-105 transition-transform duration-300 ${
-                p.company === "Switch Commerce" ? "bg-[#0951fa]" : "bg-[#ff4f00]"
+                p.company === "Switch Commerce"
+                  ? (idx % 3 === 0
+                      ? "bg-gradient-to-br from-[#0951fa] to-[#0a7cff]"
+                      : idx % 3 === 1
+                        ? "bg-gradient-to-t from-[#0a7cff] to-[#0951fa]"
+                        : "bg-gradient-to-l from-[#0a7cff] to-[#0951fa]")
+                  : (idx % 3 === 0
+                      ? "bg-gradient-to-r from-[#ff4f00] to-[#ff6a1a]"
+                      : idx % 3 === 1
+                        ? "bg-gradient-to-tl from-[#ff6a1a] to-[#ff4f00]"
+                        : "bg-gradient-to-b from-[#ff4f00] to-[#d84315]")
               }`}
               onClick={() => setSelected(p)}
             >
