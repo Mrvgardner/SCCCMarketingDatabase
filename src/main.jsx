@@ -6,12 +6,13 @@ import { HomeIcon, CogIcon, ChevronDownIcon } from '@heroicons/react/24/solid'
 import Home from './Home'
 import SwitchCommerceBranding from './pages/SwitchCommerceBranding.jsx';
 import ClearChoiceBranding from './pages/ClearChoiceBranding.jsx';
+import ScrollToTop from './components/ScrollToTop.jsx';
 import ClearChoice from './ClearChoice.jsx'
 import SwitchCommerce from './SwitchCommerce.jsx'
 import ProductsPage from './pages/products';
 import EmailSignature from './pages/EmailSignature.jsx';
 import Wallpapers from './pages/Wallpapers.jsx';
-import SimpleNavbar from './components/SimpleNavbar.jsx';
+import Navbar from './components/Navbar.jsx';
 import { ThemeProvider } from './contexts/ThemeContext.jsx';
 import { useState } from 'react';
 import './index.css'
@@ -24,18 +25,20 @@ function App() {
 
   return (
     <BrowserRouter>
-      {/* Replace the old navbar with our mobile-friendly SimpleNavbar */}
-      <SimpleNavbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/clear-choice" element={<ClearChoice />} />
-        <Route path="/switch-commerce" element={<SwitchCommerce />} />
-        <Route path="/products" element={<ProductsPage />} />
-        <Route path="/switch-commerce/branding" element={<SwitchCommerceBranding />} />
-        <Route path="/clear-choice/branding" element={<ClearChoiceBranding />} />
-        <Route path="/email-signature" element={<EmailSignature />} />
-        <Route path="/wallpapers" element={<Wallpapers />} />
-      </Routes>
+      <ThemeProvider>
+        <ScrollToTop />
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/clear-choice" element={<ClearChoice />} />
+          <Route path="/switch-commerce" element={<SwitchCommerce />} />
+          <Route path="/products" element={<ProductsPage />} />
+          <Route path="/switch-commerce/branding" element={<SwitchCommerceBranding />} />
+          <Route path="/clear-choice/branding" element={<ClearChoiceBranding />} />
+          <Route path="/email-signature" element={<EmailSignature />} />
+          <Route path="/wallpapers" element={<Wallpapers />} />
+        </Routes>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }
