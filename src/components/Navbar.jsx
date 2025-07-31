@@ -11,6 +11,13 @@ const Navbar = () => {
   const settingsRef = useRef(null);
   const timeoutRef = useRef(null);
   const location = useLocation();
+  
+  // Debug function to help us see when menu is toggled
+  const toggleMobileMenu = () => {
+    const newState = !isMobileMenuOpen;
+    setIsMobileMenuOpen(newState);
+    console.log("Mobile menu toggled:", newState ? "OPEN" : "CLOSED");
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -43,24 +50,24 @@ const Navbar = () => {
     <nav className="bg-white dark:bg-gray-800 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center">
-            {/* Site Logo/Brand - Always visible */}
-            <Link to="/" className="text-gray-900 dark:text-white font-bold text-xl">
-              Switch Portal
-            </Link>
-          </div>
+          {/* Site Logo/Brand - Always visible */}
+          <Link to="/" className="text-gray-900 dark:text-white font-bold text-xl">
+            Switch Portal
+          </Link>
           
-          {/* Mobile menu button */}
+          {/* Mobile menu button - Prominent and always visible on mobile */}
           <button 
-            className="md:hidden p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 z-50"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="block md:hidden p-2 rounded-md text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+            onClick={toggleMobileMenu}
             aria-label="Toggle menu"
           >
-            <div className="w-6 h-6 relative">
-              <span className={`absolute h-0.5 w-full bg-current transform transition duration-300 ease-in-out ${isMobileMenuOpen ? 'rotate-45 top-3' : 'rotate-0 top-1'}`}></span>
-              <span className={`absolute h-0.5 bg-current transform transition-all duration-300 ease-in-out ${isMobileMenuOpen ? 'w-0 opacity-0 left-1/2' : 'w-full opacity-100 top-3'}`}></span>
-              <span className={`absolute h-0.5 w-full bg-current transform transition duration-300 ease-in-out ${isMobileMenuOpen ? '-rotate-45 top-3' : 'rotate-0 top-5'}`}></span>
-            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              {isMobileMenuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
           </button>
           
           {/* Desktop Navigation */}
@@ -72,78 +79,57 @@ const Navbar = () => {
               </svg>
             </Link>
 
-          {/* Team Assets Dropdown */}
-          <Menu as="div" className="relative">
-            <Menu.Button className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors inline-flex items-center">
-              Team Assets
-              <svg className="ml-1 h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-              </svg>
-            </Menu.Button>
-            <Menu.Items className="absolute left-0 mt-2 w-56 origin-top-left bg-white dark:bg-gray-700 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
-              <div className="py-1">
-                <Menu.Item>
-                  {({ active }) => (
-                    <a href="/brochures/switch-brochure.pdf" target="_blank" rel="noopener noreferrer" className={`${active ? 'bg-gray-100 dark:bg-gray-600' : ''} block px-4 py-2 text-sm text-gray-700 dark:text-gray-200`}>
-                      <div>Switch Brochure</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">Opens PDF in new window</div>
-                    </a>
-                  )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <a href="/brochures/clearchoice-brochure.pdf" target="_blank" rel="noopener noreferrer" className={`${active ? 'bg-gray-100 dark:bg-gray-600' : ''} block px-4 py-2 text-sm text-gray-700 dark:text-gray-200`}>
-                      <div>Clear Choice Brochure</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">Opens PDF in new window</div>
-                    </a>
-                  )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <Link to="/switch-commerce/branding" className={`${active ? 'bg-gray-100 dark:bg-gray-600' : ''} block px-4 py-2 text-sm text-gray-700 dark:text-gray-200`}>
-                      Switch Branding Guidelines
-                    </Link>
-                  )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <Link to="/clear-choice/branding" className={`${active ? 'bg-gray-100 dark:bg-gray-600' : ''} block px-4 py-2 text-sm text-gray-700 dark:text-gray-200`}>
-                      Clear Choice Branding Guidelines
-                    </Link>
-                  )}
-                </Menu.Item>
-              </div>
-            </Menu.Items>
-          </Menu>
+            {/* Team Assets Dropdown */}
+            <Menu as="div" className="relative">
+              <Menu.Button className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors inline-flex items-center">
+                Team Assets
+                <svg className="ml-1 h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </Menu.Button>
+              <Menu.Items className="absolute left-0 mt-2 w-56 origin-top-left bg-white dark:bg-gray-700 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                <div className="py-1">
+                  <Menu.Item>
+                    {({ active }) => (
+                      <a href="/brochures/switch-brochure.pdf" target="_blank" rel="noopener noreferrer" className={`${active ? 'bg-gray-100 dark:bg-gray-600' : ''} block px-4 py-2 text-sm text-gray-700 dark:text-gray-200`}>
+                        <div>Switch Brochure</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">Opens PDF in new window</div>
+                      </a>
+                    )}
+                  </Menu.Item>
+                  <Menu.Item>
+                    {({ active }) => (
+                      <a href="/brochures/clearchoice-brochure.pdf" target="_blank" rel="noopener noreferrer" className={`${active ? 'bg-gray-100 dark:bg-gray-600' : ''} block px-4 py-2 text-sm text-gray-700 dark:text-gray-200`}>
+                        <div>Clear Choice Brochure</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">Opens PDF in new window</div>
+                      </a>
+                    )}
+                  </Menu.Item>
+                </div>
+              </Menu.Items>
+            </Menu>
 
-          {/* Knowledge Base Link */}
-          <Link 
-            to="/products"
-            className={`text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors ${
-              location.pathname === '/products' ? 'text-blue-600 dark:text-blue-400' : ''
-            }`}
-          >
-            Knowledge Base
-          </Link>
+            {/* Knowledge Base Link */}
+            <Link to="/products" className={`text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors ${location.pathname === '/products' ? 'font-medium' : ''}`}>
+              Knowledge Base
+            </Link>
 
-          {/* Right Side Icons */}
-          <div className="flex items-center space-x-4">
-            {/* Search Icon */}
-            <button
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-              </svg>
-            </button>
-
-            {/* Settings Menu */}
-            <div className="relative" ref={settingsRef}>
+            <div className="flex items-center space-x-4">
+              {/* Search Icon */}
               <button 
+                onClick={() => setIsSearchOpen(true)} 
+                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+                </svg>
+              </button>
+
+              {/* Settings Icon */}
+              <button
                 onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
-                aria-label="Settings"
+                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                ref={settingsRef}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
@@ -206,8 +192,8 @@ const Navbar = () => {
       )}
       
       {/* Mobile Menu Overlay */}
-      <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''} md:hidden`}>
-        <div className="flex flex-col space-y-5 mt-14 items-center">
+      <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
+        <div className="flex flex-col space-y-6 mt-16 items-center">
           <Link 
             to="/" 
             className="text-white text-xl font-medium hover:text-blue-400 transition-colors"
@@ -225,9 +211,9 @@ const Navbar = () => {
           </Link>
           
           <div className="w-full">
-            <div className="text-white text-lg font-medium border-b border-gray-700 pb-2 mb-3">Team Assets</div>
+            <div className="text-white text-lg font-medium border-b border-gray-700 pb-2 mb-3 text-center">Team Assets</div>
             
-            <div className="flex flex-col space-y-3 w-full items-center">
+            <div className="flex flex-col space-y-4 w-full items-center">
               <a 
                 href="/brochures/switch-brochure.pdf" 
                 target="_blank" 

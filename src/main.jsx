@@ -11,6 +11,8 @@ import SwitchCommerce from './SwitchCommerce.jsx'
 import ProductsPage from './pages/products';
 import EmailSignature from './pages/EmailSignature.jsx';
 import Wallpapers from './pages/Wallpapers.jsx';
+import SimpleNavbar from './components/SimpleNavbar.jsx';
+import { ThemeProvider } from './contexts/ThemeContext.jsx';
 import { useState } from 'react';
 import './index.css'
 
@@ -22,49 +24,8 @@ function App() {
 
   return (
     <BrowserRouter>
-      <nav className="bg-gray-800 p-4 shadow">
-        <div className="max-w-5xl mx-auto flex items-center gap-6">
-          <div className="flex flex-1 items-center justify-center gap-6">
-            <Link to="/" className="text-gray-200 hover:text-white">
-              <HomeIcon className="h-6 w-6" />
-            </Link>
-            <Menu as="div" className="relative">
-              <Menu.Button className="inline-flex items-center text-gray-200 hover:text-white">
-                Team Assets
-                <ChevronDownIcon className="h-4 w-4 ml-1" />
-              </Menu.Button>
-              <Menu.Items className="absolute mt-2 w-48 bg-white dark:bg-gray-700 rounded shadow-lg z-10">
-                <Menu.Item>
-                  {({ active }) => (
-                    <Link to="/switch-commerce/branding" className={`block px-4 py-2 text-gray-800 dark:text-gray-200 ${active ? 'bg-gray-200 dark:bg-gray-600' : ''}`}>Switch Commerce Brand Guidelines</Link>
-                  )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <a href="/brochures/switch-brochure.pdf" target="_blank" rel="noopener noreferrer" className={`block px-4 py-2 text-gray-800 dark:text-gray-200 ${active ? 'bg-gray-200 dark:bg-gray-600' : ''}`}>Switch Commerce Brochure</a>
-                  )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <Link to="/clear-choice/branding" className={`block px-4 py-2 text-gray-800 dark:text-gray-200 ${active ? 'bg-gray-200 dark:bg-gray-600' : ''}`}>Clear Choice Brand Guidelines</Link>
-                  )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <a href="/brochures/clearchoice-brochure.pdf" target="_blank" rel="noopener noreferrer" className={`block px-4 py-2 text-gray-800 dark:text-gray-200 ${active ? 'bg-gray-200 dark:bg-gray-600' : ''}`}>Clear Choice Brochure</a>
-                  )}
-                </Menu.Item>
-              </Menu.Items>
-            </Menu>
-            <Link to="/products" className="inline-flex items-center text-gray-200 hover:text-white">
-              Knowledge Base
-            </Link>
-          </div>
-          <div className="flex items-center gap-4 text-gray-200">
-            <CogIcon className="h-5 w-5 hover:text-white cursor-pointer" onClick={() => setDarkMode(m => !m)} />
-          </div>
-        </div>
-      </nav>
+      {/* Replace the old navbar with our mobile-friendly SimpleNavbar */}
+      <SimpleNavbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/clear-choice" element={<ClearChoice />} />
@@ -81,6 +42,8 @@ function App() {
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    <ThemeProvider>
+      <App />
+    </ThemeProvider>
   </React.StrictMode>
 );
