@@ -1,0 +1,20 @@
+/* Safari-specific fixes */
+@supports (-webkit-appearance: none) {
+  button {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  
+  button.bg-\[\#0951fa\] {
+    background-color: #0951fa !important;
+    color: white !important;
+  }
+  
+  button.bg-gray-200 {
+    background-color: #e5e7eb !important;
+  }
+  
+  button.bg-gray-700 {
+    background-color: #374151 !important;
+  }
+}

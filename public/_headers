@@ -1,0 +1,11 @@
+# Allow all CORS for PDF files
+/brochures/*
+  Access-Control-Allow-Origin: *
+  Content-Type: application/pdf
+
+# General headers
+/*
+  X-Frame-Options: SAMEORIGIN
+  X-XSS-Protection: 1; mode=block
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
