@@ -53,10 +53,10 @@ export default function ProductKnowledgeBase() {
   });
 
   return (
-    <div className="p-8 min-h-screen bg-gradient-to-b from-gray-900 to-black">
-      <h1 className="text-4xl font-bold mb-6 text-center text-white">Product Knowledge Base</h1>
+    <div className="p-4 md:p-8 min-h-screen bg-gradient-to-b from-gray-900 to-black">
+      <h1 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6 text-center text-white">Product Knowledge Base</h1>
 
-      <div className="flex justify-center mb-8">
+      <div className="flex justify-center mb-6 md:mb-8">
         <div className="relative w-full max-w-2xl">
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
             <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -73,13 +73,13 @@ export default function ProductKnowledgeBase() {
         </div>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-2 mb-10">
-        <div className="flex gap-2 mb-2 w-full justify-center">
+      <div className="flex flex-wrap justify-center gap-2 mb-6 md:mb-10">
+        <div className="flex flex-wrap gap-1 md:gap-2 mb-2 w-full justify-center">
           {["Switch Commerce", "Clear Choice"].map((name) => (
             <button
               key={name}
               onClick={() => toggleFilter("company", name)}
-              className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+              className={`px-3 md:px-6 py-1.5 md:py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                 filters.company === name
                   ? name === "Clear Choice"
                     ? "bg-gradient-to-r from-[#ff4f00] to-[#ff4f00]/90 text-white shadow-lg shadow-[#ff4f00]/30"
@@ -91,12 +91,12 @@ export default function ProductKnowledgeBase() {
             </button>
           ))}
         </div>
-        <div className="flex flex-wrap justify-center gap-2">
+        <div className="flex flex-wrap justify-center gap-1 md:gap-2">
           {["ATM", "Hardware", "Kiosk", "Platform", "Service", "Software"].map((type) => (
             <button
               key={type}
               onClick={() => toggleFilter("type", type)}
-              className={`px-6 py-2 rounded-full text-sm transition-all duration-300 ${
+              className={`px-2 md:px-6 py-1 md:py-2 rounded-full text-xs md:text-sm transition-all duration-300 ${
                 filters.type === type
                   ? "bg-[#0951fa] text-white shadow-lg shadow-[#0951fa]/30"
                   : "bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200"
@@ -132,11 +132,11 @@ export default function ProductKnowledgeBase() {
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {sorted.map((p, idx) => (
             <div
               key={idx}
-              className={`rounded-xl p-6 cursor-pointer shadow-xl backdrop-blur-sm bg-opacity-90 hover:scale-105 transition-transform duration-300 ${
+              className={`rounded-xl p-3 md:p-6 cursor-pointer shadow-xl backdrop-blur-sm bg-opacity-90 hover:scale-105 transition-transform duration-300 mb-3 md:mb-0 ${
                 p.company === "Switch Commerce"
                   ? (idx % 3 === 0
                       ? "bg-gradient-to-br from-[#0951fa] to-[#0a7cff]"
@@ -151,9 +151,13 @@ export default function ProductKnowledgeBase() {
               }`}
               onClick={() => setSelected(p)}
             >
-              <h2 className="text-xl font-semibold mb-2 text-white text-center">{p.title}</h2>
-              <p className="text-sm text-gray-200 text-center mb-3">{p.company}</p>
-              <p className="text-xs text-white bg-white/20 py-1 px-2 rounded-full text-center">{p.keywords}</p>
+              <h2 className="text-lg md:text-xl font-semibold mb-1 md:mb-2 text-white text-center">{p.title}</h2>
+              <p className="text-xs md:text-sm text-gray-200 text-center mb-1 md:mb-2">{p.company}</p>
+              <p className="text-xs text-white bg-white/20 py-1 px-2 rounded-full text-center overflow-hidden text-ellipsis whitespace-nowrap">
+                {p.keywords && p.keywords.length > 30 
+                  ? `${p.keywords.substring(0, 30)}...` 
+                  : p.keywords}
+              </p>
             </div>
           ))}
         </div>
@@ -162,20 +166,20 @@ export default function ProductKnowledgeBase() {
       {selected && (
         <Dialog open={selected !== null} onClose={() => setSelected(null)}>
           <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50" aria-hidden="true" />
-          <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
-            <Dialog.Panel className="bg-white dark:bg-gray-800/90 backdrop-blur-lg rounded-2xl max-w-2xl w-full mx-auto p-8 relative text-gray-900 dark:text-white shadow-xl border border-gray-200/50 dark:border-gray-700/50">
+          <div className="fixed inset-0 flex items-center justify-center p-2 md:p-4 z-50">
+            <Dialog.Panel className="bg-white dark:bg-gray-800/90 backdrop-blur-lg rounded-xl md:rounded-2xl max-w-2xl w-full mx-auto p-4 md:p-8 relative text-gray-900 dark:text-white shadow-xl border border-gray-200/50 dark:border-gray-700/50 max-h-[90vh] overflow-y-auto">
               <button
                 onClick={() => setSelected(null)}
-                className="absolute top-4 right-4 p-2 rounded-full text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors"
+                className="absolute top-2 md:top-4 right-2 md:right-4 p-2 rounded-full text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                 </svg>
               </button>
-              <div className="mb-6">
-                <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-[#0951fa] to-[#0951fa]/70 bg-clip-text text-transparent">{selected.title}</h2>
+              <div className="mb-4 md:mb-6">
+                <h2 className="text-2xl md:text-3xl font-bold mb-2 bg-gradient-to-r from-[#0951fa] to-[#0951fa]/70 bg-clip-text text-transparent">{selected.title}</h2>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">{selected.company}</p>
-                <p className="text-gray-700 dark:text-gray-300 italic">{selected.description}</p>
+                <p className="text-sm md:text-base text-gray-700 dark:text-gray-300 italic">{selected.description}</p>
               </div>
               <div className="space-y-6">
                 <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
