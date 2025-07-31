@@ -19,5 +19,5 @@ export default defineConfig({
     }
   },
   // Add public base path for production to ensure assets are correctly referenced
-  base: '/'
+  base: '/SCCCMarketingDatabase/'
 })
