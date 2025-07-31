@@ -55,10 +55,12 @@
     @apply fixed inset-0 bg-gray-900 bg-opacity-95 z-50 flex flex-col p-6;
     transform: translateX(100%);
     transition: transform 0.3s ease-in-out;
+    pointer-events: none; /* Hide it completely when closed */
   }
   
   .mobile-menu.open {
     transform: translateX(0);
+    pointer-events: auto; /* Make it interactive when open */
   }
 }
 

@@ -96,8 +96,35 @@ const SectionSeparator = () => (
 
 export default function Home() {
   const [activeFilter, setActiveFilter] = useState("all");
+  const [isMobile, setIsMobile] = useState(false);
   const sections = ["All", "Quick Tools", "Branding Assets", "Resources"];
-  const isVisible = (section) => activeFilter === "all" || activeFilter === section.toLowerCase();
+  
+  // Check if we're on mobile
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    
+    // Set initially
+    checkIfMobile();
+    
+    // Update on resize
+    window.addEventListener('resize', checkIfMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkIfMobile);
+    };
+  }, []);
+  
+  // On mobile, always show all content since filter buttons are hidden
+  const isVisible = (section) => {
+    // For small screens, always show all content
+    if (isMobile) {
+      return true;
+    }
+    // For larger screens, respect the filter
+    return activeFilter === "all" || activeFilter === section.toLowerCase();
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8">
@@ -113,8 +140,8 @@ export default function Home() {
         </h2>
       </div>
 
-      {/* Section Navigation */}
-      <div className="flex justify-center gap-4 mb-12">
+      {/* Section Navigation - Hidden on mobile */}
+      <div className="hidden sm:flex justify-center gap-4 mb-12">
         {sections.map((section) => (
           <button
             key={section}

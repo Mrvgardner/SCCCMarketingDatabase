@@ -206,9 +206,7 @@ const Navbar = () => {
       )}
       
       {/* Mobile Menu Overlay */}
-      <div className={`md:hidden fixed inset-0 bg-gray-900 bg-opacity-95 z-40 flex flex-col p-6 transition-transform duration-300 ease-in-out ${
-        isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-      }`}>
+      <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''} md:hidden`}>
         <div className="flex flex-col space-y-5 mt-14 items-center">
           <Link 
             to="/" 
