@@ -84,12 +84,12 @@ export default function BrandGuidelines({
       {/* Navigation Tabs */}
       <div className="bg-gray-800 sticky top-0 z-10 shadow-md">
         <div className="max-w-7xl mx-auto px-4">
-          <nav className="flex overflow-x-auto no-scrollbar">
+          <nav className="flex flex-wrap sm:flex-nowrap justify-center sm:justify-start">
             {sections.map((section) => (
               <button
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}
-                className={`px-6 py-4 font-bold text-base transition-colors whitespace-nowrap ${
+                className={`px-4 sm:px-6 py-3 sm:py-4 font-bold text-base transition-colors whitespace-nowrap flex-grow sm:flex-grow-0 max-w-[50%] sm:max-w-none ${
                   activeSection === section.id
                     ? `border-b-2 border-${primaryColor} text-white`
                     : 'text-gray-300 hover:text-white'
