@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main  # or your default branch
+      - mobile-responsive  # Add the mobile-responsive branch
 
   # Allow manual trigger from the Actions tab
   workflow_dispatch:
