@@ -52,7 +52,7 @@
   
   /* Responsive navigation */
   .mobile-menu {
-    @apply fixed inset-0 bg-gray-900 z-50 flex flex-col p-6;
+    @apply fixed inset-0 bg-blue-900 z-50 flex flex-col p-6;
     opacity: 0;
     transform: translateX(100%);
     transition: all 0.3s ease-in-out;
@@ -76,21 +76,8 @@
     @apply text-gray-900 dark:text-white;
   }
   
-  /* Add a special indicator for mobile view */
+  /* Mobile styles */
   @media (max-width: 640px) {
-    body::before {
-      content: "MOBILE VIEW";
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background-color: #f97316;
-      color: white;
-      text-align: center;
-      padding: 4px;
-      font-weight: bold;
-      font-size: 12px;
-      z-index: 100;
-    }
+    /* Mobile-specific styles can go here if needed */
   }
 }
