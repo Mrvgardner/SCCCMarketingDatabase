@@ -2,7 +2,7 @@
 export const products = [
   {
     "company": "Clear Choice",
-    "title": "Affiliate Program TEST",
+    "title": "Affiliate Program",
     "description": "Join the Clear Choice Payment Solutions Affiliate Program and enjoy significant savings. We cover the network registration and bank sponsorship fees, allowing you to maintain your partnerships and buy rates without the hefty cost of becoming an ISO. Act like an ISO, minus the major expenses!",
     "problem": "High network and registration costs make becoming an ISO unaffordable for many entrepreneurs.",
     "villain": "The major expenses and gatekeeping of the ISO model.",
