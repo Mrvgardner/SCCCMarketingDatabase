@@ -2,7 +2,7 @@
 export const products = [
   {
     "company": "Clear Choice",
-    "title": "Affiliate Program",
+    "title": "Affiliate Program TEST",
     "description": "Join the Clear Choice Payment Solutions Affiliate Program and enjoy significant savings. We cover the network registration and bank sponsorship fees, allowing you to maintain your partnerships and buy rates without the hefty cost of becoming an ISO. Act like an ISO, minus the major expenses!",
     "problem": "High network and registration costs make becoming an ISO unaffordable for many entrepreneurs.",
     "villain": "The major expenses and gatekeeping of the ISO model.",
@@ -42,7 +42,7 @@ export const products = [
     "company": "Clear Choice",
     "title": "Watchdog",
     "description": "Keep Your ATMs Safe from Threats, without lifting a finger!\n\nATM crime is on the rise. With over 43,000 incidents already logged in 2025, and tactics like cash trapping dominating the scene, operators are losing millions to fraud and downtime.\nYou shouldn?t have to be a security expert to keep your machines protected. That?s why Clear Choice built Watchdog ? your always-on ATM bodyguard.\nWatchdog monitors, protects, and supports your entire network 24/7, automatically catching threats and fixing issues before they become costly problems.\nWith Watchdog, you get:\n? Stronger, Safer Connections ? Manufacturer-approved hardware with optimized wireless.\n? Real-Time Threat Protection ? Against hackers, fraud, and third-party tampering.\n? 24/7 Monitoring & Expert Support ? So you can stay ahead without staying up all night.\nNo sketchy Wi-Fi. No mystery failures. Just safer, smarter uptime.\nStay protected. Stay profitable. Let Watchdog take it from here.",
-    "problem": "ATM operators face constant risk from tampering, malware, and unscheduled downtime. TEST",
+    "problem": "ATM operators face constant risk from tampering, malware, and unscheduled downtime.",
     "villain": "Security threats and system outages that cut into revenue and damage reputation.",
     "plan": "We deploy 24/7 connected, hardware?approved Watchdog monitoring and expert support so you always stay ahead.",
     "cta": "Schedule your Watchdog demo and secure your ATM network.",
