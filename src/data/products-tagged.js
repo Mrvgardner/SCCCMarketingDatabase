@@ -17,7 +17,11 @@ export const products = [
     "problemTags": "#highcost #entrybarrier",
     "outcomeTags": "#newrevenue #businessgrowth",
     "buyerTags": "#salesagent #ISO",
-    "industryTags": "#payments"
+    "industryTags": "#payments",
+    "_synonymsTitle": "ISO Alternative, Partnership Program, Payment Affiliate",
+    "_synonymsDescription": "network registration, bank sponsorship, ISO savings, partnership, buy rates, cost reduction",
+    "_synonymsKeywords": "affiliate, ISO, partnership, savings, payment solutions",
+    "_searchBlob": "affiliate program clear choice join the clear choice payment solutions affiliate program and enjoy significant savings. we cover the network registration and bank sponsorship fees, allowing you to maintain your partnerships and buy rates without the hefty cost of becoming an iso. act like an iso, minus the major expenses! high network and registration costs make becoming an iso unaffordable for many entrepreneurs. the major expenses and gatekeeping of the iso model. clear choice covers network and bank sponsorship fees, letting partners operate like an iso?without the overhead.\n you grow a profitable payments business with minimized upfront investment. you avoid wasting money on regulatory fees or getting locked out of the market. you go from blocked entrepreneur to empowered payments professional. resellers, fintech consultants, or merchant services agents entering the space. #paymentsolutions #affiliateprogram #isoalternative #clearchoicepayments #highcost #entrybarrier #newrevenue #businessgrowth #salesagent #iso #payments iso alternative, partnership program, payment affiliate network registration, bank sponsorship, iso savings, partnership, buy rates, cost reduction affiliate, iso, partnership, savings, payment solutions"
   },
   {
     "company": "Clear Choice",
@@ -36,7 +40,11 @@ export const products = [
     "problemTags": "#manualprocess #lowtraffic",
     "outcomeTags": "#newrevenue #passiveincome",
     "buyerTags": "#salesagent #merchant",
-    "industryTags": "#retail #hospitality"
+    "industryTags": "#retail #hospitality",
+    "_synonymsTitle": "ATM Deployment, Cash Access, ATM Location",
+    "_synonymsDescription": "high-traffic, visibility, usage, passive income, ATM operations",
+    "_synonymsKeywords": "placement, ATM, cash, income, traffic",
+    "_searchBlob": "atm placement clear choice let us strategically place atms in high-traffic locations to boost visibility and usage. businesses want more traffic and revenue, but can?t afford or manage atm operations. atm-related fraud, cash traps, and downtime that cost operators millions. we place and maintain secure atms in high-traffic locations?no lifting a finger.\n you get added foot traffic and passive income with zero operational hassle. you avoid security threats, system outages, and missed revenue opportunities. you become a location owner capitalizing on secure, smart cash access. gas stations, convenience stores, hospitality venues, and dispensaries. #atmplacement #cashaccess #passiveincome #clearchoicepayments #manualprocess #lowtraffic #newrevenue #passiveincome #salesagent #merchant #retail #hospitality atm deployment, cash access, atm location high-traffic, visibility, usage, passive income, atm operations placement, atm, cash, income, traffic"
   },
   {
     "company": "Clear Choice",
@@ -55,7 +63,11 @@ export const products = [
     "problemTags": "#fraud #downtime",
     "outcomeTags": "#secure #monitoring",
     "buyerTags": "#supportteam #ISO",
-    "industryTags": "#ATMservices"
+    "industryTags": "#ATMservices",
+    "_synonymsTitle": "ATM Security, Remote Monitoring, ATM Protection",
+    "_synonymsDescription": "fraud, downtime, security, monitoring, protection, bodyguard, 24/7 support",
+    "_synonymsKeywords": "security, monitoring, watchdog, ATM, fraud, remote",
+    "_searchBlob": "watchdog clear choice keep your atms safe from threats, without lifting a finger!\n\natm crime is on the rise. with over 43,000 incidents already logged in 2025, and tactics like cash trapping dominating the scene, operators are losing millions to fraud and downtime.\nyou shouldn?t have to be a security expert to keep your machines protected. that?s why clear choice built watchdog ? your always-on atm bodyguard.\nwatchdog monitors, protects, and supports your entire network 24/7, automatically catching threats and fixing issues before they become costly problems.\nwith watchdog, you get:\n? stronger, safer connections ? manufacturer-approved hardware with optimized wireless.\n? real-time threat protection ? against hackers, fraud, and third-party tampering.\n? 24/7 monitoring & expert support ? so you can stay ahead without staying up all night.\nno sketchy wi-fi. no mystery failures. just safer, smarter uptime.\nstay protected. stay profitable. let watchdog take it from here. atm operators face constant risk from tampering, malware, and unscheduled downtime. security threats and system outages that cut into revenue and damage reputation. we deploy 24/7 connected, hardware?approved watchdog monitoring and expert support so you always stay ahead. you enjoy uninterrupted service, fewer fraud incidents, and peace of mind. no more late?night breaches or costly emergency repairs. you become a confident, security?minded atm operator. multi?location atm fleets, independent atm deployers, franchise operators. #atmsecurity #watchdog #remotemonitoring #clearchoicepayments #fraud #downtime #secure #monitoring #supportteam #iso #atmservices atm security, remote monitoring, atm protection fraud, downtime, security, monitoring, protection, bodyguard, 24/7 support security, monitoring, watchdog, atm, fraud, remote"
   },
   {
     "company": "Clear Choice",
@@ -74,7 +86,11 @@ export const products = [
     "problemTags": "#compliance #illegalpayments",
     "outcomeTags": "#secure #compliant #newrevenue",
     "buyerTags": "#dispensaryowner #salesagent",
-    "industryTags": "#cannabis"
+    "industryTags": "#cannabis",
+    "_synonymsTitle": "Cannabis ATM, Dispensary Payments, Compliance Solution",
+    "_synonymsDescription": "legal payments, cash access, surcharge, compliance, cannabis, dispensary",
+    "_synonymsKeywords": "cannabis, ATM, compliance, dispensary, cashless",
+    "_searchBlob": "dispensary solution clear choice there?s only one legal way to accept payments for dispensaries.\nyou want to run a compliant, profitable dispensary. but there?s a problem: federal law says cash is king. that?s why ?cashless atms? keep getting shut down ? and the fines are no joke.\nclear choice is your legal, reliable solution. we place a real atm right inside your store, giving your customers instant access to cash ? and giving you control over the surcharge. that means you get paid twice: once at the atm, and again at the register.\nskip the risky workarounds. stay legal. get paid.\nlet?s install your atm today. dispensary owners want to accept payments legally, profitably, and without risk of shutdowns. federal restrictions on cannabis transactions and the illegal use of ?cashless atms? that lead to fines or closures. we install a real, compliant atm in your dispensary so customers can withdraw cash on-site ? legally ? and you earn a surcharge on every withdrawal. you stay compliant, increase revenue, and control the entire payment flow you avoid costly fines, shutdowns, and reputational damage from risky workarounds. you go from vulnerable operator to confident, compliant business owner with a smart revenue model. licensed cannabis dispensaries in medical and adult-use markets. #cannabisatm #compliancemadeeasy #dispenarytech #cashlesscannabis #compliance #illegalpayments #secure #compliant #newrevenue #dispensaryowner #salesagent #cannabis cannabis atm, dispensary payments, compliance solution legal payments, cash access, surcharge, compliance, cannabis, dispensary cannabis, atm, compliance, dispensary, cashless"
   },
   {
     "company": "Clear Choice",
@@ -93,7 +109,11 @@ export const products = [
     "problemTags": "#cashhandling #manualprocess",
     "outcomeTags": "#efficient #outsourced #secure",
     "buyerTags": "#merchant #ISO",
-    "industryTags": "#retail #hospitality #healthcare"
+    "industryTags": "#retail #hospitality #healthcare",
+    "_synonymsTitle": "Vaulting, Cash Flow, Cash Handling",
+    "_synonymsDescription": "vaulting, cash flow, replenishment, cash recycler, management, optimization",
+    "_synonymsKeywords": "cash, management, vault, handling, efficiency",
+    "_searchBlob": "cash management clear choice keep your cash flow steady with our reliable vaulting services. no need to tie up your own resources-we'll manage the cash for you.\n\n\nflexible options:\nprefer using your own cash? no problem! replenish your machines with your sales proceeds, combining convenience with smart cash handling. ask about our cash recycler unit. clear choice has everything you need to optimize your cash management strategy. businesses with onsite atms face challenges in replenishing, auditing, and securing cash. inefficiency, shrinkage, and stress eating into your margins. we manage your cash end-to-end ? replenishment, reconciliation, armored transport ? so you never touch the money. you save time, reduce risk, and reallocate resources to growth. you avoid manual errors, theft, and lost productivity. you become a high-performing retailer backed by elite financial ops. convenience stores, retail chains, hospitality, healthcare clinics. #cashmanagement #retailsecurity #operationalefficiency #clearchoicepayments #cashhandling #manualprocess #efficient #outsourced #secure #merchant #iso #retail #hospitality #healthcare vaulting, cash flow, cash handling vaulting, cash flow, replenishment, cash recycler, management, optimization cash, management, vault, handling, efficiency"
   },
   {
     "company": "Clear Choice",
@@ -112,7 +132,11 @@ export const products = [
     "problemTags": "#unreliableprocessing #risk",
     "outcomeTags": "#secure #compliant #optimized",
     "buyerTags": "#merchant #ISO",
-    "industryTags": "#retail #cannabis #hospitality"
+    "industryTags": "#retail #cannabis #hospitality",
+    "_synonymsTitle": "Payment Processing, High-Risk Payments, CBD Payments",
+    "_synonymsDescription": "tailored solutions, secure transactions, payment processing, risk levels, merchant services",
+    "_synonymsKeywords": "merchant, payments, processing, risk, CBD",
+    "_searchBlob": "merchant services clear choice tailored solutions for all risk levels\nwhether you're a low-risk retailer or a high-risk business like a dispensary, we have the right payment solutions for you. from secure transactions to customized payment processing, we support your unique needs. partner with a provider that understands your business.\n- retail stores\n- cbd retailers\n- restaurants\n- professional services\n- high-risk merchants & more merchants struggle to find reliable payment partners, especially in high-risk industries. generic processors who don?t understand industry nuances or risk levels. we provide tailored merchant services for every risk profile ? from retail to dispensaries ? with secure, compliant, and scalable solutions. you get reliable transactions, better customer experience, and optimized revenue. you avoid holds, shutdowns, and payment interruptions. ou become a confident business owner backed by a payment partner who gets your world. retail, cbd, dispensaries, restaurants, service providers, high-risk verticals. #merchantservices #highriskpayments #cbdpayments #clearchoice #unreliableprocessing #risk #secure #compliant #optimized #merchant #iso #retail #cannabis #hospitality payment processing, high-risk payments, cbd payments tailored solutions, secure transactions, payment processing, risk levels, merchant services merchant, payments, processing, risk, cbd"
   },
   {
     "company": "Clear Choice",
@@ -131,7 +155,11 @@ export const products = [
     "problemTags": "#outdatedtech #missedopportunity",
     "outcomeTags": "#passiverevenue #travelfriendly",
     "buyerTags": "#financialinstitution #locationmanager",
-    "industryTags": "#travel #airport #banking"
+    "industryTags": "#travel #airport #banking",
+    "_synonymsTitle": "FX ATM, Currency Exchange, Travel Banking",
+    "_synonymsDescription": "foreign exchange, currency, travel, ATM, transaction fees, uptime, monitoring",
+    "_synonymsKeywords": "FX, exchange, currency, travel, banking",
+    "_searchBlob": "foreign exchange clear choice the foreign exchange atm solution is designed for both financial institutions and travel hubs, providing a value-added service that enhances the customer experience, drives foot traffic, and generates revenue through transaction fees. with 24/7 uptime and remote monitoring, we ensure our atms are always ready to serve your customers' needs. banks and financial hubs need to serve travelers but struggle to offer efficient, profitable fx services. outdated fx systems with poor uptime and low roi. we deploy fx-enabled atms that provide instant access to local currency, boosting customer satisfaction and generating transaction fee revenue. you increase customer foot traffic and enjoy a passive revenue stream. you avoid outdated machines, poor conversion rates, and missed traffic. you become a tech-forward financial destination for global travelers. airports, transit hubs, tourist-heavy city centers. #foreignexchangeatm #travelbanking #fxsolutions #clearchoice #outdatedtech #missedopportunity #passiverevenue #travelfriendly #financialinstitution #locationmanager #travel #airport #banking fx atm, currency exchange, travel banking foreign exchange, currency, travel, atm, transaction fees, uptime, monitoring fx, exchange, currency, travel, banking"
   },
   {
     "company": "Clear Choice",
@@ -150,7 +178,11 @@ export const products = [
     "problemTags": "#limitedservices #lowengagement",
     "outcomeTags": "#newrevenue #multiservice",
     "buyerTags": "#merchant #salesagent",
-    "industryTags": "#retail #hospitality"
+    "industryTags": "#retail #hospitality",
+    "_synonymsTitle": "Multi-Service Kiosk, ATM Plus, Kiosk Revenue",
+    "_synonymsDescription": "all-in-one, kiosk, ATM, bill pay, gaming, sports betting, convenience",
+    "_synonymsKeywords": "kiosk, ATM, multi-service, gaming, bill pay",
+    "_searchBlob": "all-in-one kiosks clear choice our all-in-one kiosks offer a variety of services:\n- atm transactions\n- cash remittance, \n- bill pay\n- gaming \n- sports betting\nmaximize convenience for your customers and open new revenue streams for your business. customers want multiple services in one spot, but most atms are limited. low-functionality machines that frustrate users and limit revenue potential. install our all-in-one kiosk offering atm, cash remittance, bill pay, gaming, and more ? all from a single hub. you increase foot traffic and open up new revenue streams. you avoid lost transactions and limited customer engagement. you become a one-stop shop for essential customer transactions. gas stations, retail chains, hospitality venues, convenience stores. #allinonekiosk #atmplus #kioskrevenue #clearchoice #limitedservices #lowengagement #newrevenue #multiservice #merchant #salesagent #retail #hospitality multi-service kiosk, atm plus, kiosk revenue all-in-one, kiosk, atm, bill pay, gaming, sports betting, convenience kiosk, atm, multi-service, gaming, bill pay"
   },
   {
     "company": "Clear Choice",
@@ -169,7 +201,11 @@ export const products = [
     "problemTags": "#unusedspace #lowROI",
     "outcomeTags": "#passiverevenue #modernATM",
     "buyerTags": "#ISO #locationowner",
-    "industryTags": "#retail #urban"
+    "industryTags": "#retail #urban",
+    "_synonymsTitle": "ATM Advertising, Billboard Revenue, Passive Income",
+    "_synonymsDescription": "advertising, ATM screens, passive income, promotions, brands, campaigns",
+    "_synonymsKeywords": "advertising, billboard, ATM, revenue, passive",
+    "_searchBlob": "billboard clear choice transform your atm screens into advertising platforms. earn extra income by allowing third-party companies to display ads while your customers are making transactions. perfect for local businesses, national brands, and promotional campaigns. atm owners miss out on potential passive income opportunities. idle atm screens not monetized through advertising. turn your atm into a revenue-generating digital billboard by displaying 3rd-party ads during transactions. you earn passive ad revenue every time someone uses your machine. you avoid leaving money on the table. you become a modern, multi-revenue atm operator. retailers, malls, downtown corridors, independent atm deployers. #atmadvertising #billboardrevenue #passiveincome #clearchoice #unusedspace #lowroi #passiverevenue #modernatm #iso #locationowner #retail #urban atm advertising, billboard revenue, passive income advertising, atm screens, passive income, promotions, brands, campaigns advertising, billboard, atm, revenue, passive"
   },
   {
     "company": "Clear Choice",
@@ -188,7 +224,11 @@ export const products = [
     "problemTags": "#downtime #cheaptech",
     "outcomeTags": "#reliable #longlasting",
     "buyerTags": "#salesagent #ISO",
-    "industryTags": "#retail #atmservices"
+    "industryTags": "#retail #atmservices",
+    "_synonymsTitle": "ATM Hardware, Reliable ATMs, NextATM",
+    "_synonymsDescription": "reliable equipment, ATM, GenMega, Hyosung, Triton, performance, satisfaction",
+    "_synonymsKeywords": "ATM, hardware, reliability, equipment, NextATM",
+    "_searchBlob": "reliable equipment clear choice partnering with us will gain you access to nextatm's unbeatable rates on cutting-edge atm machines. we supply top-of-the-line atms from genmega, hyosung, and triton, ensuring reliable performance and customer satisfaction. many atms break down or underperform due to low-quality hardware. cheap, poorly-made, outdated atms that cost more over time. we source genmega, hyosung, and triton machines with proven uptime and nextatm?s top-tier pricing. you ensure uptime, reduce service calls, and increase customer satisfaction. you avoid repair costs, frustrated users, and lost revenue. you become a reliable, trusted atm operator. new operators, location upgrades, iads scaling fleet size. #atmreliability #nextatm #atmequipment #clearchoice #downtime #cheaptech #reliable #longlasting #salesagent #iso #retail #atmservices atm hardware, reliable atms, nextatm reliable equipment, atm, genmega, hyosung, triton, performance, satisfaction atm, hardware, reliability, equipment, nextatm"
   },
   {
     "company": "Clear Choice",
@@ -207,7 +247,11 @@ export const products = [
     "problemTags": "#downtime #noexpertise",
     "outcomeTags": "#reliable #uptime",
     "buyerTags": "#ISO #supportteam",
-    "industryTags": "#atmservices #retail"
+    "industryTags": "#atmservices #retail",
+    "_synonymsTitle": "ATM Servicing, Expert Help, ATM Support",
+    "_synonymsDescription": "servicing, repair, ATM, NextATM, technology, support, uptime",
+    "_synonymsKeywords": "servicing, ATM, expert, repair, support",
+    "_searchBlob": "expert servicing clear choice powered by nextatm, our expert team provides full servicing and repair, so your machines are always in top shape. equip your business with the best in atm technology and support. atm issues lead to downtime and lost revenue if not fixed fast. unresponsive or inexperienced service providers. we deliver full-service repair and servicing via nextatm-certified experts to keep your machines online. your machines stay operational, your customers stay happy. you avoid extended outages, frustrated clients, and missed profits. you become the operator known for uptime and professionalism. iads, banks, dispensaries, convenience store owners. #atmservicing #expertatmhelp #nextatm #clearchoice #downtime #noexpertise #reliable #uptime #iso #supportteam #atmservices #retail atm servicing, expert help, atm support servicing, repair, atm, nextatm, technology, support, uptime servicing, atm, expert, repair, support"
   },
   {
     "company": "Switch Commerce",
@@ -226,7 +270,11 @@ export const products = [
     "problemTags": "#delayedfunding #processingissues",
     "outcomeTags": "#fastfunding #transparent",
     "buyerTags": "#ISO #operator",
-    "industryTags": "#atmservices"
+    "industryTags": "#atmservices",
+    "_synonymsTitle": "Transaction Processing, ATM Operations, Switch Commerce",
+    "_synonymsDescription": "processing, ATM, uptime, transactions, nationwide, operator",
+    "_synonymsKeywords": "processing, ATM, transactions, Switch Commerce, operator",
+    "_searchBlob": "atm processing switch commerce switch commerce has been among the leaders in the transaction processing industry since opening our doors in 2003. with 99.999% uptime, we process terminals nationwide, in addition to the us virgin islands, puerto rico and asia pacific. atm operators need reliable, transparent transaction processing to stay profitable and compliant. processors that delay funding, lack reporting, or hide fees. switch commerce delivers fast, transparent processing with real-time reporting, customizable surcharges, and rock-solid uptime. you maximize profits, reduce disputes, and gain full visibility into your operations. you avoid delays, hidden costs, and operational confusion. you become a data-powered atm business owner who?s always in control. iads, retail atm fleets, financial institutions, cash-focused venues. #atmprocessing #transparenttransactions #switchcommerce #operatorsuccess #delayedfunding #processingissues #fastfunding #transparent #iso #operator #atmservices transaction processing, atm operations, switch commerce processing, atm, uptime, transactions, nationwide, operator processing, atm, transactions, switch commerce, operator"
   },
   {
     "company": "Switch Commerce",
@@ -245,7 +293,11 @@ export const products = [
     "problemTags": "#cashflowissues #delay",
     "outcomeTags": "#cashflow #speed",
     "buyerTags": "#ISO #fleetowner",
-    "industryTags": "#atmservices #retail"
+    "industryTags": "#atmservices #retail",
+    "_synonymsTitle": "ATM Settlement, Fast Funding, Cash Flow",
+    "_synonymsDescription": "settlement, vault cash, surcharge, interchange, funding, processor",
+    "_synonymsKeywords": "settlement, funding, ATM, cash flow, Switch Commerce",
+    "_searchBlob": "fast settlement switch commerce accurate settlement of your vault cash, surcharge and interchange is something you should expect from your processor. our customers enjoy the benefit of next-day settlement for vault cash and surcharge, with interchange being paid out monthly. operators can?t afford to wait days for settlement after a transaction. delayed funding cycles that hurt cash flow. switch commerce offers fast funding options to get your money within hours, not days. you gain consistent cash flow and can reinvest in your growth faster. you avoid liquidity crunches and cash shortages. you become a financially agile operator who moves at the speed of business operators with high-volume locations, seasonal cash needs, or growth targets. #fastfunding #atmsettlement #cashflowmatters #switchcommerce #cashflowissues #delay #cashflow #speed #iso #fleetowner #atmservices #retail atm settlement, fast funding, cash flow settlement, vault cash, surcharge, interchange, funding, processor settlement, funding, atm, cash flow, switch commerce"
   },
   {
     "company": "Switch Commerce",
@@ -264,7 +316,11 @@ export const products = [
     "problemTags": "#databreach #noncompliance",
     "outcomeTags": "#secure #compliant",
     "buyerTags": "#supportteam #financialinstitution",
-    "industryTags": "#atmservices #finance"
+    "industryTags": "#atmservices #finance",
+    "_synonymsTitle": "PCI Compliance, Data Protection, Encryption",
+    "_synonymsDescription": "data security, compliance, PCI DSS, audits, encryption, protection",
+    "_synonymsKeywords": "security, PCI, encryption, data, compliance",
+    "_searchBlob": "data security switch commerce the integrity of your and your customer's data is our top priority. we undergo multiple audits on an annual basis from the industry's leading firms. switch commece maintains the highest levels of compliance, including: pci dss, white and gray hat penetration, pci pin, nacha, bsa/aml and soc i type i. security breaches or pci compliance failures can destroy trust and incur serious penalties. data leaks, outdated encryption, or lax compliance systems. we offer pci dss level 1 certified infrastructure with advanced encryption and monitoring across all switch commerce services. you stay compliant, protect your business, and build customer trust. you avoid breaches, fines, and reputational damage. you become a security-first operator in a high-risk environment. enterprise atm networks, banks, independent deployers, and dispensaries. #atmdatasecurity #pcidss #encryptionmatters #switchcommerce #databreach #noncompliance #secure #compliant #supportteam #financialinstitution #atmservices #finance pci compliance, data protection, encryption data security, compliance, pci dss, audits, encryption, protection security, pci, encryption, data, compliance"
   },
   {
     "company": "Switch Commerce",
@@ -283,7 +339,11 @@ export const products = [
     "problemTags": "#manualhandling #cashshortage",
     "outcomeTags": "#secure #reliable #outsourced",
     "buyerTags": "#ISO #merchant",
-    "industryTags": "#retail #hospitality"
+    "industryTags": "#retail #hospitality",
+    "_synonymsTitle": "Cash Replenishment, Armored Service, Vault Program",
+    "_synonymsDescription": "vault cash, replenishment, business growth, cashflow, web tools, nationwide",
+    "_synonymsKeywords": "vault, cash, replenishment, armored, Switch Commerce",
+    "_searchBlob": "vault cash switch commerce we have the cash to fill your terminals\nuse your money to grow your business, not operate your terminals\natm terminals require cash, but they don't have to tie up your cashflow. by using our vault cash program, you can keep your money out of your terminals and put it towards your business. reallocate your time and funds for other opportunities to grow your business. with nationwide coverage, your potential is unlimited. and with powerful web tools, it's easy to manage.\n\nsave time, money, and accelerate growth\n- easy setup for switch commerce customers\n- competitive, low rates\n- fully managed\n- armored cash delivery replenishing atm cash manually is risky, inefficient, and time-consuming. cash shortages, shrinkage, and safety hazards. we provide insured, armored cash delivery and replenishment so your machines never run dry. you ensure uptime, customer satisfaction, and zero cash handling headaches. you avoid theft, downtime, and compliance risk. you become a fully outsourced, hassle-free atm operator. busy retail sites, iads, cannabis retailers, banks. #vaultcash #atmuptime #armoredservice #switchcommerce #manualhandling #cashshortage #secure #reliable #outsourced #iso #merchant #retail #hospitality cash replenishment, armored service, vault program vault cash, replenishment, business growth, cashflow, web tools, nationwide vault, cash, replenishment, armored, switch commerce"
   },
   {
     "company": "Switch Commerce",
@@ -302,7 +362,11 @@ export const products = [
     "problemTags": "#confusingexchange #internationaluse",
     "outcomeTags": "#moretransactions #transparentfees",
     "buyerTags": "#locationowner #ISO",
-    "industryTags": "#tourism #airport #hospitality"
+    "industryTags": "#tourism #airport #hospitality",
+    "_synonymsTitle": "DCC, Currency Conversion, International ATM",
+    "_synonymsDescription": "dynamic currency, conversion, international, ATM, revenue, market, interchange",
+    "_synonymsKeywords": "DCC, currency, conversion, international, ATM",
+    "_searchBlob": "dynamic currency conversion switch commerce increase your profits on international transactions\n\nexpand your market -- enhance your revenue\ntoday, an international transaction has a negative interchange impact. with dcc, you can change these transactions into a positive revenue opportunity. offering dcc on your atm could add significant income. recommended locations for dcc are airports, popular tourist locations and communities populated with international cardholders. tourists using atms often face unclear fees or currency confusion. frustrating exchange experiences that lower trust and usage. enable dcc to show international users exact exchange rates in real-time and let them transact in their home currency ? while you earn a margin. you increase transaction volume and unlock new revenue per withdrawal. you avoid alienating international cardholders and leaving money on the table. you become an internationally friendly operator who earns more from each transaction. airports, hotels, border regions, tourist-heavy zones. #dcc #internationalatm #currencyconversion #switchcommerce #confusingexchange #internationaluse #moretransactions #transparentfees #locationowner #iso #tourism #airport #hospitality dcc, currency conversion, international atm dynamic currency, conversion, international, atm, revenue, market, interchange dcc, currency, conversion, international, atm"
   },
   {
     "company": "Switch Commerce",
@@ -321,7 +385,11 @@ export const products = [
     "problemTags": "#disputes #chargebacks",
     "outcomeTags": "#resolvedisputes #recoverfunds",
     "buyerTags": "#supportteam #ISO",
-    "industryTags": "#atmservices"
+    "industryTags": "#atmservices",
+    "_synonymsTitle": "Dispute Resolution, Chargeback Tool, Electronic Journal",
+    "_synonymsDescription": "electronic journal, transaction disputes, Reg E, cloud storage, compliance, records",
+    "_synonymsKeywords": "dispute, chargeback, journal, electronic, Switch Commerce",
+    "_searchBlob": "electronic journal switch commerce network transactions are a hassle; dealing with them doesn't have to be.\n\none click reg es\nif your terminal has a transaction dispute, switch commerce will automatically present you with the journal records you need to reply to the network.\n\ncloud storage\nswitch commerce can capture and store electronic journal records during normal transaction processing. records are stored for nine months in order to meet all network reg e compliance standards.\n\nsave time & money\ntransaction disputes can be costly. they demand too much of your time and energy. the electronic journal service is a real solution to a real issue that isos face. chargebacks and transaction disputes are time-consuming and costly. slow manual processes and limited visibility into claims. our cloud-based dispute dashboard automates tracking, evidence submission, and resolution ? all in one place. you resolve disputes faster and recover more funds. you avoid missed deadlines, lost revenue, and compliance headaches. you become an organized, efficient operator with total control of your disputes. any atm operator handling medium to high volumes of traffic. #atmdisputes #disputeresolution #chargebacktool #switchcommerce #disputes #chargebacks #resolvedisputes #recoverfunds #supportteam #iso #atmservices dispute resolution, chargeback tool, electronic journal electronic journal, transaction disputes, reg e, cloud storage, compliance, records dispute, chargeback, journal, electronic, switch commerce"
   },
   {
     "company": "Switch Commerce",
@@ -340,7 +408,11 @@ export const products = [
     "problemTags": "#failedtransactions #manualrefunds",
     "outcomeTags": "#automated #customerfriendly",
     "buyerTags": "#supportteam #ISO",
-    "industryTags": "#atmservices"
+    "industryTags": "#atmservices",
+    "_synonymsTitle": "Instant Reversal, Transaction Refund, Automated Withdrawals",
+    "_synonymsDescription": "automated reversals, transaction refund, withdrawals, processing logic, customer trust",
+    "_synonymsKeywords": "reversal, refund, automated, withdrawal, Switch Commerce",
+    "_searchBlob": "automated reversals switch commerce reverse non-dispensed withdrawals automatically!\n\navoid transactions disputes\npowered by our exclusive processing logic,non-dispensed approvals are automatically reversed back to the cardholder's account. with the automated reversals feature enabled, you will never have to waste time requesting manual reversals.\n\nproven to save you money\nswitch commerce customers enjoy an average savings of over $46 per terminal monthly when automated reversals are enabled on their portfolio.*\n\neasy to get started\n- enable with one click on all of your terminals\n- no physical terminal visit required\n- works on all makes and models of atms\n\npast performance may not be indicative of future results. failed transactions can frustrate customers and cost operators money if not refunded instantly. manual reversal processes that delay funds and erode trust. switch commerce automatically reverses failed transactions within seconds ? no paperwork or manual intervention. you improve customer satisfaction and avoid revenue loss from disputes. you avoid chargebacks, negative reviews, and manual errors. you become a customer-first operator with built-in protection and speed. retail atms, dispensaries, and any high-traffic machine. #automatedreversals #atmtrust #customerfirst #switchcommerce #failedtransactions #manualrefunds #automated #customerfriendly #supportteam #iso #atmservices instant reversal, transaction refund, automated withdrawals automated reversals, transaction refund, withdrawals, processing logic, customer trust reversal, refund, automated, withdrawal, switch commerce"
   },
   {
     "company": "Switch Commerce",
@@ -359,7 +431,11 @@ export const products = [
     "problemTags": "#fleetmanagement #manualsetup",
     "outcomeTags": "#centralized #efficient",
     "buyerTags": "#ISO #fleetmanager",
-    "industryTags": "#atmservices #retail"
+    "industryTags": "#atmservices #retail",
+    "_synonymsTitle": "ATM Management, Terminal Tools, Fleet Efficiency",
+    "_synonymsDescription": "terminal management, portfolio, ATM, reporting, settlement, forecasting, dashboard",
+    "_synonymsKeywords": "management, terminal, ATM, fleet, Switch Commerce",
+    "_searchBlob": "terminal management system switch commerce the industry's best portfolio management experience\n\nthe switch commerce terminal management system places you in full control of every aspect of your atm portfolio. this powerful tool provides you with easy access to all of your terminal data, settlement distribution, customer creation, and user access.\n\nthe control you want with the features you need\n- instantly create new terminal ids\n- monitor cash balances\n- terminal error alerts\n- automated report delivery\n- manage settlement distribution\n- vault cash forecasting\n- real-time transaction reporting\n- and much more managing multiple atm terminals is complex, fragmented, and time-consuming. outdated systems and manual processes that slow down operations. our tms gives you full control of every atm from one dashboard ? configurations, updates, monitoring, and more. you run a more efficient operation with fewer errors and lower costs. you avoid lost time, inconsistent and slow setups, and support delays. you become a streamlined, tech-enabled atm fleet manager. iads, banks, multi-location operators, tech-forward deployers. #atmmanagement #terminaltools #fleetefficiency #switchcommerce #fleetmanagement #manualsetup #centralized #efficient #iso #fleetmanager #atmservices #retail atm management, terminal tools, fleet efficiency terminal management, portfolio, atm, reporting, settlement, forecasting, dashboard management, terminal, atm, fleet, switch commerce"
   },
   {
     "company": "Switch Commerce",
@@ -378,7 +454,11 @@ export const products = [
     "problemTags": "#nofieldaccess #mobilityissues",
     "outcomeTags": "#real-time #mobilecontrol",
     "buyerTags": "#ISO #fieldtech",
-    "industryTags": "#atmservices"
+    "industryTags": "#atmservices",
+    "_synonymsTitle": "Mobile Terminal Management, ATM App, On-the-Go Control",
+    "_synonymsDescription": "mobile TMS, app, terminal management, real-time, statistics, phone, tablet",
+    "_synonymsKeywords": "mobile, TMS, ATM, app, control",
+    "_searchBlob": "mobile tms switch commerce the best app in the industry\n\nall the same great features of tms in the palm of your hand!\nthe switch commerce mobile tms app keeps isos in control of their atm portfolio anywhere they go. our customers enjoy access to real-time transaction information, terminal statistics, and can\ncreate new terminal ids in just minutes right from their phone or tablet.\n\nthe reviews say it all:\n\"i use this app every day to monitor my terminals. i love it, and so do my customers.\"\njoe c. | phoenix, az\n\n\"whether i'm in the field or around the office, mobiletms keeps me in control of my atms.\"\nhunter m. | new york, ny operators on the go can?t always monitor or control their atms in real time. limited mobile access and lack of visibility while in the field. mobile tms gives you full control of terminal status, transactions, and performance ? right from your phone. you stay informed, responsive, and in control wherever you are. you avoid service delays and unmonitored downtime. you become a fully mobile atm operator with real-time control. traveling iads, tech-enabled teams, solo operators. #mobiletms #atmonthego #switchcommerce #terminalcontrol #nofieldaccess #mobilityissues #real-time #mobilecontrol #iso #fieldtech #atmservices mobile terminal management, atm app, on-the-go control mobile tms, app, terminal management, real-time, statistics, phone, tablet mobile, tms, atm, app, control"
   },
   {
     "company": "Switch Commerce",
@@ -397,7 +477,11 @@ export const products = [
     "problemTags": "#derisking #accountclosures",
     "outcomeTags": "#compliantbanking #trustedpartner",
     "buyerTags": "#financialinstitution #ISO",
-    "industryTags": "#banking #atmservices"
+    "industryTags": "#banking #atmservices",
+    "_synonymsTitle": "Fintech Infrastructure, SME Banking, Bank Automation",
+    "_synonymsDescription": "banking solutions, fintech, infrastructure, automation, compliance, technology",
+    "_synonymsKeywords": "banking, fintech, SME, automation, Switch Commerce",
+    "_searchBlob": "banking solutions switch commerce the switch commerce platform, powered by sme banking, offers an innovative experience for financial institutions to increase operational efficiencies. we provide trustworthy and compliant solutions to enhance banking services. our comprehensive product line can streamline processes and automate workflows while saving you time and money. allow us to manage the technical components of your organization. we collaborate closely with you to deliver our cutting-edge technology, enabling you to meet the changing needs of your customers. financial institutions need to modernize and scale services without overloading internal teams or risking compliance. outdated systems, operational inefficiencies, and the high technical burden of digital transformation. switch commerce, powered by sme banking, delivers a compliant, full-stack platform that automates workflows, manages infrastructure, and helps banks serve their customers more efficiently. you achieve operational efficiency, regulatory compliance, and accelerated service delivery. you avoid costly development cycles, integration failures, and customer churn from outdated systems. you become a tech-forward financial institution with agility to meet tomorrow?s customer needs ? today. community banks, credit unions, fintech partners, neo-banking platforms. #bankingsolutions #fintechinfrastructure #smebanking #switchcommerce #bankautomation #derisking #accountclosures #compliantbanking #trustedpartner #financialinstitution #iso #banking #atmservices fintech infrastructure, sme banking, bank automation banking solutions, fintech, infrastructure, automation, compliance, technology banking, fintech, sme, automation, switch commerce"
   },
   {
     "company": "Switch Commerce",
@@ -416,6 +500,10 @@ export const products = [
     "problemTags": "#bankingdeserts #underserved",
     "outcomeTags": "#financialaccess #communitytrust",
     "buyerTags": "#bank #creditunion",
-    "industryTags": "#rural #underserved #publicsector"
+    "industryTags": "#rural #underserved #publicsector",
+    "_synonymsTitle": "Banking Inclusion, ATM Access, Serve Everywhere",
+    "_synonymsDescription": "remote banking, banking cube, convenience, efficiency, security, transactions, in-branch",
+    "_synonymsKeywords": "remote, banking, inclusion, ATM, access",
+    "_searchBlob": "remote banking switch commerce the switch commerce banking cube, powered by sme banking, is transforming traditional banking with 24/7 access to a wide range of services. offering unparalleled convenience and efficiency, it allows users to manage their finances, from deposits to complex transactions. with top-notch security features, it ensures safe transactions comparable to in-branch banking. its compact design brings banking closer to users. in short, the banking cube combines conventional banking with modern digital convenience, transforming the future of the industry. underserved communities lack access to traditional banking infrastructure, leaving residents without critical financial services. banking deserts, logistical limitations, and the digital divide that excludes entire populations from the financial system. switch commerce enables remote banking through atms and kiosks that offer core financial services ? including deposits, withdrawals, and balance checks ? without requiring a physical branch. you expand your institution?s reach, increase financial inclusion, and build community trust. you avoid leaving unbanked communities behind and missing opportunities for growth and impact. you become a mission-driven provider of equitable banking access in hard-to-reach areas. rural areas, tribal lands, underserved urban neighborhoods, correctional facilities. #remotebanking #bankinginclusion #atmaccess #switchcommerce #serveeverywhere #bankingdeserts #underserved #financialaccess #communitytrust #bank #creditunion #rural #underserved #publicsector banking inclusion, atm access, serve everywhere remote banking, banking cube, convenience, efficiency, security, transactions, in-branch remote, banking, inclusion, atm, access"
   }
 ];
