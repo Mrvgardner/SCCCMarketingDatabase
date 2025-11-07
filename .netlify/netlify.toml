@@ -1,0 +1,62 @@
+redirectsOrigin = "config"
+plugins = []
+
+[functions]
+
+[functions."*"]
+
+[build]
+publish = "/Users/victorgardner/Documents/Apps/SCCCMarketingDatabase/dist"
+publishOrigin = "config"
+commandOrigin = "config"
+base = "/Users/victorgardner/Documents/Apps/SCCCMarketingDatabase"
+command = "npm run build"
+
+[build.environment]
+
+[build.processing]
+skip_processing = false
+
+[build.processing.css]
+bundle = true
+minify = true
+
+[build.processing.html]
+pretty_urls = true
+
+[build.processing.images]
+compress = true
+
+[build.processing.js]
+bundle = true
+minify = true
+
+[build.services]
+
+[[headers]]
+for = "/brochures/*"
+
+[headers.values]
+Access-Control-Allow-Origin = "*"
+Content-Type = "application/pdf"
+
+[[headers]]
+for = "/*"
+
+[headers.values]
+X-Frame-Options = "SAMEORIGIN"
+X-XSS-Protection = "1; mode=block"
+X-Content-Type-Options = "nosniff"
+Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
