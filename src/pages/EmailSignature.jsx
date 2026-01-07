@@ -39,6 +39,8 @@ export default function EmailSignature() {
                 src={
                   id === 'Renee-Mesecher'
                     ? '/signatures/images/RENEE-RIMMER-MESECHER.jpg'
+                    : id === 'Susie-Velasquez'
+                    ? `/signatures/images/${id}.jpg?v=2`
                     : `/signatures/images/${id}.jpg`
                 }
                 alt={`${id === 'Renee-Mesecher' ? 'Reneé Mesecher' : id.replace(/-/g, ' ')} signature preview`}
