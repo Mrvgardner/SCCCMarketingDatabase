@@ -8,7 +8,7 @@ export default function ClearChoiceBrochurePage() {
 
   return (
     <DirectPDFLink 
-      pdfUrl="/brochures/clearchoice-brochure.pdf" 
+      pdfUrl="/brochures/SwitchCommerceClearChoiceBrochure.pdf" 
       title="Clear Choice Brochure" 
     />
   );

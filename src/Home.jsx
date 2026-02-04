@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { DocumentIcon, PhotoIcon, BookOpenIcon } from "@heroicons/react/24/solid";
+import { DocumentIcon, PhotoIcon, BookOpenIcon, DocumentTextIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 
 const tools = [
@@ -71,6 +71,14 @@ const resources = [
     description: "Product features, use cases, and sales resources",
     color: "bg-gradient-to-br from-[#0a7cff] to-[#0951fa]",
     icon: "book",
+  },
+  {
+    name: "Brochure",
+    type: "resource",
+    url: "/brochures/SwitchCommerceClearChoiceBrochure.pdf",
+    description: "Company brochure and product information",
+    color: "bg-gradient-to-br from-[#9333ea] to-[#c084fc]",
+    icon: "document-text",
   },
 ];
 
@@ -198,7 +206,7 @@ export default function Home() {
               <h3 className="text-2xl font-bold mb-4">Switch Commerce</h3>
               <div className="space-y-4">
                   <a
-                    href="/brochures/switch-brochure.pdf"
+                    href="/brochures/SwitchCommerceClearChoiceBrochure.pdf"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
@@ -222,7 +230,7 @@ export default function Home() {
               <h3 className="text-2xl font-bold mb-4">Clear Choice</h3>
               <div className="space-y-4">
                   <a
-                    href="/brochures/clearchoice-brochure.pdf"
+                    href="/brochures/SwitchCommerceClearChoiceBrochure.pdf"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
@@ -254,10 +262,43 @@ export default function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {resources.map((resource, index) => (
             <FloatingTile key={resource.name} delay={index * 0.2}>
-              <Link
-                to={resource.url}
-                className={`block rounded-xl p-5 hover:scale-105 transition-transform duration-300 shadow-xl h-full backdrop-blur-sm bg-opacity-90 ${resource.color || 'bg-gray-800'}`}
-              >
+              {resource.url.endsWith('.pdf') ? (
+                <a
+                  href={resource.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`block rounded-xl p-5 hover:scale-105 transition-transform duration-300 shadow-xl h-full backdrop-blur-sm bg-opacity-90 ${resource.color || 'bg-gray-800'}`}
+                >
+                  <div className="h-full flex flex-col items-center text-center">
+                    <div className="flex items-center justify-center mb-4">
+                      <h3 className="text-xl font-semibold mb-0 flex items-center gap-2">
+                        {resource.icon === "document" && <DocumentIcon className="h-7 w-7 text-white" />}
+                        {resource.icon === "photo" && <PhotoIcon className="h-7 w-7 text-white" />}
+                        {resource.icon === "book" && <BookOpenIcon className="h-7 w-7 text-white" />}
+                        {resource.icon === "document-text" && <DocumentTextIcon className="h-7 w-7 text-white" />}
+                        {resource.name}
+                      </h3>
+                    </div>
+                    {resource.thumbnail && (
+                      <div className="mb-4 rounded-lg overflow-hidden">
+                        <img
+                          src={resource.thumbnail}
+                          alt={resource.name}
+                          className="w-full h-48 object-cover"
+                        />
+                      </div>
+                    )}
+                    <p className="text-sm text-gray-100 mb-4">{resource.description}</p>
+                    <div className="mt-auto px-4 py-1.5 bg-gray-700 rounded-full text-xs uppercase tracking-wide">
+                      {resource.type}
+                    </div>
+                  </div>
+                </a>
+              ) : (
+                <Link
+                  to={resource.url}
+                  className={`block rounded-xl p-5 hover:scale-105 transition-transform duration-300 shadow-xl h-full backdrop-blur-sm bg-opacity-90 ${resource.color || 'bg-gray-800'}`}
+                >
                 <div className="h-full flex flex-col items-center text-center">
                   <div className="flex items-center justify-center mb-4">
                     <h3 className="text-xl font-semibold mb-0 flex items-center gap-2">
@@ -278,11 +319,12 @@ export default function Home() {
                   )}
                   {/* Removed duplicate card label */}
                   <p className="text-sm text-gray-100 mb-4">{resource.description}</p>
-                  <div className="mt-auto px-4 py-1.5 bg-gray-700 rounded-full text-xs uppercase tracking-wide">
-                    {resource.type}
+                    <div className="mt-auto px-4 py-1.5 bg-gray-700 rounded-full text-xs uppercase tracking-wide">
+                      {resource.type}
+                    </div>
                   </div>
-                </div>
-              </Link>
+                </Link>
+              )}
             </FloatingTile>
           ))}
         </div>

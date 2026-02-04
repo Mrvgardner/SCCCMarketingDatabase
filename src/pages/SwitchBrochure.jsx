@@ -8,7 +8,7 @@ export default function SwitchBrochurePage() {
 
   return (
     <DirectPDFLink 
-      pdfUrl="/brochures/switch-brochure.pdf" 
+      pdfUrl="/brochures/SwitchCommerceClearChoiceBrochure.pdf" 
       title="Switch Commerce Brochure" 
     />
   );

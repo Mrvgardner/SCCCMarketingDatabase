@@ -42,7 +42,7 @@ function App() {
                 </Menu.Item>
                 <Menu.Item>
                   {({ active }) => (
-                    <a href="/brochures/switch-brochure.pdf" target="_blank" rel="noopener noreferrer" className={`block px-4 py-2 text-gray-800 dark:text-gray-200 ${active ? 'bg-gray-200 dark:bg-gray-600' : ''}`}>Switch Commerce Brochure</a>
+                    <a href="/brochures/SwitchCommerceClearChoiceBrochure.pdf" target="_blank" rel="noopener noreferrer" className={`block px-4 py-2 text-gray-800 dark:text-gray-200 ${active ? 'bg-gray-200 dark:bg-gray-600' : ''}`}>Switch Commerce Brochure</a>
                   )}
                 </Menu.Item>
                 <Menu.Item>
@@ -52,7 +52,7 @@ function App() {
                 </Menu.Item>
                 <Menu.Item>
                   {({ active }) => (
-                    <a href="/brochures/clearchoice-brochure.pdf" target="_blank" rel="noopener noreferrer" className={`block px-4 py-2 text-gray-800 dark:text-gray-200 ${active ? 'bg-gray-200 dark:bg-gray-600' : ''}`}>Clear Choice Brochure</a>
+                    <a href="/brochures/SwitchCommerceClearChoiceBrochure.pdf" target="_blank" rel="noopener noreferrer" className={`block px-4 py-2 text-gray-800 dark:text-gray-200 ${active ? 'bg-gray-200 dark:bg-gray-600' : ''}`}>Clear Choice Brochure</a>
                   )}
                 </Menu.Item>
               </Menu.Items>
