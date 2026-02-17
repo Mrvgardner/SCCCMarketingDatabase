@@ -275,6 +275,21 @@ export default function ClearChoiceBrandingPage() {
       ],
       usage: 'Use the white icon on dark backgrounds when a monochromatic look is desired.',
       category: 'Logo Icon'
+    },
+    
+    // Watchdog Logo
+    {
+      name: 'Watchdog Shield',
+      src: '/logos/clearchoice/Logo Watchdog/Watchdog-Shield.png',
+      description: 'Clear Choice Watchdog security and monitoring logo',
+      bgClass: 'bg-white',
+      clearSpace: '25px (minimum) on all sides',
+      minSize: 'Print: 1.25" wide; Digital: 100px wide',
+      formats: [
+        { type: 'PNG', url: '/logos/clearchoice/Logo Watchdog/Watchdog-Shield.png' }
+      ],
+      usage: 'Use for Watchdog program materials, security-related communications, and monitoring service branding. Works on white, orange (#ff4f00), or blue (#002b5e) backgrounds.',
+      category: 'Logo Watchdog'
     }
   ];
   
