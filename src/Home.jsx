@@ -205,15 +205,12 @@ export default function Home() {
             <div className="block rounded-xl overflow-hidden bg-gradient-to-br from-[#0951fa] to-[#0951fa]/70 p-6 shadow-xl hover:scale-105 transition-transform duration-300 h-full">
               <h3 className="text-2xl font-bold mb-4">Switch Commerce</h3>
               <div className="space-y-4">
-                  <a
-                    href="/brochures/SwitchCommerceClearChoiceBrochure.pdf"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
-                  >
-                    <span className="text-lg font-medium">Brochure</span>
-                    <span className="block text-xs mt-1 text-white/70">Opens PDF in new window</span>
-                  </a>
+                <Link
+                  to="/print-collateral"
+                  className="block p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
+                >
+                  <span className="text-lg font-medium">Print Collateral</span>
+                </Link>
                 <Link
                   to="/switch-commerce/branding"
                   className="block p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
@@ -229,15 +226,12 @@ export default function Home() {
             <div className="block rounded-xl overflow-hidden bg-gradient-to-br from-[#ff4f00] to-[#ff4f00]/70 p-6 shadow-xl hover:scale-105 transition-transform duration-300 h-full">
               <h3 className="text-2xl font-bold mb-4">Clear Choice</h3>
               <div className="space-y-4">
-                  <a
-                    href="/brochures/SwitchCommerceClearChoiceBrochure.pdf"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
-                  >
-                    <span className="text-lg font-medium">Brochure</span>
-                    <span className="block text-xs mt-1 text-white/70">Opens PDF in new window</span>
-                  </a>
+                <Link
+                  to="/print-collateral"
+                  className="block p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
+                >
+                  <span className="text-lg font-medium">Print Collateral</span>
+                </Link>
                 <Link
                   to="/clear-choice/branding"
                   className="block p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
