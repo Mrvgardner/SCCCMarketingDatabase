@@ -34,7 +34,7 @@ export default function PrintCollateralPage() {
       category: "One-Pagers",
       items: [
         {
-          name: "CC WatchDog Online",
+          name: "Watchdog One-Page - 2026",
           description: "Clear Choice WatchDog monitoring and security services",
           url: "/pdfs/CC-WatchDogOnline.pdf",
           thumbnail: "/pdfs/thumbnails/watchdog-thumb.jpg"
