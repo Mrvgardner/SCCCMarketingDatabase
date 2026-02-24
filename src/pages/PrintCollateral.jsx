@@ -38,6 +38,12 @@ export default function PrintCollateralPage() {
           description: "Clear Choice WatchDog monitoring and security services",
           url: "/pdfs/CC-WatchDogOnline.pdf",
           thumbnail: "/pdfs/thumbnails/watchdog-thumb.jpg"
+        },
+        {
+          name: "Cash Recycler One-Page - 2026",
+          description: "ATEC Cash Recycler solutions for efficient cash management",
+          url: "/pdfs/Cash_Reccler.pdf",
+          thumbnail: "/pdfs/thumbnails/atec-thumb.jpg"
         }
       ]
     }
