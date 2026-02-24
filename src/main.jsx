@@ -12,6 +12,7 @@ import ProductsPage from './pages/products';
 import EmailSignature from './pages/EmailSignature.jsx';
 import Wallpapers from './pages/Wallpapers.jsx';
 import MarketingRequest from './pages/MarketingRequest.jsx';
+import PrintCollateral from './pages/PrintCollateral.jsx';
 import { useState } from 'react';
 import './index.css'
 
@@ -76,6 +77,7 @@ function App() {
         <Route path="/email-signature" element={<EmailSignature />} />
         <Route path="/wallpapers" element={<Wallpapers />} />
         <Route path="/marketing-request" element={<MarketingRequest />} />
+        <Route path="/print-collateral" element={<PrintCollateral />} />
       </Routes>
     </BrowserRouter>
   );

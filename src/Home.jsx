@@ -73,10 +73,10 @@ const resources = [
     icon: "book",
   },
   {
-    name: "Brochure",
+    name: "Print Collateral",
     type: "resource",
-    url: "/brochures/SwitchCommerceClearChoiceBrochure.pdf",
-    description: "Company brochure and product information",
+    url: "/print-collateral",
+    description: "Access the latest brochures and one-pagers",
     color: "bg-gradient-to-br from-[#9333ea] to-[#c084fc]",
     icon: "document-text",
   },
