@@ -11,22 +11,22 @@ export default function PrintCollateralPage() {
       category: "Brochures",
       items: [
         {
-          name: "Switch Commerce & Clear Choice Brochure",
+          name: "Switch Commerce & Clear Choice Brochure - 2026",
           description: "Combined company brochure featuring both Switch Commerce and Clear Choice",
           url: "/brochures/SwitchCommerceClearChoiceBrochure.pdf",
-          thumbnail: "📄"
+          thumbnail: "/brochures/thumbnails/switch-clearchoice-thumb.jpg"
         },
         {
-          name: "Switch Commerce Brochure",
+          name: "Switch Commerce Brochure - 2025",
           description: "Switch Commerce payment processing solutions and services",
           url: "/brochures/switch-brochure.pdf",
-          thumbnail: "📄"
+          thumbnail: "/brochures/thumbnails/switch-thumb.jpg"
         },
         {
-          name: "Clear Choice Brochure",
+          name: "Clear Choice Brochure - 2025",
           description: "Clear Choice merchant services and payment solutions",
           url: "/brochures/clearchoice-brochure.pdf",
-          thumbnail: "📄"
+          thumbnail: "/brochures/thumbnails/clearchoice-thumb.jpg"
         }
       ]
     },
@@ -37,7 +37,7 @@ export default function PrintCollateralPage() {
           name: "CC WatchDog Online",
           description: "Clear Choice WatchDog monitoring and security services",
           url: "/pdfs/CC-WatchDogOnline.pdf",
-          thumbnail: "📋"
+          thumbnail: "/pdfs/thumbnails/watchdog-thumb.jpg"
         }
       ]
     }
@@ -82,8 +82,16 @@ export default function PrintCollateralPage() {
                 >
                   <div className="p-6">
                     <div className="flex items-start space-x-4">
-                      <div className="flex-shrink-0 text-5xl">
-                        {item.thumbnail}
+                      <div className="flex-shrink-0 w-24 h-32 rounded-lg overflow-hidden shadow-md">
+                        <img 
+                          src={item.thumbnail} 
+                          alt={`${item.name} cover`}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = 'data:image/svg+xml,%3Csvg width="96" height="128" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="96" height="128" fill="%23e5e7eb"/%3E%3Ctext x="50%25" y="50%25" font-family="Arial" font-size="48" fill="%239ca3af" text-anchor="middle" dy=".3em"%3E📄%3C/text%3E%3C/svg%3E';
+                          }}
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-[#0951fa] dark:group-hover:text-[#0951fa] transition-colors mb-2">
