@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 export default function PrintCollateralPage() {
   useEffect(() => {
+    window.scrollTo(0, 0);
     document.title = 'Print Collateral - Switch Commerce';
   }, []);
 
