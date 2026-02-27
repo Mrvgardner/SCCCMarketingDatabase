@@ -15,19 +15,19 @@ export default function PrintCollateralPage() {
           name: "Switch Commerce & Clear Choice Brochure - 2026",
           description: "Combined company brochure featuring both Switch Commerce and Clear Choice",
           url: "/brochures/SwitchCommerceClearChoiceBrochure.pdf",
-          thumbnail: "/brochures/thumbnails/switch-clearchoice-thumb.jpg"
+          thumbnail: "/brochures/thumbnails/switch-clearchoice-thumb.jpg?v=1"
         },
         {
           name: "Switch Commerce Brochure - 2025",
           description: "Switch Commerce payment processing solutions and services",
           url: "/brochures/switch-brochure.pdf",
-          thumbnail: "/brochures/thumbnails/switch-thumb.jpg"
+          thumbnail: "/brochures/thumbnails/switch-thumb.jpg?v=1"
         },
         {
           name: "Clear Choice Brochure - 2025",
           description: "Clear Choice merchant services and payment solutions",
           url: "/brochures/clearchoice-brochure.pdf",
-          thumbnail: "/brochures/thumbnails/clearchoice-thumb.jpg"
+          thumbnail: "/brochures/thumbnails/clearchoice-thumb.jpg?v=1"
         }
       ]
     },
