@@ -73,7 +73,7 @@ const resources = [
     icon: "book",
   },
   {
-    name: "Print Collateral",
+    name: "Brochures & Flyers",
     type: "resource",
     url: "/print-collateral",
     description: "Access the latest brochures and one-pagers",
@@ -209,7 +209,7 @@ export default function Home() {
                   to="/print-collateral"
                   className="block p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
                 >
-                  <span className="text-lg font-medium">Print Collateral</span>
+                  <span className="text-lg font-medium">Brochures & Flyers</span>
                 </Link>
                 <Link
                   to="/switch-commerce/branding"
@@ -230,7 +230,7 @@ export default function Home() {
                   to="/print-collateral"
                   className="block p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
                 >
-                  <span className="text-lg font-medium">Print Collateral</span>
+                  <span className="text-lg font-medium">Brochures & Flyers</span>
                 </Link>
                 <Link
                   to="/clear-choice/branding"
