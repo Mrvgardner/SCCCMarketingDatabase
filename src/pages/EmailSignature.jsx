@@ -40,7 +40,7 @@ export default function EmailSignature() {
                   id === 'Renee-Mesecher'
                     ? '/signatures/images/RENEE-RIMMER-MESECHER.jpg'
                     : id === 'Susie-Velasquez'
-                    ? `/signatures/images/${id}.jpg?v=2`
+                    ? `/signatures/images/${id}.jpg?v=3`
                     : id === 'Cathy-Cranford'
                     ? `/signatures/images/${id}.jpg?v=3`
                     : `/signatures/images/${id}.jpg`
