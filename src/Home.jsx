@@ -41,7 +41,7 @@ const tools = [
   {
     name: "Marketing Request",
     icon: "/logos/marketing-form-icon.svg",
-    url: "/marketing-request",
+    url: "https://getswitchdone.netlify.app/f/marketing-request-cbkday",
     description: "Submit marketing requests",
     color: "bg-gradient-to-br from-[#6b46c1] to-[#9333ea]",
   },
