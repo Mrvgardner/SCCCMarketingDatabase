@@ -11,7 +11,7 @@ export default function Login() {
       <div className="max-w-md w-full text-center space-y-8">
         <div>
           <img
-            src="/logos/switchcommerce/SwitchCommerce-white.png"
+            src="/logos/switch/Logo Main/SC Logo Main - White.png"
             alt="Switch Commerce"
             className="mx-auto h-12 mb-6"
           />
