@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { Dialog } from "@headlessui/react";
 import Fuse from "fuse.js";
 import { listProducts } from "./api/products";
-import { formatTextContent } from "./utils/textFormatter.jsx";
+import RichText from "./components/RichText.jsx";
 
 export default function ProductKnowledgeBase() {
   const [products, setProducts] = useState([]);
@@ -206,19 +206,22 @@ export default function ProductKnowledgeBase() {
               <div className="mb-6">
                 <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-[#0951fa] to-[#0951fa]/70 bg-clip-text text-transparent">{selected.title}</h2>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">{selected.company}</p>
-                <p className="text-gray-700 dark:text-gray-300 italic">{selected.description}</p>
+                <div className="text-gray-700 dark:text-gray-300 italic">
+                  <RichText content={selected.description} />
+                </div>
               </div>
               <div className="space-y-6">
                 <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
                   <h3 className="font-semibold text-lg mb-2 text-gray-900 dark:text-white">The Challenge</h3>
                   <div className="text-gray-700 dark:text-gray-300">
-                    {formatTextContent(selected.problem + (selected.villain ? ' ' + selected.villain : ''))}
+                    <RichText content={selected.problem} />
+                    {selected.villain && <RichText content={selected.villain} />}
                   </div>
                 </div>
                 <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
                   <h3 className="font-semibold text-lg mb-2 text-gray-900 dark:text-white">Solution</h3>
                   <div className="text-gray-700 dark:text-gray-300">
-                    {formatTextContent(selected.plan)}
+                    <RichText content={selected.plan} />
                   </div>
                 </div>
               </div>

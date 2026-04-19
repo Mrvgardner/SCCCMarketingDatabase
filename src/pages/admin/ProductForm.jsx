@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeftIcon, TrashIcon } from "@heroicons/react/24/solid";
+import { ArrowLeftIcon, TrashIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
 import { listProducts, createProduct, updateProduct, deleteProduct } from "../../api/products";
+import RichTextEditor from "../../components/RichTextEditor.jsx";
 
 const EMPTY_PRODUCT = {
   company: "Switch Commerce",
@@ -29,14 +30,12 @@ const EMPTY_PRODUCT = {
 const COMPANIES = ["Switch Commerce", "Clear Choice"];
 const TYPES = ["ATM", "Hardware", "Kiosk", "Platform", "Service", "Software"];
 
-function Field({ label, name, value, onChange, rows, placeholder, hint }) {
-  const Input = rows ? "textarea" : "input";
+function TextField({ label, name, value, onChange, placeholder, hint }) {
   return (
     <label className="block">
       <div className="text-sm font-medium text-gray-300 mb-1">{label}</div>
-      <Input
-        type={rows ? undefined : "text"}
-        rows={rows}
+      <input
+        type="text"
         name={name}
         value={value || ""}
         onChange={onChange}
@@ -45,6 +44,16 @@ function Field({ label, name, value, onChange, rows, placeholder, hint }) {
       />
       {hint && <div className="text-xs text-gray-500 mt-1">{hint}</div>}
     </label>
+  );
+}
+
+function RichField({ label, name, value, onChange, hint }) {
+  return (
+    <div>
+      <div className="text-sm font-medium text-gray-300 mb-1">{label}</div>
+      <RichTextEditor value={value} onChange={(html) => onChange({ target: { name, value: html } })} />
+      {hint && <div className="text-xs text-gray-500 mt-1">{hint}</div>}
+    </div>
   );
 }
 
@@ -63,6 +72,40 @@ function SelectField({ label, name, value, onChange, options }) {
         ))}
       </select>
     </label>
+  );
+}
+
+function Section({ title, hint, children }) {
+  return (
+    <section className="bg-gray-800/40 rounded-xl p-6 space-y-4">
+      <div>
+        <h2 className="text-lg font-semibold text-gray-200">{title}</h2>
+        {hint && <p className="text-xs text-gray-500 mt-0.5">{hint}</p>}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function Collapsible({ title, hint, defaultOpen = false, children }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <section className="bg-gray-800/40 rounded-xl overflow-hidden">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center justify-between p-6 text-left hover:bg-gray-800/60 transition-colors"
+      >
+        <div>
+          <h2 className="text-lg font-semibold text-gray-200">{title}</h2>
+          {hint && <p className="text-xs text-gray-500 mt-0.5">{hint}</p>}
+        </div>
+        <ChevronDownIcon
+          className={`h-5 w-5 text-gray-400 transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+      {open && <div className="px-6 pb-6 space-y-4">{children}</div>}
+    </section>
   );
 }
 
@@ -158,45 +201,53 @@ export default function ProductForm() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <section className="bg-gray-800/40 rounded-xl p-6 space-y-4">
-            <h2 className="text-lg font-semibold text-gray-200 mb-2">Identity</h2>
+          <Section title="Identity" hint="Shown on the card and modal header">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <SelectField label="Company" name="company" value={product.company} onChange={handleChange} options={COMPANIES} />
               <SelectField label="Type" name="type" value={product.type} onChange={handleChange} options={TYPES} />
             </div>
-            <Field label="Title" name="title" value={product.title} onChange={handleChange} placeholder="Product name" />
-            <Field label="Description" name="description" value={product.description} onChange={handleChange} rows={3} placeholder="Short marketing description" />
-          </section>
+            <TextField label="Title" name="title" value={product.title} onChange={handleChange} placeholder="Product name" />
+            <TextField label="Keywords" name="keywords" value={product.keywords} onChange={handleChange} placeholder="#Tag1 #Tag2 #Tag3" hint="Shown as a pill on the card" />
+            <RichField label="Description" name="description" value={product.description} onChange={handleChange} hint="Short marketing description shown in the modal" />
+          </Section>
 
-          <section className="bg-gray-800/40 rounded-xl p-6 space-y-4">
-            <h2 className="text-lg font-semibold text-gray-200 mb-2">Story</h2>
-            <Field label="Problem" name="problem" value={product.problem} onChange={handleChange} rows={2} hint="Customer pain point" />
-            <Field label="Villain" name="villain" value={product.villain} onChange={handleChange} rows={2} hint="Root cause / obstacle" />
-            <Field label="Plan" name="plan" value={product.plan} onChange={handleChange} rows={3} hint="The solution you offer" />
-            <Field label="Call to Action" name="cta" value={product.cta} onChange={handleChange} rows={2} />
-            <Field label="Success" name="success" value={product.success} onChange={handleChange} rows={2} />
-            <Field label="Failure avoided" name="failure" value={product.failure} onChange={handleChange} rows={2} />
-            <Field label="Transformation" name="transformation" value={product.transformation} onChange={handleChange} rows={2} />
-            <Field label="Use Cases" name="useCases" value={product.useCases} onChange={handleChange} rows={2} />
-          </section>
+          <Section title="Story" hint="Shown on the modal when a card is opened">
+            <RichField label="Problem" name="problem" value={product.problem} onChange={handleChange} hint="Customer pain point" />
+            <RichField label="Villain" name="villain" value={product.villain} onChange={handleChange} hint="Root cause or obstacle" />
+            <RichField label="Plan" name="plan" value={product.plan} onChange={handleChange} hint="The solution you offer" />
+          </Section>
 
-          <section className="bg-gray-800/40 rounded-xl p-6 space-y-4">
-            <h2 className="text-lg font-semibold text-gray-200 mb-2">Tags & keywords</h2>
-            <Field label="Keywords" name="keywords" value={product.keywords} onChange={handleChange} placeholder="#Tag1 #Tag2 #Tag3" />
+          <Collapsible
+            title="Narrative extras"
+            hint="StoryBrand fields — saved but not currently shown on cards"
+          >
+            <RichField label="Call to action" name="cta" value={product.cta} onChange={handleChange} />
+            <RichField label="Success" name="success" value={product.success} onChange={handleChange} />
+            <RichField label="Failure avoided" name="failure" value={product.failure} onChange={handleChange} />
+            <RichField label="Transformation" name="transformation" value={product.transformation} onChange={handleChange} />
+            <RichField label="Use cases" name="useCases" value={product.useCases} onChange={handleChange} />
+          </Collapsible>
+
+          <Collapsible
+            title="Filter tags"
+            hint="Power the company / type / buyer / industry filter chips"
+          >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Field label="Problem tags" name="problemTags" value={product.problemTags} onChange={handleChange} placeholder="#tag1 #tag2" />
-              <Field label="Outcome tags" name="outcomeTags" value={product.outcomeTags} onChange={handleChange} placeholder="#tag1 #tag2" />
-              <Field label="Buyer tags" name="buyerTags" value={product.buyerTags} onChange={handleChange} placeholder="#ISO #merchant" />
-              <Field label="Industry tags" name="industryTags" value={product.industryTags} onChange={handleChange} placeholder="#retail" />
+              <TextField label="Problem tags" name="problemTags" value={product.problemTags} onChange={handleChange} placeholder="#tag1 #tag2" />
+              <TextField label="Outcome tags" name="outcomeTags" value={product.outcomeTags} onChange={handleChange} placeholder="#tag1 #tag2" />
+              <TextField label="Buyer tags" name="buyerTags" value={product.buyerTags} onChange={handleChange} placeholder="#ISO #merchant" />
+              <TextField label="Industry tags" name="industryTags" value={product.industryTags} onChange={handleChange} placeholder="#retail" />
             </div>
-          </section>
+          </Collapsible>
 
-          <section className="bg-gray-800/40 rounded-xl p-6 space-y-4">
-            <h2 className="text-lg font-semibold text-gray-200 mb-2">Search synonyms <span className="text-xs font-normal text-gray-500">(optional)</span></h2>
-            <Field label="Title synonyms" name="_synonymsTitle" value={product._synonymsTitle} onChange={handleChange} hint="Comma-separated alternative titles" />
-            <Field label="Description synonyms" name="_synonymsDescription" value={product._synonymsDescription} onChange={handleChange} hint="Comma-separated related terms" />
-            <Field label="Keyword synonyms" name="_synonymsKeywords" value={product._synonymsKeywords} onChange={handleChange} hint="Comma-separated alternate keywords" />
-          </section>
+          <Collapsible
+            title="Search synonyms"
+            hint="Alternate phrases that help the search bar find this product"
+          >
+            <TextField label="Title synonyms" name="_synonymsTitle" value={product._synonymsTitle} onChange={handleChange} hint="Comma-separated alternative titles" />
+            <TextField label="Description synonyms" name="_synonymsDescription" value={product._synonymsDescription} onChange={handleChange} hint="Comma-separated related terms" />
+            <TextField label="Keyword synonyms" name="_synonymsKeywords" value={product._synonymsKeywords} onChange={handleChange} hint="Comma-separated alternate keywords" />
+          </Collapsible>
 
           <div className="flex items-center justify-end gap-3 pt-2">
             <Link to="/admin/products" className="px-5 py-2.5 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg transition-colors">
