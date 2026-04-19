@@ -1,51 +1,9 @@
 import { useState, useEffect } from "react";
-import { DocumentIcon, PhotoIcon, BookOpenIcon, DocumentTextIcon } from "@heroicons/react/24/solid";
+import { DocumentIcon, PhotoIcon, BookOpenIcon, DocumentTextIcon, CakeIcon, SparklesIcon, NewspaperIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
-
-const tools = [
-  {
-    name: "Slack",
-    icon: "/logos/slack-logo.png",
-    url: "https://switch-commerce.slack.com/",
-    description: "Team communication and collaboration",
-    color: "bg-purple-900",
-  },
-  {
-    name: "Assembly",
-    icon: "/logos/assembly-logo.png",
-    url: "https://app.joinassembly.com/",
-    description: "Recognition and rewards",
-    color: "bg-[#ff4f00]",
-  },
-  {
-    name: "BambooHR",
-    icon: "/logos/bamboohr-logo.png",
-    url: "https://switch.bamboohr.com/home/",
-    description: "HR and employee management",
-    color: "bg-green-600",
-  },
-  {
-    name: "Jira",
-    icon: "/logos/jira-logo.png",
-    url: "https://switchcommerce.atlassian.net/jira/your-work",
-    description: "Project and task management",
-    color: "bg-blue-600",
-  },
-  {
-    name: "Confluence",
-    icon: "/logos/confluence-logo.jpg",
-    url: "https://switchcommerce.atlassian.net/wiki/home",
-    description: "Systems Wiki and Documentation",
-    color: "bg-blue-800",
-  },
-  {
-    name: "Marketing Request",
-    icon: "/logos/marketing-form-icon.svg",
-    url: "https://getswitchdone.netlify.app/f/marketing-request-cbkday",
-    description: "Submit marketing requests",
-    color: "bg-gradient-to-br from-[#6b46c1] to-[#9333ea]",
-  },
-]
+import { fieldNotes } from "./data/field-notes";
+import { birthdays, anniversaries } from "./data/celebrations";
+import { getUpcoming, formatDate, yearsOfService } from "./utils/celebrations";
 
 const resources = [
   {
@@ -82,9 +40,9 @@ const resources = [
   },
 ];
 
-const FloatingTile = ({ delay = 0, children }) => (
+const FloatingTile = ({ delay = 0, className = "", children }) => (
   <div
-    className={`opacity-0 translate-y-8 animate-slide-in transform transition duration-300 hover:scale-105 hover:shadow-2xl`}
+    className={`opacity-0 translate-y-8 animate-slide-in transform transition duration-300 hover:scale-105 hover:shadow-2xl ${className}`}
     style={{ animationDelay: `${delay}s`, animationFillMode: 'forwards' }}
   >
     {children}
@@ -113,6 +71,10 @@ export default function Home() {
   const [activeFilter, setActiveFilter] = useState("all");
   const sections = ["All", "Quick Tools", "Branding Assets", "Resources"];
   const isVisible = (section) => activeFilter === "all" || activeFilter === section.toLowerCase();
+
+  const latestFieldNote = fieldNotes[0];
+  const upcomingBirthdays = getUpcoming(birthdays, 3);
+  const upcomingAnniversaries = getUpcoming(anniversaries, 3);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8">
@@ -154,39 +116,129 @@ export default function Home() {
         className={`mb-16 ${isVisible("quick tools") ? "block" : "hidden"}`}
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-          {tools.map((tool, index) => (
-            <FloatingTile key={tool.name} delay={index * 0.2}>
-              {tool.url.startsWith('http') ? (
-                <a
-                  href={tool.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`block rounded-xl p-6 ${tool.color} hover:scale-105 transition-transform duration-300 shadow-xl backdrop-blur-sm bg-opacity-90 h-full`}
-                >
-                  <div className="h-full flex flex-col items-center">
-                    <div className="w-16 h-16 mb-4 bg-white rounded-lg p-2 shadow-lg">
-                      <img src={tool.icon} alt={tool.name} className="w-full h-full object-contain" />
+          {/* Field Notes - tall card spanning 2 rows on lg */}
+          <FloatingTile delay={0} className="lg:row-span-2">
+            <Link
+              to="/field-notes"
+              className="block rounded-xl p-6 bg-gradient-to-br from-[#5fae4b] to-[#7bc966] hover:scale-105 transition-transform duration-300 shadow-xl backdrop-blur-sm bg-opacity-90 h-full"
+            >
+              <div className="h-full flex flex-col">
+                <div className="flex items-center gap-2 mb-4">
+                  <NewspaperIcon className="h-6 w-6 text-white" />
+                  <h3 className="text-2xl font-bold text-white">Field Notes</h3>
+                </div>
+                {latestFieldNote ? (
+                  <>
+                    <div className="text-xs text-white/70 mb-2 uppercase tracking-wide">Latest</div>
+                    <div className="text-white/80 text-sm mb-2">
+                      {new Date(latestFieldNote.date + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                     </div>
-                    <h3 className="text-lg font-semibold mb-3 text-center">{tool.name}</h3>
-                    <p className="text-sm text-gray-200 text-center">{tool.description}</p>
-                  </div>
-                </a>
-              ) : (
-                <Link
-                  to={tool.url}
-                  className={`block rounded-xl p-6 ${tool.color} hover:scale-105 transition-transform duration-300 shadow-xl backdrop-blur-sm bg-opacity-90 h-full`}
-                >
-                  <div className="h-full flex flex-col items-center">
-                    <div className="w-16 h-16 mb-4 bg-white rounded-lg p-2 shadow-lg">
-                      <img src={tool.icon} alt={tool.name} className="w-full h-full object-contain" />
+                    <h4 className="text-xl font-semibold text-white mb-3">
+                      {latestFieldNote.title}
+                    </h4>
+                    <p className="text-white/90 text-sm leading-relaxed mb-4 line-clamp-5">
+                      {latestFieldNote.excerpt}
+                    </p>
+                    <div className="mt-auto pt-4 border-t border-white/20 text-white/80 text-sm font-medium">
+                      Read more →
                     </div>
-                    <h3 className="text-lg font-semibold mb-3 text-center">{tool.name}</h3>
-                    <p className="text-sm text-gray-200 text-center">{tool.description}</p>
+                  </>
+                ) : (
+                  <p className="text-white/80 text-sm">No field notes yet.</p>
+                )}
+              </div>
+            </Link>
+          </FloatingTile>
+
+          {/* Upcoming Birthdays */}
+          <FloatingTile delay={0.1}>
+            <a
+              href="https://switch.bamboohr.com/home/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block rounded-xl p-6 bg-gradient-to-br from-[#ff4f00] to-[#ff7f50] hover:scale-105 transition-transform duration-300 shadow-xl backdrop-blur-sm bg-opacity-90 h-full min-h-[180px]"
+            >
+              <div className="h-full flex flex-col justify-between">
+                <div className="flex items-center gap-2">
+                  <CakeIcon className="h-6 w-6 text-white flex-shrink-0" />
+                  <h3 className="text-lg font-bold text-white">Upcoming Birthdays</h3>
+                </div>
+                {upcomingBirthdays.length > 0 ? (
+                  <div className="flex items-center justify-between text-white/95 text-sm">
+                    <span className="font-medium truncate pr-2">{upcomingBirthdays[0].name}</span>
+                    <span className="text-white/80 flex-shrink-0">{formatDate(upcomingBirthdays[0].next)} →</span>
                   </div>
-                </Link>
-              )}
-            </FloatingTile>
-          ))}
+                ) : (
+                  <div className="text-white/80 text-sm">Add team birthdays →</div>
+                )}
+              </div>
+            </a>
+          </FloatingTile>
+
+          {/* Knowledge Base */}
+          <FloatingTile delay={0.2}>
+            <Link
+              to="/products"
+              className="block rounded-xl p-6 bg-gradient-to-br from-[#0951fa] to-[#0a7cff] hover:scale-105 transition-transform duration-300 shadow-xl backdrop-blur-sm bg-opacity-90 h-full min-h-[180px]"
+            >
+              <div className="h-full flex flex-col justify-between">
+                <div className="flex items-center gap-2">
+                  <BookOpenIcon className="h-6 w-6 text-white flex-shrink-0" />
+                  <h3 className="text-lg font-bold text-white">Knowledge Base</h3>
+                </div>
+                <div className="text-white/90 text-sm">
+                  Products, use cases, and sales resources →
+                </div>
+              </div>
+            </Link>
+          </FloatingTile>
+
+          {/* Upcoming Anniversaries */}
+          <FloatingTile delay={0.3}>
+            <a
+              href="https://switch.bamboohr.com/home/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block rounded-xl p-6 bg-gradient-to-br from-[#9333ea] to-[#c084fc] hover:scale-105 transition-transform duration-300 shadow-xl backdrop-blur-sm bg-opacity-90 h-full min-h-[180px]"
+            >
+              <div className="h-full flex flex-col justify-between">
+                <div className="flex items-center gap-2">
+                  <SparklesIcon className="h-6 w-6 text-white flex-shrink-0" />
+                  <h3 className="text-lg font-bold text-white">Upcoming Anniversaries</h3>
+                </div>
+                {upcomingAnniversaries.length > 0 ? (
+                  <div className="flex items-center justify-between text-white/95 text-sm">
+                    <span className="font-medium truncate pr-2">{upcomingAnniversaries[0].name}</span>
+                    <span className="text-white/80 flex-shrink-0">
+                      {yearsOfService(upcomingAnniversaries[0].startYear, upcomingAnniversaries[0].next)} yr · {formatDate(upcomingAnniversaries[0].next)} →
+                    </span>
+                  </div>
+                ) : (
+                  <div className="text-white/80 text-sm">Add team anniversaries →</div>
+                )}
+              </div>
+            </a>
+          </FloatingTile>
+
+          {/* Marketing Request */}
+          <FloatingTile delay={0.4}>
+            <a
+              href="https://getswitchdone.netlify.app/f/marketing-request-cbkday"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block rounded-xl p-6 bg-gradient-to-br from-[#6b46c1] to-[#9333ea] hover:scale-105 transition-transform duration-300 shadow-xl backdrop-blur-sm bg-opacity-90 h-full min-h-[180px]"
+            >
+              <div className="h-full flex flex-col justify-between">
+                <div className="flex items-center gap-2">
+                  <DocumentTextIcon className="h-6 w-6 text-white flex-shrink-0" />
+                  <h3 className="text-lg font-bold text-white">Marketing Request</h3>
+                </div>
+                <div className="text-white/90 text-sm">
+                  Flyers, emails, or campaign assets →
+                </div>
+              </div>
+            </a>
+          </FloatingTile>
         </div>
       </div>
 

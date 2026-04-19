@@ -13,6 +13,7 @@ import EmailSignature from './pages/EmailSignature.jsx';
 import Wallpapers from './pages/Wallpapers.jsx';
 import MarketingRequest from './pages/MarketingRequest.jsx';
 import PrintCollateral from './pages/PrintCollateral.jsx';
+import FieldNotes from './pages/FieldNotes.jsx';
 import Login from './pages/Login.jsx';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { useState } from 'react';
@@ -91,6 +92,7 @@ function AppShell() {
         <Route path="/wallpapers" element={<ProtectedRoute><Wallpapers /></ProtectedRoute>} />
         <Route path="/marketing-request" element={<ProtectedRoute><MarketingRequest /></ProtectedRoute>} />
         <Route path="/print-collateral" element={<ProtectedRoute><PrintCollateral /></ProtectedRoute>} />
+        <Route path="/field-notes" element={<ProtectedRoute><FieldNotes /></ProtectedRoute>} />
       </Routes>
     </>
   );

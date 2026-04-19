@@ -1,41 +1,60 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import netlifyIdentity from "netlify-identity-widget";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    netlifyIdentity.init();
+    // Dev-only bypass: auto-authenticate a mock user in local development.
+    // `import.meta.env.DEV` is compile-time — this branch is stripped from production builds.
+    if (import.meta.env.DEV) {
+      setUser({
+        email: "dev@localhost",
+        user_metadata: { full_name: "Local Dev" },
+      });
+      setLoading(false);
+      setReady(true);
+      return;
+    }
 
-    // Check for existing logged-in user
-    const currentUser = netlifyIdentity.currentUser();
+    const identity = window.netlifyIdentity;
+    if (!identity) {
+      console.error("Netlify Identity widget script not loaded");
+      setLoading(false);
+      return;
+    }
+
+    identity.init();
+
+    const currentUser = identity.currentUser();
     if (currentUser) setUser(currentUser);
     setLoading(false);
+    setReady(true);
 
-    netlifyIdentity.on("login", (u) => {
+    const onLogin = (u) => {
       setUser(u);
-      netlifyIdentity.close();
-    });
+      identity.close();
+    };
+    const onLogout = () => setUser(null);
 
-    netlifyIdentity.on("logout", () => {
-      setUser(null);
-    });
+    identity.on("login", onLogin);
+    identity.on("logout", onLogout);
 
     return () => {
-      netlifyIdentity.off("login");
-      netlifyIdentity.off("logout");
+      identity.off("login", onLogin);
+      identity.off("logout", onLogout);
     };
   }, []);
 
-  const login = () => netlifyIdentity.open("login");
-  const signup = () => netlifyIdentity.open("signup");
-  const logout = () => netlifyIdentity.logout();
+  const login = () => window.netlifyIdentity?.open("login");
+  const signup = () => window.netlifyIdentity?.open("signup");
+  const logout = () => window.netlifyIdentity?.logout();
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, signup, logout }}>
+    <AuthContext.Provider value={{ user, loading, ready, login, signup, logout }}>
       {children}
     </AuthContext.Provider>
   );
