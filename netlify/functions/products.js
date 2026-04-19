@@ -51,7 +51,7 @@ function rebuildSearchBlob(p) {
 export async function handler(event, context) {
   // v1 handler functions need explicit wiring so @netlify/blobs can
   // pick up the deploy context injected into the Lambda event.
-  connectLambda({ event, context });
+  connectLambda(event);
 
   const user = context.clientContext?.user;
   const roles = user?.app_metadata?.roles || [];
