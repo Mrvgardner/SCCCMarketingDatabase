@@ -1,8 +1,13 @@
 [build]
   command = "npm run build"
   publish = "dist"
+  functions = "netlify/functions"
 
-# Handle SPA routing
+[functions]
+  node_bundler = "esbuild"
+  included_files = ["netlify/functions/products-seed.json"]
+
+# Handle SPA routing — functions first so /.netlify/functions/* isn't rewritten
 [[redirects]]
   from = "/*"
   to = "/index.html"

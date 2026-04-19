@@ -1,10 +1,13 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Dialog } from "@headlessui/react";
 import Fuse from "fuse.js";
-import { products } from "./data/products-tagged";
+import { listProducts } from "./api/products";
 import { formatTextContent } from "./utils/textFormatter.jsx";
 
 export default function ProductKnowledgeBase() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selected, setSelected] = useState(null);
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState({
@@ -13,6 +16,23 @@ export default function ProductKnowledgeBase() {
     buyerTags: null,
     industryTags: null,
   });
+
+  useEffect(() => {
+    let cancelled = false;
+    listProducts()
+      .then((data) => {
+        if (!cancelled) setProducts(data);
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err.message || "Failed to load products");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const toggleFilter = (key, value) => {
     setFilters((prev) => ({
@@ -33,7 +53,7 @@ export default function ProductKnowledgeBase() {
         "useCases",
       ],
     });
-  }, []);
+  }, [products]);
 
   const searched = query ? fuse.search(query).map((r) => r.item) : products;
 
@@ -109,7 +129,17 @@ export default function ProductKnowledgeBase() {
         </div>
       </div>
 
-      {sorted.length === 0 ? (
+      {loading ? (
+        <div className="text-center py-16 text-gray-400">
+          <div className="inline-block h-8 w-8 border-4 border-[#0951fa] border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p>Loading knowledge base…</p>
+        </div>
+      ) : error ? (
+        <div className="text-center py-16">
+          <h3 className="text-lg font-medium text-red-400 mb-2">Couldn't load products</h3>
+          <p className="text-gray-500 text-sm">{error}</p>
+        </div>
+      ) : sorted.length === 0 ? (
         <div className="text-center py-16">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 dark:text-gray-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />

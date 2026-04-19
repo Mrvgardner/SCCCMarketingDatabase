@@ -14,6 +14,10 @@ import Wallpapers from './pages/Wallpapers.jsx';
 import MarketingRequest from './pages/MarketingRequest.jsx';
 import PrintCollateral from './pages/PrintCollateral.jsx';
 import FieldNotes from './pages/FieldNotes.jsx';
+import Birthdays from './pages/Birthdays.jsx';
+import Anniversaries from './pages/Anniversaries.jsx';
+import ProductsAdmin from './pages/admin/ProductsAdmin.jsx';
+import ProductForm from './pages/admin/ProductForm.jsx';
 import Login from './pages/Login.jsx';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { useState } from 'react';
@@ -26,8 +30,16 @@ function ProtectedRoute({ children }) {
   return children;
 }
 
+function AdminRoute({ children }) {
+  const { user, loading, isAdmin } = useAuth();
+  if (loading) return null;
+  if (!user) return <Navigate to="/login" replace />;
+  if (!isAdmin) return <Navigate to="/" replace />;
+  return children;
+}
+
 function AppShell() {
-  const { user, logout } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
   const [darkMode, setDarkMode] = useState(true);
 
   return (
@@ -70,6 +82,11 @@ function AppShell() {
               <Link to="/products" className="inline-flex items-center text-gray-200 hover:text-white">
                 Knowledge Base
               </Link>
+              {isAdmin && (
+                <Link to="/admin/products" className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#0951fa]/20 border border-[#0951fa]/40 text-[#0a7cff] hover:bg-[#0951fa]/30 transition-colors text-sm font-medium">
+                  Admin
+                </Link>
+              )}
             </div>
             <div className="flex items-center gap-4 text-gray-200">
               <CogIcon className="h-5 w-5 hover:text-white cursor-pointer" onClick={() => setDarkMode(m => !m)} />
@@ -93,6 +110,11 @@ function AppShell() {
         <Route path="/marketing-request" element={<ProtectedRoute><MarketingRequest /></ProtectedRoute>} />
         <Route path="/print-collateral" element={<ProtectedRoute><PrintCollateral /></ProtectedRoute>} />
         <Route path="/field-notes" element={<ProtectedRoute><FieldNotes /></ProtectedRoute>} />
+        <Route path="/birthdays" element={<ProtectedRoute><Birthdays /></ProtectedRoute>} />
+        <Route path="/anniversaries" element={<ProtectedRoute><Anniversaries /></ProtectedRoute>} />
+        <Route path="/admin/products" element={<AdminRoute><ProductsAdmin /></AdminRoute>} />
+        <Route path="/admin/products/new" element={<AdminRoute><ProductForm /></AdminRoute>} />
+        <Route path="/admin/products/:id/edit" element={<AdminRoute><ProductForm /></AdminRoute>} />
       </Routes>
     </>
   );

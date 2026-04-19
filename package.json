@@ -2,6 +2,7 @@
   "name": "switch-team-portal",
   "version": "1.0.0",
   "scripts": {
+    "predev": "node -e \"require('fs').existsSync('src/data/celebrations.generated.js') || require('child_process').execSync('node scripts/fetch-celebrations.mjs', {stdio:'inherit'})\"",
     "dev": "vite",
     "fetch-celebrations": "node scripts/fetch-celebrations.mjs",
     "prebuild": "node scripts/fetch-celebrations.mjs",
@@ -11,6 +12,7 @@
   "dependencies": {
     "@headlessui/react": "^2.2.6",
     "@heroicons/react": "^2.2.0",
+    "@netlify/blobs": "^10.7.4",
     "framer-motion": "^12.23.12",
     "fuse.js": "^6.6.2",
     "react": "^18.2.0",

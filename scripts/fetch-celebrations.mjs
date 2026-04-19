@@ -38,18 +38,21 @@ function parseBirthdaySummary(summary) {
 }
 
 // Anniversary summaries from BambooHR vary. Common forms:
-//   "John Smith - 5 Year Anniversary"
-//   "John Smith's 5 Year Anniversary"
-//   "John Smith: 5th Anniversary"
+//   "Jane Doe (5 yrs)"
+//   "Jane Doe - 5 Year Anniversary"
+//   "Jane Doe's 5 Year Anniversary"
+//   "Jane Doe: 5th Anniversary"
 // We extract the name and the number of years.
 function parseAnniversarySummary(summary) {
   const s = summary.trim();
-  const yearMatch = s.match(/(\d+)\s*(?:year|yr|st|nd|rd|th)/i);
+  const yearMatch = s.match(/(\d+)\s*(?:years?|yrs?|st|nd|rd|th)/i);
   const years = yearMatch ? parseInt(yearMatch[1], 10) : null;
 
   const name = s
-    .replace(/[-:]?\s*\d+\s*(?:year|yr|st|nd|rd|th)[\w\s]*anniversary/i, "")
-    .replace(/['’]s\s*$/i, "")
+    .replace(/\s*\(\s*\d+\s*(?:years?|yrs?)\s*\)\s*$/i, "")
+    .replace(/\s*[-–—:]\s*\d+\s*(?:years?|yrs?|st|nd|rd|th)[\w\s]*anniversary\s*$/i, "")
+    .replace(/['’]s\s+\d+\s*(?:years?|yrs?|st|nd|rd|th)[\w\s]*anniversary\s*$/i, "")
+    .replace(/\s+\d+\s*(?:years?|yrs?)\s*$/i, "")
     .replace(/\s+anniversary\s*$/i, "")
     .trim();
 

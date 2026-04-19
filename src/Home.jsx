@@ -116,8 +116,8 @@ export default function Home() {
         className={`mb-16 ${isVisible("quick tools") ? "block" : "hidden"}`}
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-          {/* Field Notes - tall card spanning 2 rows on lg */}
-          <FloatingTile delay={0} className="lg:row-span-2">
+          {/* Field Notes - tall card, middle column, spans 2 rows on lg */}
+          <FloatingTile delay={0} className="lg:col-start-2 lg:row-start-1 lg:row-span-2">
             <Link
               to="/field-notes"
               className="block rounded-xl p-6 bg-gradient-to-br from-[#5fae4b] to-[#7bc966] hover:scale-105 transition-transform duration-300 shadow-xl backdrop-blur-sm bg-opacity-90 h-full"
@@ -150,78 +150,87 @@ export default function Home() {
             </Link>
           </FloatingTile>
 
-          {/* Upcoming Birthdays */}
-          <FloatingTile delay={0.1}>
-            <a
-              href="https://switch.bamboohr.com/home/"
-              target="_blank"
-              rel="noopener noreferrer"
+          {/* Upcoming Birthdays - right column, top */}
+          <FloatingTile delay={0.1} className="lg:col-start-3 lg:row-start-1">
+            <Link
+              to="/birthdays"
               className="block rounded-xl p-6 bg-gradient-to-br from-[#ff4f00] to-[#ff7f50] hover:scale-105 transition-transform duration-300 shadow-xl backdrop-blur-sm bg-opacity-90 h-full min-h-[180px]"
             >
               <div className="h-full flex flex-col justify-between">
                 <div className="flex items-center gap-2">
-                  <CakeIcon className="h-6 w-6 text-white flex-shrink-0" />
-                  <h3 className="text-lg font-bold text-white">Upcoming Birthdays</h3>
+                  <CakeIcon className="h-7 w-7 text-white flex-shrink-0" />
+                  <h3 className="text-2xl font-bold text-white">Upcoming Birthdays</h3>
                 </div>
                 {upcomingBirthdays.length > 0 ? (
-                  <div className="flex items-center justify-between text-white/95 text-sm">
-                    <span className="font-medium truncate pr-2">{upcomingBirthdays[0].name}</span>
-                    <span className="text-white/80 flex-shrink-0">{formatDate(upcomingBirthdays[0].next)} →</span>
-                  </div>
+                  <ul className="space-y-1.5">
+                    {upcomingBirthdays.slice(0, 3).map((b) => (
+                      <li key={b.name} className="flex items-center justify-between text-white/95 text-sm">
+                        <span className="font-medium truncate pr-2">{b.name}</span>
+                        <span className="text-white/80 flex-shrink-0">{formatDate(b.next)}</span>
+                      </li>
+                    ))}
+                  </ul>
                 ) : (
-                  <div className="text-white/80 text-sm">Add team birthdays →</div>
+                  <div className="text-white/80 text-sm">No upcoming birthdays →</div>
                 )}
               </div>
-            </a>
+            </Link>
           </FloatingTile>
 
-          {/* Knowledge Base */}
-          <FloatingTile delay={0.2}>
+          {/* Knowledge Base - left column, top */}
+          <FloatingTile delay={0.2} className="lg:col-start-1 lg:row-start-1">
             <Link
               to="/products"
               className="block rounded-xl p-6 bg-gradient-to-br from-[#0951fa] to-[#0a7cff] hover:scale-105 transition-transform duration-300 shadow-xl backdrop-blur-sm bg-opacity-90 h-full min-h-[180px]"
             >
               <div className="h-full flex flex-col justify-between">
                 <div className="flex items-center gap-2">
-                  <BookOpenIcon className="h-6 w-6 text-white flex-shrink-0" />
-                  <h3 className="text-lg font-bold text-white">Knowledge Base</h3>
+                  <BookOpenIcon className="h-7 w-7 text-white flex-shrink-0" />
+                  <h3 className="text-2xl font-bold text-white">Knowledge Base</h3>
                 </div>
-                <div className="text-white/90 text-sm">
-                  Products, use cases, and sales resources →
+                <div>
+                  <div className="text-white text-base font-semibold leading-snug">
+                    One Team. One Goal. One Voice.
+                  </div>
+                  <div className="text-white/75 text-xs mt-1">
+                    Products, use cases & sales resources →
+                  </div>
                 </div>
               </div>
             </Link>
           </FloatingTile>
 
-          {/* Upcoming Anniversaries */}
-          <FloatingTile delay={0.3}>
-            <a
-              href="https://switch.bamboohr.com/home/"
-              target="_blank"
-              rel="noopener noreferrer"
+          {/* Upcoming Anniversaries - right column, bottom */}
+          <FloatingTile delay={0.3} className="lg:col-start-3 lg:row-start-2">
+            <Link
+              to="/anniversaries"
               className="block rounded-xl p-6 bg-gradient-to-br from-[#9333ea] to-[#c084fc] hover:scale-105 transition-transform duration-300 shadow-xl backdrop-blur-sm bg-opacity-90 h-full min-h-[180px]"
             >
               <div className="h-full flex flex-col justify-between">
                 <div className="flex items-center gap-2">
-                  <SparklesIcon className="h-6 w-6 text-white flex-shrink-0" />
-                  <h3 className="text-lg font-bold text-white">Upcoming Anniversaries</h3>
+                  <SparklesIcon className="h-7 w-7 text-white flex-shrink-0" />
+                  <h3 className="text-2xl font-bold text-white">Upcoming Anniversaries</h3>
                 </div>
                 {upcomingAnniversaries.length > 0 ? (
-                  <div className="flex items-center justify-between text-white/95 text-sm">
-                    <span className="font-medium truncate pr-2">{upcomingAnniversaries[0].name}</span>
-                    <span className="text-white/80 flex-shrink-0">
-                      {yearsOfService(upcomingAnniversaries[0].startYear, upcomingAnniversaries[0].next)} yr · {formatDate(upcomingAnniversaries[0].next)} →
-                    </span>
-                  </div>
+                  <ul className="space-y-1.5">
+                    {upcomingAnniversaries.slice(0, 3).map((a) => (
+                      <li key={a.name} className="flex items-center justify-between text-white/95 text-sm">
+                        <span className="font-medium truncate pr-2">{a.name}</span>
+                        <span className="text-white/80 flex-shrink-0">
+                          {yearsOfService(a.startYear, a.next)} yr · {formatDate(a.next)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
                 ) : (
-                  <div className="text-white/80 text-sm">Add team anniversaries →</div>
+                  <div className="text-white/80 text-sm">No upcoming anniversaries →</div>
                 )}
               </div>
-            </a>
+            </Link>
           </FloatingTile>
 
-          {/* Marketing Request */}
-          <FloatingTile delay={0.4}>
+          {/* Marketing Request - left column, bottom */}
+          <FloatingTile delay={0.4} className="lg:col-start-1 lg:row-start-2">
             <a
               href="https://getswitchdone.netlify.app/f/marketing-request-cbkday"
               target="_blank"
@@ -230,11 +239,16 @@ export default function Home() {
             >
               <div className="h-full flex flex-col justify-between">
                 <div className="flex items-center gap-2">
-                  <DocumentTextIcon className="h-6 w-6 text-white flex-shrink-0" />
-                  <h3 className="text-lg font-bold text-white">Marketing Request</h3>
+                  <DocumentTextIcon className="h-7 w-7 text-white flex-shrink-0" />
+                  <h3 className="text-2xl font-bold text-white">Marketing Request</h3>
                 </div>
-                <div className="text-white/90 text-sm">
-                  Flyers, emails, or campaign assets →
+                <div>
+                  <div className="text-white text-base font-semibold leading-snug">
+                    Shaping the message behind your momentum.
+                  </div>
+                  <div className="text-white/75 text-xs mt-1">
+                    Flyers, emails, or campaign assets →
+                  </div>
                 </div>
               </div>
             </a>

@@ -14,6 +14,7 @@ export function AuthProvider({ children }) {
       setUser({
         email: "dev@localhost",
         user_metadata: { full_name: "Local Dev" },
+        app_metadata: { roles: ["admin"] },
       });
       setLoading(false);
       setReady(true);
@@ -53,8 +54,10 @@ export function AuthProvider({ children }) {
   const signup = () => window.netlifyIdentity?.open("signup");
   const logout = () => window.netlifyIdentity?.logout();
 
+  const isAdmin = Boolean(user?.app_metadata?.roles?.includes("admin"));
+
   return (
-    <AuthContext.Provider value={{ user, loading, ready, login, signup, logout }}>
+    <AuthContext.Provider value={{ user, loading, ready, isAdmin, login, signup, logout }}>
       {children}
     </AuthContext.Provider>
   );
