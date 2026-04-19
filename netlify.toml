@@ -5,7 +5,6 @@
 
 [functions]
   node_bundler = "esbuild"
-  included_files = ["netlify/functions/products-seed.json"]
 
 # Handle SPA routing — functions first so /.netlify/functions/* isn't rewritten
 [[redirects]]

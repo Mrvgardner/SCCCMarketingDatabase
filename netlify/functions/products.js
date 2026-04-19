@@ -1,21 +1,12 @@
 import { getStore } from "@netlify/blobs";
 import { randomUUID } from "node:crypto";
-import { readFile } from "node:fs/promises";
-import { fileURLToPath } from "node:url";
-import { dirname, resolve } from "node:path";
+import seedData from "./products-seed.json";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
 const STORE_NAME = "knowledge-base";
 const KEY = "products.json";
 
-// Lazy-load the seed data so functions start fast when the blob is already populated.
-let seedCache = null;
 async function loadSeed() {
-  if (seedCache) return seedCache;
-  const seedPath = resolve(__dirname, "products-seed.json");
-  const raw = await readFile(seedPath, "utf8");
-  seedCache = JSON.parse(raw);
-  return seedCache;
+  return seedData;
 }
 
 function json(statusCode, body) {
