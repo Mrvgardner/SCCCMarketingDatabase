@@ -110,6 +110,14 @@ function AppShell() {
               )}
             </div>
             <div className="flex items-center gap-4 text-gray-200">
+              <div className="text-right text-xs leading-tight hidden sm:block">
+                <div className="text-gray-300 truncate max-w-[180px]" title={user.email}>
+                  {user.user_metadata?.full_name || user.email}
+                </div>
+                <div className={isAdmin ? "text-[#0a7cff]" : "text-gray-500"}>
+                  {isAdmin ? "Admin" : "Viewer"}
+                </div>
+              </div>
               <CogIcon className="h-5 w-5 hover:text-white cursor-pointer" onClick={() => setDarkMode(m => !m)} />
               <button onClick={logout} className="text-sm text-gray-400 hover:text-white transition-colors">
                 Sign Out

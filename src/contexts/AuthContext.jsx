@@ -54,7 +54,11 @@ export function AuthProvider({ children }) {
   const signup = () => window.netlifyIdentity?.open("signup");
   const logout = () => window.netlifyIdentity?.logout();
 
-  const isAdmin = Boolean(user?.app_metadata?.roles?.includes("admin"));
+  const roles = [
+    ...(user?.app_metadata?.roles || []),
+    ...(user?.user_metadata?.roles || []),
+  ];
+  const isAdmin = roles.includes("admin");
 
   return (
     <AuthContext.Provider value={{ user, loading, ready, isAdmin, login, signup, logout }}>
