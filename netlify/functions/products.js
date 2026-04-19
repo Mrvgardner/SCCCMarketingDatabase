@@ -1,4 +1,4 @@
-import { getStore } from "@netlify/blobs";
+import { connectLambda, getStore } from "@netlify/blobs";
 import { randomUUID } from "node:crypto";
 import seedData from "./products-seed.json";
 
@@ -49,6 +49,10 @@ function rebuildSearchBlob(p) {
 }
 
 export async function handler(event, context) {
+  // v1 handler functions need explicit wiring so @netlify/blobs can
+  // pick up the deploy context injected into the Lambda event.
+  connectLambda({ event, context });
+
   const user = context.clientContext?.user;
   const roles = user?.app_metadata?.roles || [];
   const isAdmin = roles.includes("admin");
