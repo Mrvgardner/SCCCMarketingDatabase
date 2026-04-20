@@ -4,7 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import Fuse from "fuse.js";
 import { listProducts } from "./api/products";
 import RichText from "./components/RichText.jsx";
-import { buildProductShareMailto, copyProductText } from "./utils/shareProduct";
+import { buildProductShareMailto, copyProductText, copyProductForSlack } from "./utils/shareProduct";
 
 export default function ProductKnowledgeBase() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -13,6 +13,7 @@ export default function ProductKnowledgeBase() {
   const [error, setError] = useState(null);
   const [selected, setSelected] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [slackCopied, setSlackCopied] = useState(false);
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState({
     company: null,
@@ -60,6 +61,7 @@ export default function ProductKnowledgeBase() {
   const closeProduct = () => {
     setSelected(null);
     setCopied(false);
+    setSlackCopied(false);
     if (searchParams.has("id")) {
       const next = new URLSearchParams(searchParams);
       next.delete("id");
@@ -74,6 +76,19 @@ export default function ProductKnowledgeBase() {
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       // Clipboard can fail silently — ignore
+    }
+  };
+
+  const handleSlack = async (product) => {
+    try {
+      await copyProductForSlack(product);
+      setSlackCopied(true);
+      setTimeout(() => setSlackCopied(false), 2500);
+      // Nudge the Slack desktop app to foreground. Fails silently on systems
+      // without Slack installed — the clipboard copy is the primary action.
+      window.location.href = "slack://open";
+    } catch (err) {
+      // Ignore — clipboard API may be unavailable
     }
   };
 
@@ -248,8 +263,30 @@ export default function ProductKnowledgeBase() {
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
-                  Share
+                  Email
                 </a>
+                <button
+                  type="button"
+                  onClick={() => handleSlack(selected)}
+                  title="Copy for Slack and open the app"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#4A154B] hover:bg-[#611f64] text-white text-sm font-medium transition-colors shadow-lg shadow-[#4A154B]/20"
+                >
+                  {slackCopied ? (
+                    <>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                      Paste in Slack
+                    </>
+                  ) : (
+                    <>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z"/>
+                      </svg>
+                      Slack
+                    </>
+                  )}
+                </button>
                 <button
                   type="button"
                   onClick={() => handleCopy(selected)}
