@@ -1,14 +1,20 @@
 import { useState, useMemo, useEffect } from "react";
 import { Dialog } from "@headlessui/react";
+import { useSearchParams } from "react-router-dom";
 import Fuse from "fuse.js";
 import { listProducts } from "./api/products";
 import RichText from "./components/RichText.jsx";
+import { useAuth } from "./contexts/AuthContext";
+import { buildProductShareMailto, copyProductText } from "./utils/shareProduct";
 
 export default function ProductKnowledgeBase() {
+  const { user } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selected, setSelected] = useState(null);
+  const [copied, setCopied] = useState(false);
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState({
     company: null,
@@ -33,6 +39,45 @@ export default function ProductKnowledgeBase() {
       cancelled = true;
     };
   }, []);
+
+  // Open the modal for the product referenced in ?id= once products have loaded.
+  useEffect(() => {
+    if (loading) return;
+    const id = searchParams.get("id");
+    if (id && products.length) {
+      const found = products.find((p) => p.id === id);
+      if (found) setSelected(found);
+    }
+  }, [loading, products, searchParams]);
+
+  const openProduct = (product) => {
+    setSelected(product);
+    if (product?.id) {
+      const next = new URLSearchParams(searchParams);
+      next.set("id", product.id);
+      setSearchParams(next, { replace: true });
+    }
+  };
+
+  const closeProduct = () => {
+    setSelected(null);
+    setCopied(false);
+    if (searchParams.has("id")) {
+      const next = new URLSearchParams(searchParams);
+      next.delete("id");
+      setSearchParams(next, { replace: true });
+    }
+  };
+
+  const handleCopy = async (product) => {
+    try {
+      await copyProductText(product);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      // Clipboard can fail silently — ignore
+    }
+  };
 
   const toggleFilter = (key, value) => {
     setFilters((prev) => ({
@@ -180,7 +225,7 @@ export default function ProductKnowledgeBase() {
                         ? "bg-gradient-to-tl from-[#ff6a1a] to-[#ff4f00]"
                         : "bg-gradient-to-b from-[#ff4f00] to-[#d84315]")
               }`}
-              onClick={() => setSelected(p)}
+              onClick={() => openProduct(p)}
             >
               <h2 className="text-xl font-semibold mb-2 text-white text-center">{p.title}</h2>
               <p className="text-sm text-gray-200 text-center mb-3">{p.company}</p>
@@ -191,18 +236,56 @@ export default function ProductKnowledgeBase() {
       )}
 
       {selected && (
-        <Dialog open={selected !== null} onClose={() => setSelected(null)}>
+        <Dialog open={selected !== null} onClose={closeProduct}>
           <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50" aria-hidden="true" />
           <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
             <Dialog.Panel className="bg-white dark:bg-gray-800/90 backdrop-blur-lg rounded-2xl max-w-2xl w-full mx-auto p-8 relative text-gray-900 dark:text-white shadow-xl border border-gray-200/50 dark:border-gray-700/50">
-              <button
-                onClick={() => setSelected(null)}
-                className="absolute top-4 right-4 p-2 rounded-full text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-              </button>
+              <div className="absolute top-4 right-4 flex items-center gap-1">
+                <a
+                  href={buildProductShareMailto(selected, {
+                    sharedBy: user?.user_metadata?.full_name || user?.email,
+                  })}
+                  onClick={(e) => e.stopPropagation()}
+                  title="Send via email"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0951fa] hover:bg-[#0951fa]/90 text-white text-sm font-medium transition-colors shadow-lg shadow-[#0951fa]/20"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  Share
+                </a>
+                <button
+                  type="button"
+                  onClick={() => handleCopy(selected)}
+                  title="Copy to clipboard"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 text-sm font-medium transition-colors"
+                >
+                  {copied ? (
+                    <>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                      Copied
+                    </>
+                  ) : (
+                    <>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                      </svg>
+                      Copy
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={closeProduct}
+                  className="p-1.5 rounded-full text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors"
+                  title="Close"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </div>
               <div className="mb-6">
                 <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-[#0951fa] to-[#0951fa]/70 bg-clip-text text-transparent">{selected.title}</h2>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">{selected.company}</p>
