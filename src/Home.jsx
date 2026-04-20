@@ -31,14 +31,6 @@ const resources = [
     icon: "photo",
   },
   {
-    name: "Knowledge Base",
-    type: "resource",
-    url: "/products",
-    description: "Product features, use cases, and sales resources",
-    color: "bg-gradient-to-br from-[#0a7cff] to-[#0951fa]",
-    icon: "book",
-  },
-  {
     name: "Brochures & Flyers",
     type: "resource",
     url: "/print-collateral",
