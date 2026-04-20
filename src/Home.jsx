@@ -5,6 +5,14 @@ import { listFieldNotes } from "./api/fieldNotes";
 import { birthdays, anniversaries } from "./data/celebrations";
 import { getUpcoming, formatDate, yearsOfService } from "./utils/celebrations";
 
+const externalTools = [
+  { name: "Slack", icon: "/logos/slack-logo.png", url: "https://switch-commerce.slack.com/" },
+  { name: "Assembly", icon: "/logos/assembly-logo.png", url: "https://app.joinassembly.com/" },
+  { name: "BambooHR", icon: "/logos/bamboohr-logo.png", url: "https://switch.bamboohr.com/home/" },
+  { name: "Jira", icon: "/logos/jira-logo.png", url: "https://switchcommerce.atlassian.net/jira/your-work" },
+  { name: "Confluence", icon: "/logos/confluence-logo.jpg", url: "https://switchcommerce.atlassian.net/wiki/home" },
+];
+
 const resources = [
   {
     name: "Email Signature",
@@ -262,10 +270,33 @@ export default function Home() {
             </a>
           </FloatingTile>
         </div>
+
+        {/* External tools row */}
+        <div className="mt-10 flex flex-wrap items-start justify-center gap-6 max-w-3xl mx-auto">
+          {externalTools.map((tool, i) => (
+            <FloatingTile key={tool.name} delay={0.5 + i * 0.05}>
+              <a
+                href={tool.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={tool.name}
+                aria-label={tool.name}
+                className="group relative flex flex-col items-center gap-2"
+              >
+                <div className="w-14 h-14 bg-white rounded-xl p-2.5 shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#0951fa]/20">
+                  <img src={tool.icon} alt="" className="w-full h-full object-contain" />
+                </div>
+                <span className="text-xs text-gray-400 group-hover:text-white transition-colors">
+                  {tool.name}
+                </span>
+              </a>
+            </FloatingTile>
+          ))}
+        </div>
       </div>
 
       {(activeFilter === "all" || (
-        (isVisible("quick tools") && (isVisible("branding assets") || isVisible("resources"))) || 
+        (isVisible("quick tools") && (isVisible("branding assets") || isVisible("resources"))) ||
         (isVisible("branding assets") && isVisible("resources"))
       )) && <SectionSeparator />}
 
