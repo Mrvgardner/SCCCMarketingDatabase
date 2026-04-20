@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { DocumentIcon, PhotoIcon, BookOpenIcon, DocumentTextIcon, CakeIcon, SparklesIcon, NewspaperIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
-import { fieldNotes } from "./data/field-notes";
+import { listFieldNotes } from "./api/fieldNotes";
 import { birthdays, anniversaries } from "./data/celebrations";
 import { getUpcoming, formatDate, yearsOfService } from "./utils/celebrations";
 
@@ -72,9 +72,17 @@ export default function Home() {
   const sections = ["All", "Quick Tools", "Branding Assets", "Resources"];
   const isVisible = (section) => activeFilter === "all" || activeFilter === section.toLowerCase();
 
-  const latestFieldNote = fieldNotes[0];
+  const [latestFieldNote, setLatestFieldNote] = useState(null);
   const upcomingBirthdays = getUpcoming(birthdays, 3);
   const upcomingAnniversaries = getUpcoming(anniversaries, 3);
+
+  useEffect(() => {
+    let cancelled = false;
+    listFieldNotes()
+      .then((notes) => !cancelled && setLatestFieldNote(notes[0] || null))
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8">

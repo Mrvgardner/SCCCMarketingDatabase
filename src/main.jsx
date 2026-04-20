@@ -16,8 +16,11 @@ import PrintCollateral from './pages/PrintCollateral.jsx';
 import FieldNotes from './pages/FieldNotes.jsx';
 import Birthdays from './pages/Birthdays.jsx';
 import Anniversaries from './pages/Anniversaries.jsx';
+import AdminDashboard from './pages/admin/AdminDashboard.jsx';
 import ProductsAdmin from './pages/admin/ProductsAdmin.jsx';
 import ProductForm from './pages/admin/ProductForm.jsx';
+import FieldNotesAdmin from './pages/admin/FieldNotesAdmin.jsx';
+import FieldNoteForm from './pages/admin/FieldNoteForm.jsx';
 import Login from './pages/Login.jsx';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { useState } from 'react';
@@ -104,7 +107,7 @@ function AppShell() {
                 Knowledge Base
               </Link>
               {isAdmin && (
-                <Link to="/admin/products" className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#0951fa]/20 border border-[#0951fa]/40 text-[#0a7cff] hover:bg-[#0951fa]/30 transition-colors text-sm font-medium">
+                <Link to="/admin" className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#0951fa]/20 border border-[#0951fa]/40 text-[#0a7cff] hover:bg-[#0951fa]/30 transition-colors text-sm font-medium">
                   Admin
                 </Link>
               )}
@@ -141,9 +144,13 @@ function AppShell() {
         <Route path="/field-notes" element={<ProtectedRoute><FieldNotes /></ProtectedRoute>} />
         <Route path="/birthdays" element={<ProtectedRoute><Birthdays /></ProtectedRoute>} />
         <Route path="/anniversaries" element={<ProtectedRoute><Anniversaries /></ProtectedRoute>} />
+        <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
         <Route path="/admin/products" element={<AdminRoute><ProductsAdmin /></AdminRoute>} />
         <Route path="/admin/products/new" element={<AdminRoute><ProductForm /></AdminRoute>} />
         <Route path="/admin/products/:id/edit" element={<AdminRoute><ProductForm /></AdminRoute>} />
+        <Route path="/admin/field-notes" element={<AdminRoute><FieldNotesAdmin /></AdminRoute>} />
+        <Route path="/admin/field-notes/new" element={<AdminRoute><FieldNoteForm /></AdminRoute>} />
+        <Route path="/admin/field-notes/:id/edit" element={<AdminRoute><FieldNoteForm /></AdminRoute>} />
       </Routes>
     </>
   );
