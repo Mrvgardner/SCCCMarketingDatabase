@@ -3,9 +3,12 @@ import { formatTextContent } from "../utils/textFormatter.jsx";
 
 const ALLOWED_TAGS = [
   "p", "br", "strong", "b", "em", "i", "u", "ul", "ol", "li",
-  "a", "h2", "h3", "span", "blockquote", "code",
+  "a", "h2", "h3", "span", "blockquote", "code", "img",
 ];
-const ALLOWED_ATTR = ["href", "target", "rel", "style", "class"];
+const ALLOWED_ATTR = [
+  "href", "target", "rel", "style", "class",
+  "src", "alt", "width", "height", "loading",
+];
 
 function looksLikeHTML(str) {
   return typeof str === "string" && /<\/?[a-z][\s\S]*>/i.test(str);

@@ -4,7 +4,9 @@ import { Link } from "@tiptap/extension-link";
 import { Underline } from "@tiptap/extension-underline";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { Color } from "@tiptap/extension-color";
-import { useEffect, useRef } from "react";
+import { Image } from "@tiptap/extension-image";
+import { useEffect, useRef, useState } from "react";
+import { uploadImage } from "../api/images";
 
 // Matches brand palette. Last color resets to default.
 const PALETTE = [
@@ -52,6 +54,13 @@ export default function RichTextEditor({ value, onChange, placeholder }) {
       }),
       TextStyle,
       Color,
+      Image.configure({
+        inline: false,
+        allowBase64: true,
+        HTMLAttributes: {
+          class: "rounded-lg max-w-full h-auto my-2",
+        },
+      }),
     ],
     content: value || "",
     editorProps: {
@@ -77,7 +86,31 @@ export default function RichTextEditor({ value, onChange, placeholder }) {
     }
   }, [value, editor]);
 
+  const fileInputRef = useRef(null);
+  const [uploading, setUploading] = useState(false);
+
   if (!editor) return null;
+
+  const handleFilePicked = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allow re-picking the same file
+    if (!file) return;
+    setUploading(true);
+    try {
+      const { url } = await uploadImage(file);
+      editor.chain().focus().setImage({ src: url, alt: file.name }).run();
+    } catch (err) {
+      window.alert(err.message || "Upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const addImageByUrl = () => {
+    const url = window.prompt("Image or GIF URL (paste from Giphy, Dropbox, etc.)", "https://");
+    if (!url || url === "https://") return;
+    editor.chain().focus().setImage({ src: url }).run();
+  };
 
   const addLink = () => {
     const prev = editor.getAttributes("link").href;
@@ -146,6 +179,29 @@ export default function RichTextEditor({ value, onChange, placeholder }) {
         >
           Link
         </ToolbarButton>
+
+        <div className="w-px h-6 bg-gray-700 mx-1" />
+
+        <ToolbarButton
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading}
+          title="Upload an image or GIF"
+        >
+          {uploading ? "Uploading…" : "📎 Upload"}
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={addImageByUrl}
+          title="Insert image or GIF by URL"
+        >
+          🔗 Image URL
+        </ToolbarButton>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/png,image/jpeg,image/gif,image/webp,image/svg+xml"
+          onChange={handleFilePicked}
+          className="hidden"
+        />
 
         <div className="w-px h-6 bg-gray-700 mx-1" />
 
