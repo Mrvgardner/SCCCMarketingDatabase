@@ -19,7 +19,19 @@ export function buildProductShareMailto(product, { sharedBy } = {}) {
   const subject = `${product.title}${product.company ? ` — ${product.company}` : ""}`;
 
   const parts = [];
-  parts.push(`Hi,\n\nHere's some information about ${product.title} from ${product.company || "Switch Commerce"}:\n\n`);
+  parts.push("Hi [First Name],\n\n");
+  parts.push("It was great speaking with you today.\n\n");
+  parts.push(
+    "As promised, here's the info I mentioned when we were on the phone. It walks through the details we discussed and should be a helpful reference if you need to revisit anything later.\n\n"
+  );
+  parts.push(
+    "If any questions come up after you've had a chance to review it, feel free to reply here—we're happy to help.\n\n\n"
+  );
+
+  // Card info
+  parts.push(`${product.title}\n`);
+  if (product.company) parts.push(`${product.company}\n`);
+  parts.push("\n");
 
   if (product.description) {
     parts.push(`${stripHtml(product.description)}\n\n`);
@@ -27,7 +39,7 @@ export function buildProductShareMailto(product, { sharedBy } = {}) {
 
   parts.push(section("The Challenge:", [product.problem, product.villain].filter(Boolean).join(" ")));
   parts.push(section("Our Solution:", product.plan));
-  parts.push(section("Call to action:", product.cta));
+  parts.push(section("Next step:", product.cta));
 
   if (product.id) {
     const origin =
@@ -35,9 +47,9 @@ export function buildProductShareMailto(product, { sharedBy } = {}) {
     parts.push(`View this card: ${origin}/products?id=${encodeURIComponent(product.id)}\n\n`);
   }
 
-  if (sharedBy) {
-    parts.push(`— ${sharedBy}\n`);
-  }
+  parts.push("Best,\n");
+  parts.push(`${sharedBy || "[Your Name]"}\n`);
+  parts.push("Partner Support\n");
 
   const body = parts.filter(Boolean).join("");
 
