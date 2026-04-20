@@ -13,7 +13,9 @@ function section(label, value) {
   return `${label}\n${text}\n\n`;
 }
 
-export function buildProductShareMailto(product, { sharedBy } = {}) {
+const DIVIDER = "—".repeat(40);
+
+export function buildProductShareMailto(product) {
   if (!product) return "#";
 
   const subject = `${product.title}${product.company ? ` — ${product.company}` : ""}`;
@@ -25,10 +27,11 @@ export function buildProductShareMailto(product, { sharedBy } = {}) {
     "As promised, here's the info I mentioned when we were on the phone. It walks through the details we discussed and should be a helpful reference if you need to revisit anything later.\n\n"
   );
   parts.push(
-    "If any questions come up after you've had a chance to review it, feel free to reply here—we're happy to help.\n\n\n"
+    "If any questions come up after you've had a chance to review it, feel free to reply here—we're happy to help.\n\n"
   );
 
-  // Card info
+  parts.push(`${DIVIDER}\n\n`);
+
   parts.push(`${product.title}\n`);
   if (product.company) parts.push(`${product.company}\n`);
   parts.push("\n");
@@ -41,15 +44,7 @@ export function buildProductShareMailto(product, { sharedBy } = {}) {
   parts.push(section("Our Solution:", product.plan));
   parts.push(section("Next step:", product.cta));
 
-  if (product.id) {
-    const origin =
-      typeof window !== "undefined" ? window.location.origin : "https://switchcommerce.team";
-    parts.push(`View this card: ${origin}/products?id=${encodeURIComponent(product.id)}\n\n`);
-  }
-
-  parts.push("Best,\n");
-  parts.push(`${sharedBy || "[Your Name]"}\n`);
-  parts.push("Partner Support\n");
+  parts.push(`${DIVIDER}\n`);
 
   const body = parts.filter(Boolean).join("");
 

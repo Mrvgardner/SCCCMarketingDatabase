@@ -4,11 +4,9 @@ import { useSearchParams } from "react-router-dom";
 import Fuse from "fuse.js";
 import { listProducts } from "./api/products";
 import RichText from "./components/RichText.jsx";
-import { useAuth } from "./contexts/AuthContext";
 import { buildProductShareMailto, copyProductText } from "./utils/shareProduct";
 
 export default function ProductKnowledgeBase() {
-  const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -242,9 +240,7 @@ export default function ProductKnowledgeBase() {
             <Dialog.Panel className="bg-white dark:bg-gray-800/90 backdrop-blur-lg rounded-2xl max-w-2xl w-full mx-auto p-8 relative text-gray-900 dark:text-white shadow-xl border border-gray-200/50 dark:border-gray-700/50">
               <div className="absolute top-4 right-4 flex items-center gap-1">
                 <a
-                  href={buildProductShareMailto(selected, {
-                    sharedBy: user?.user_metadata?.full_name || user?.email,
-                  })}
+                  href={buildProductShareMailto(selected)}
                   onClick={(e) => e.stopPropagation()}
                   title="Send via email"
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0951fa] hover:bg-[#0951fa]/90 text-white text-sm font-medium transition-colors shadow-lg shadow-[#0951fa]/20"
