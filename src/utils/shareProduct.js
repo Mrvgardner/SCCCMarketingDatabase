@@ -51,46 +51,6 @@ export function buildProductShareMailto(product) {
   return `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
-// Slack uses mrkdwn: *bold*, _italic_, <url|label>, bullet "•"
-export function buildSlackMessage(product) {
-  if (!product) return "";
-
-  const lines = [];
-  const header = [`*${product.title}*`, product.company && `_${product.company}_`]
-    .filter(Boolean)
-    .join(" — ");
-  lines.push(header);
-
-  if (product.description) {
-    lines.push(stripHtml(product.description));
-  }
-
-  const challenge = stripHtml(
-    [product.problem, product.villain].filter(Boolean).join(" ")
-  );
-  if (challenge) lines.push(`*Challenge:* ${challenge}`);
-
-  const solution = stripHtml(product.plan);
-  if (solution) lines.push(`*Solution:* ${solution}`);
-
-  const cta = stripHtml(product.cta);
-  if (cta) lines.push(`*Next step:* ${cta}`);
-
-  if (product.id) {
-    const origin =
-      typeof window !== "undefined" ? window.location.origin : "https://switchcommerce.team";
-    lines.push(`<${origin}/products?id=${encodeURIComponent(product.id)}|View the full card>`);
-  }
-
-  return lines.join("\n\n");
-}
-
-export async function copyProductForSlack(product) {
-  const text = buildSlackMessage(product);
-  if (!text) return;
-  await navigator.clipboard.writeText(text);
-}
-
 export async function copyProductText(product) {
   if (!product) return;
   const lines = [
