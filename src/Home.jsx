@@ -77,7 +77,7 @@ const SectionSeparator = () => (
 
 export default function Home() {
   const [activeFilter, setActiveFilter] = useState("all");
-  const sections = ["All", "Quick Tools", "Branding Assets", "Resources"];
+  const sections = ["All", "Branding Assets", "Resources"];
   const isVisible = (section) => activeFilter === "all" || activeFilter === section.toLowerCase();
 
   const [latestFieldNote, setLatestFieldNote] = useState(null);
@@ -95,11 +95,11 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8">
       {/* Hero Section */}
-      <div className="max-w-7xl mx-auto text-center mb-16">
-        <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-[#0951fa] from-10% via-[#0951fa] via-30% to-[#ff4f00] to-80% bg-clip-text text-transparent">
+      <div className="max-w-7xl mx-auto text-center mb-6">
+        <h1 className="text-5xl font-bold mb-2 bg-gradient-to-r from-[#0951fa] from-10% via-[#0951fa] via-30% to-[#ff4f00] to-80% bg-clip-text text-transparent">
           Team Switch Commerce
         </h1>
-        <h2 className="text-3xl md:text-4xl font-semibold mt-3 mb-5">
+        <h2 className="text-lg md:text-xl font-medium text-gray-300">
           <span className="animate-slide-in inline-block">One Team.</span>
           {" "}
           <span className="animate-slide-in-delayed inline-block opacity-0">One Goal.</span>

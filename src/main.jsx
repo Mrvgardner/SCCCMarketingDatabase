@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom'
 import { Menu } from '@headlessui/react'
-import { HomeIcon, CogIcon, ChevronDownIcon } from '@heroicons/react/24/solid'
+import { HomeIcon, ChevronDownIcon } from '@heroicons/react/24/solid'
 import Home from './Home'
 import SwitchCommerceBranding from './pages/SwitchCommerceBranding.jsx';
 import ClearChoiceBranding from './pages/ClearChoiceBranding.jsx';
@@ -64,7 +64,6 @@ function AdminRoute({ children }) {
 
 function AppShell() {
   const { user, logout, isAdmin } = useAuth();
-  const [darkMode, setDarkMode] = useState(true);
 
   return (
     <>
@@ -121,7 +120,6 @@ function AppShell() {
                   {isAdmin ? "Admin" : "Viewer"}
                 </div>
               </div>
-              <CogIcon className="h-5 w-5 hover:text-white cursor-pointer" onClick={() => setDarkMode(m => !m)} />
               <button onClick={logout} className="text-sm text-gray-400 hover:text-white transition-colors">
                 Sign Out
               </button>
