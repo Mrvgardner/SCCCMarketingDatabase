@@ -237,8 +237,8 @@ export default function ProductKnowledgeBase() {
         <Dialog open={selected !== null} onClose={closeProduct}>
           <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50" aria-hidden="true" />
           <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
-            <Dialog.Panel className="bg-white dark:bg-gray-800/90 backdrop-blur-lg rounded-2xl max-w-2xl w-full mx-auto p-8 relative text-gray-900 dark:text-white shadow-xl border border-gray-200/50 dark:border-gray-700/50">
-              <div className="absolute top-4 right-4 flex items-center gap-1">
+            <Dialog.Panel className="bg-white dark:bg-gray-800/90 backdrop-blur-lg rounded-2xl max-w-2xl w-full mx-auto max-h-[90vh] flex flex-col text-gray-900 dark:text-white shadow-xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
+              <div className="flex items-center justify-end gap-1 px-4 py-3 border-b border-gray-200/40 dark:border-gray-700/60 flex-shrink-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
                 <a
                   href={buildProductShareMailto(selected)}
                   onClick={(e) => e.stopPropagation()}
@@ -282,28 +282,29 @@ export default function ProductKnowledgeBase() {
                   </svg>
                 </button>
               </div>
-              <div className="mb-6">
-                <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-[#0951fa] to-[#0951fa]/70 bg-clip-text text-transparent">{selected.title}</h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">{selected.company}</p>
-                <div className="text-gray-700 dark:text-gray-300 italic">
-                  <RichText content={selected.description} />
-                </div>
-              </div>
-              <div className="space-y-6">
-                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
-                  <h3 className="font-semibold text-lg mb-2 text-gray-900 dark:text-white">The Challenge</h3>
-                  <div className="text-gray-700 dark:text-gray-300">
-                    <RichText content={selected.problem} />
-                    {selected.villain && <RichText content={selected.villain} />}
+              <div className="flex-1 overflow-y-auto p-8 pt-6">
+                <div className="mb-6">
+                  <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-[#0951fa] to-[#0951fa]/70 bg-clip-text text-transparent">{selected.title}</h2>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">{selected.company}</p>
+                  <div className="text-gray-700 dark:text-gray-300 italic">
+                    <RichText content={selected.description} />
                   </div>
                 </div>
-                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
-                  <h3 className="font-semibold text-lg mb-2 text-gray-900 dark:text-white">Solution</h3>
-                  <div className="text-gray-700 dark:text-gray-300">
-                    <RichText content={selected.plan} />
+                <div className="space-y-6">
+                  <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
+                    <h3 className="font-semibold text-lg mb-2 text-gray-900 dark:text-white">The Challenge</h3>
+                    <div className="text-gray-700 dark:text-gray-300">
+                      <RichText content={selected.problem} />
+                      {selected.villain && <RichText content={selected.villain} />}
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
+                    <h3 className="font-semibold text-lg mb-2 text-gray-900 dark:text-white">Solution</h3>
+                    <div className="text-gray-700 dark:text-gray-300">
+                      <RichText content={selected.plan} />
+                    </div>
                   </div>
                 </div>
-              </div>
               {selected.resources && selected.resources.length > 0 && (
                 <div className="mt-6">
                   <h3 className="font-semibold text-lg mb-3 text-gray-900 dark:text-white">Resources</h3>
@@ -340,6 +341,7 @@ export default function ProductKnowledgeBase() {
                   </div>
                 </div>
               )}
+              </div>
             </Dialog.Panel>
           </div>
         </Dialog>
