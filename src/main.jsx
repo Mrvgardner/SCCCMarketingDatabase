@@ -116,9 +116,7 @@ function AppShell() {
                 <div className="text-gray-300 truncate max-w-[180px]" title={user.email}>
                   {user.user_metadata?.full_name || user.email}
                 </div>
-                <div className={isAdmin ? "text-[#0a7cff]" : "text-gray-500"}>
-                  {isAdmin ? "Admin" : "Viewer"}
-                </div>
+                {isAdmin && <div className="text-[#0a7cff]">Admin</div>}
               </div>
               <button onClick={logout} className="text-sm text-gray-400 hover:text-white transition-colors">
                 Sign Out
