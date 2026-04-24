@@ -72,8 +72,7 @@ const STATIC_PAGES = [
   {
     type: "page", title: "Marketing Request",
     subtitle: "Submit a marketing request",
-    url: "https://getswitchdone.netlify.app/f/marketing-request-cbkday",
-    external: true,
+    url: "/marketing-request",
   },
 ];
 

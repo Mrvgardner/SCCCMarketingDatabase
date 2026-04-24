@@ -213,10 +213,8 @@ export default function Home() {
 
           {/* Marketing Request - left column, bottom */}
           <FloatingTile delay={0.4} className="lg:col-start-1 lg:row-start-2">
-            <a
-              href="https://getswitchdone.netlify.app/f/marketing-request-cbkday"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to="/marketing-request"
               className="block rounded-xl p-6 bg-gradient-to-br from-[#6b46c1]/60 from-0% via-[#6b46c1]/10 via-45% to-gray-900/70 to-100% border border-[#6b46c1]/25 hover:border-[#6b46c1]/50 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl backdrop-blur-md h-full min-h-[180px]"
             >
               <div className="h-full flex flex-col justify-between">
@@ -233,7 +231,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            </a>
+            </Link>
           </FloatingTile>
         </div>
 
