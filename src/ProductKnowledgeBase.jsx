@@ -5,6 +5,7 @@ import { Squares2X2Icon, ListBulletIcon, ViewColumnsIcon, TableCellsIcon, QueueL
 import Fuse from "fuse.js";
 import { listProducts } from "./api/products";
 import RichText from "./components/RichText.jsx";
+import ShareRecipientDialog from "./components/ShareRecipientDialog.jsx";
 import { buildProductShareMailto, copyProductText } from "./utils/shareProduct";
 
 const VIEW_STORAGE_KEY = "scc:kb-view";
@@ -32,6 +33,7 @@ export default function ProductKnowledgeBase() {
   });
   const [sortKey, setSortKey] = useState("title");
   const [sortDir, setSortDir] = useState("asc");
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState({
     company: null,
@@ -283,9 +285,12 @@ export default function ProductKnowledgeBase() {
           <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
             <Dialog.Panel className="bg-white dark:bg-gray-800/90 backdrop-blur-lg rounded-2xl max-w-2xl w-full mx-auto max-h-[90vh] flex flex-col text-gray-900 dark:text-white shadow-xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
               <div className="flex items-center justify-end gap-1 px-4 py-3 border-b border-gray-200/40 dark:border-gray-700/60 flex-shrink-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
-                <a
-                  href={buildProductShareMailto(selected)}
-                  onClick={(e) => e.stopPropagation()}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShareDialogOpen(true);
+                  }}
                   title="Send via email"
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0951fa] hover:bg-[#0951fa]/90 text-white text-sm font-medium transition-colors shadow-lg shadow-[#0951fa]/20"
                 >
@@ -293,7 +298,7 @@ export default function ProductKnowledgeBase() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                   Email
-                </a>
+                </button>
                 <button
                   type="button"
                   onClick={() => handleCopy(selected)}
@@ -390,6 +395,18 @@ export default function ProductKnowledgeBase() {
           </div>
         </Dialog>
       )}
+
+      <ShareRecipientDialog
+        open={shareDialogOpen}
+        onClose={() => setShareDialogOpen(false)}
+        productTitle={selected?.title}
+        onSubmit={({ name, email }) => {
+          setShareDialogOpen(false);
+          if (!selected) return;
+          const href = buildProductShareMailto(selected, { name, email });
+          window.location.href = href;
+        }}
+      />
     </div>
   );
 }

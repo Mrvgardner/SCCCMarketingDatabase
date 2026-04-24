@@ -15,13 +15,15 @@ function section(label, value) {
 
 const DIVIDER = "—".repeat(40);
 
-export function buildProductShareMailto(product) {
+export function buildProductShareMailto(product, recipient = {}) {
   if (!product) return "#";
 
   const subject = `${product.title}${product.company ? ` — ${product.company}` : ""}`;
+  const firstName = (recipient.name || "").trim().split(/\s+/)[0] || "[First Name]";
+  const toAddress = (recipient.email || "").trim();
 
   const parts = [];
-  parts.push("Hi [First Name],\n\n");
+  parts.push(`Hi ${firstName},\n\n`);
   parts.push("It was great speaking with you today.\n\n");
   parts.push(
     "As promised, here's the info I mentioned when we were on the phone. It walks through the details we discussed and should be a helpful reference if you need to revisit anything later.\n\n"
@@ -48,7 +50,8 @@ export function buildProductShareMailto(product) {
 
   const body = parts.filter(Boolean).join("");
 
-  return `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const to = toAddress ? encodeURIComponent(toAddress) : "";
+  return `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
 export async function copyProductText(product) {
