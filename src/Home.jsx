@@ -190,7 +190,7 @@ export default function Home() {
         </div>
 
         {/* External tools row */}
-        <div className="mt-10 flex flex-wrap items-start justify-center gap-6 max-w-3xl mx-auto">
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-3 max-w-4xl mx-auto">
           {externalTools.map((tool, i) => (
             <FloatingTile key={tool.name} delay={0.5 + i * 0.05}>
               <a
@@ -199,12 +199,20 @@ export default function Home() {
                 rel="noopener noreferrer"
                 title={tool.name}
                 aria-label={tool.name}
-                className="group relative flex flex-col items-center gap-2"
+                className="group inline-flex items-center gap-2 pl-2 pr-4 py-1.5 rounded-full bg-gray-900/40 border border-white/10 hover:border-white/25 hover:bg-gray-900/60 backdrop-blur-md shadow-md hover:shadow-lg transition-all"
               >
-                <div className="w-14 h-14 bg-white rounded-xl p-2.5 shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#0951fa]/20">
-                  <img src={tool.icon} alt="" loading="lazy" decoding="async" width="56" height="56" className="w-full h-full object-contain" />
-                </div>
-                <span className="text-xs text-gray-400 group-hover:text-white transition-colors">
+                <span className="flex items-center justify-center w-7 h-7 rounded-full bg-white shadow-sm">
+                  <img
+                    src={tool.icon}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    width="28"
+                    height="28"
+                    className="w-5 h-5 object-contain"
+                  />
+                </span>
+                <span className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">
                   {tool.name}
                 </span>
               </a>
