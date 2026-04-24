@@ -19,7 +19,7 @@ const resources = [
     type: "resource",
     url: "/email-signature",
     description: "Download your branded email signature",
-    color: "bg-gradient-to-br from-[#0951fa] to-[#0a7cff]",
+    color: "bg-gradient-to-br from-[#0951fa]/60 from-0% via-[#0951fa]/10 via-45% to-gray-900/70 to-100% border border-[#0951fa]/25 hover:border-[#0951fa]/50",
     icon: "document",
   },
   {
@@ -27,7 +27,7 @@ const resources = [
     type: "download",
     url: "/wallpapers",
     description: "Branded desktop and mobile wallpapers",
-    color: "bg-gradient-to-br from-[#ff4f00] to-[#ff7f50]",
+    color: "bg-gradient-to-br from-[#ff4f00]/55 from-0% via-[#ff4f00]/10 via-45% to-gray-900/70 to-100% border border-[#ff4f00]/25 hover:border-[#ff4f00]/50",
     icon: "photo",
   },
   {
@@ -35,7 +35,7 @@ const resources = [
     type: "resource",
     url: "/print-collateral",
     description: "Access the latest brochures and one-pagers",
-    color: "bg-gradient-to-br from-[#9333ea] to-[#c084fc]",
+    color: "bg-gradient-to-br from-[#9333ea]/55 from-0% via-[#9333ea]/10 via-45% to-gray-900/70 to-100% border border-[#9333ea]/25 hover:border-[#9333ea]/50",
     icon: "document-text",
   },
 ];
@@ -128,7 +128,7 @@ export default function Home() {
           <FloatingTile delay={0} className="lg:col-start-2 lg:row-start-1 lg:row-span-2">
             <Link
               to="/field-notes"
-              className="block rounded-xl p-6 bg-gradient-to-br from-[#5fae4b] to-[#7bc966] hover:scale-105 transition-transform duration-300 shadow-xl backdrop-blur-sm bg-opacity-90 h-full"
+              className="block rounded-xl p-6 bg-gradient-to-br from-[#5fae4b]/60 from-0% via-[#5fae4b]/10 via-45% to-gray-900/70 to-100% border border-[#5fae4b]/25 hover:border-[#5fae4b]/50 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl backdrop-blur-md h-full"
             >
               <div className="h-full flex flex-col">
                 <div className="flex items-center gap-2 mb-4">
@@ -162,7 +162,7 @@ export default function Home() {
           <FloatingTile delay={0.1} className="lg:col-start-3 lg:row-start-1">
             <Link
               to="/birthdays"
-              className="block rounded-xl p-6 bg-gradient-to-br from-[#ff4f00] to-[#ff7f50] hover:scale-105 transition-transform duration-300 shadow-xl backdrop-blur-sm bg-opacity-90 h-full min-h-[180px]"
+              className="block rounded-xl p-6 bg-gradient-to-br from-[#ff4f00]/55 from-0% via-[#ff4f00]/10 via-45% to-gray-900/70 to-100% border border-[#ff4f00]/25 hover:border-[#ff4f00]/50 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl backdrop-blur-md h-full min-h-[180px]"
             >
               <div className="h-full flex flex-col justify-between">
                 <div className="flex items-center gap-2">
@@ -189,7 +189,7 @@ export default function Home() {
           <FloatingTile delay={0.2} className="lg:col-start-1 lg:row-start-1">
             <Link
               to="/products"
-              className="block rounded-xl p-6 bg-gradient-to-br from-[#0951fa] to-[#0a7cff] hover:scale-105 transition-transform duration-300 shadow-xl backdrop-blur-sm bg-opacity-90 h-full min-h-[180px]"
+              className="block rounded-xl p-6 bg-gradient-to-br from-[#0951fa]/60 from-0% via-[#0951fa]/10 via-45% to-gray-900/70 to-100% border border-[#0951fa]/25 hover:border-[#0951fa]/50 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl backdrop-blur-md h-full min-h-[180px]"
             >
               <div className="h-full flex flex-col justify-between">
                 <div className="flex items-center gap-2">
@@ -212,7 +212,7 @@ export default function Home() {
           <FloatingTile delay={0.3} className="lg:col-start-3 lg:row-start-2">
             <Link
               to="/anniversaries"
-              className="block rounded-xl p-6 bg-gradient-to-br from-[#9333ea] to-[#c084fc] hover:scale-105 transition-transform duration-300 shadow-xl backdrop-blur-sm bg-opacity-90 h-full min-h-[180px]"
+              className="block rounded-xl p-6 bg-gradient-to-br from-[#9333ea]/55 from-0% via-[#9333ea]/10 via-45% to-gray-900/70 to-100% border border-[#9333ea]/25 hover:border-[#9333ea]/50 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl backdrop-blur-md h-full min-h-[180px]"
             >
               <div className="h-full flex flex-col justify-between">
                 <div className="flex items-center gap-2">
@@ -243,7 +243,7 @@ export default function Home() {
               href="https://getswitchdone.netlify.app/f/marketing-request-cbkday"
               target="_blank"
               rel="noopener noreferrer"
-              className="block rounded-xl p-6 bg-gradient-to-br from-[#6b46c1] to-[#9333ea] hover:scale-105 transition-transform duration-300 shadow-xl backdrop-blur-sm bg-opacity-90 h-full min-h-[180px]"
+              className="block rounded-xl p-6 bg-gradient-to-br from-[#6b46c1]/60 from-0% via-[#6b46c1]/10 via-45% to-gray-900/70 to-100% border border-[#6b46c1]/25 hover:border-[#6b46c1]/50 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl backdrop-blur-md h-full min-h-[180px]"
             >
               <div className="h-full flex flex-col justify-between">
                 <div className="flex items-center gap-2">
@@ -299,7 +299,7 @@ export default function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {/* Switch Commerce Assets */}
           <FloatingTile delay={0.2}>
-            <div className="block rounded-xl overflow-hidden bg-gradient-to-br from-[#0951fa] to-[#0951fa]/70 p-6 shadow-xl hover:scale-105 transition-transform duration-300 h-full">
+            <div className="block rounded-xl overflow-hidden bg-gradient-to-br from-[#0951fa]/60 from-0% via-[#0951fa]/10 via-45% to-gray-900/70 to-100% border border-[#0951fa]/25 p-6 shadow-xl hover:shadow-2xl hover:border-[#0951fa]/50 hover:scale-105 transition-all duration-300 backdrop-blur-md h-full">
               <h3 className="text-2xl font-bold mb-4">Switch Commerce</h3>
               <div className="space-y-4">
                 <Link
@@ -320,7 +320,7 @@ export default function Home() {
 
           {/* Clear Choice Assets */}
           <FloatingTile delay={0.4}>
-            <div className="block rounded-xl overflow-hidden bg-gradient-to-br from-[#ff4f00] to-[#ff4f00]/70 p-6 shadow-xl hover:scale-105 transition-transform duration-300 h-full">
+            <div className="block rounded-xl overflow-hidden bg-gradient-to-br from-[#ff4f00]/55 from-0% via-[#ff4f00]/10 via-45% to-gray-900/70 to-100% border border-[#ff4f00]/25 p-6 shadow-xl hover:shadow-2xl hover:border-[#ff4f00]/50 hover:scale-105 transition-all duration-300 backdrop-blur-md h-full">
               <h3 className="text-2xl font-bold mb-4">Clear Choice</h3>
               <div className="space-y-4">
                 <Link
@@ -358,7 +358,7 @@ export default function Home() {
                   href={resource.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`block rounded-xl p-5 hover:scale-105 transition-transform duration-300 shadow-xl h-full backdrop-blur-sm bg-opacity-90 ${resource.color || 'bg-gray-800'}`}
+                  className={`block rounded-xl p-5 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl h-full backdrop-blur-md ${resource.color || 'bg-gray-800'}`}
                 >
                   <div className="h-full flex flex-col items-center text-center">
                     <div className="flex items-center justify-center mb-4">
@@ -388,7 +388,7 @@ export default function Home() {
               ) : (
                 <Link
                   to={resource.url}
-                  className={`block rounded-xl p-5 hover:scale-105 transition-transform duration-300 shadow-xl h-full backdrop-blur-sm bg-opacity-90 ${resource.color || 'bg-gray-800'}`}
+                  className={`block rounded-xl p-5 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl h-full backdrop-blur-md ${resource.color || 'bg-gray-800'}`}
                 >
                 <div className="h-full flex flex-col items-center text-center">
                   <div className="flex items-center justify-center mb-4">
