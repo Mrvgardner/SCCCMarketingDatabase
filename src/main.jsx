@@ -1,31 +1,39 @@
-import React from 'react'
+import React, { lazy, Suspense } from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom'
 import { Menu } from '@headlessui/react'
 import { HomeIcon, ChevronDownIcon } from '@heroicons/react/24/solid'
 import Home from './Home'
-import SwitchCommerceBranding from './pages/SwitchCommerceBranding.jsx';
-import ClearChoiceBranding from './pages/ClearChoiceBranding.jsx';
-import ClearChoice from './ClearChoice.jsx'
-import SwitchCommerce from './SwitchCommerce.jsx'
-import ProductsPage from './pages/products';
-import EmailSignature from './pages/EmailSignature.jsx';
-import Wallpapers from './pages/Wallpapers.jsx';
-import MarketingRequest from './pages/MarketingRequest.jsx';
-import PrintCollateral from './pages/PrintCollateral.jsx';
-import FieldNotes from './pages/FieldNotes.jsx';
-import Birthdays from './pages/Birthdays.jsx';
-import Anniversaries from './pages/Anniversaries.jsx';
-import AdminDashboard from './pages/admin/AdminDashboard.jsx';
-import ProductsAdmin from './pages/admin/ProductsAdmin.jsx';
-import ProductForm from './pages/admin/ProductForm.jsx';
-import FieldNotesAdmin from './pages/admin/FieldNotesAdmin.jsx';
-import FieldNoteForm from './pages/admin/FieldNoteForm.jsx';
 import Login from './pages/Login.jsx';
 import SiteFooter from './components/SiteFooter.jsx';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { useState } from 'react';
 import './index.css'
+
+const SwitchCommerceBranding = lazy(() => import('./pages/SwitchCommerceBranding.jsx'));
+const ClearChoiceBranding = lazy(() => import('./pages/ClearChoiceBranding.jsx'));
+const ClearChoice = lazy(() => import('./ClearChoice.jsx'));
+const SwitchCommerce = lazy(() => import('./SwitchCommerce.jsx'));
+const ProductsPage = lazy(() => import('./pages/products'));
+const EmailSignature = lazy(() => import('./pages/EmailSignature.jsx'));
+const Wallpapers = lazy(() => import('./pages/Wallpapers.jsx'));
+const MarketingRequest = lazy(() => import('./pages/MarketingRequest.jsx'));
+const PrintCollateral = lazy(() => import('./pages/PrintCollateral.jsx'));
+const FieldNotes = lazy(() => import('./pages/FieldNotes.jsx'));
+const Birthdays = lazy(() => import('./pages/Birthdays.jsx'));
+const Anniversaries = lazy(() => import('./pages/Anniversaries.jsx'));
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard.jsx'));
+const ProductsAdmin = lazy(() => import('./pages/admin/ProductsAdmin.jsx'));
+const ProductForm = lazy(() => import('./pages/admin/ProductForm.jsx'));
+const FieldNotesAdmin = lazy(() => import('./pages/admin/FieldNotesAdmin.jsx'));
+const FieldNoteForm = lazy(() => import('./pages/admin/FieldNoteForm.jsx'));
+
+function RouteFallback() {
+  return (
+    <div className="flex-1 bg-gradient-to-b from-gray-900 to-gray-800 text-gray-400 flex items-center justify-center">
+      <div className="inline-block h-8 w-8 border-4 border-[#0951fa] border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  );
+}
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -142,6 +150,7 @@ function AppShell() {
           </div>
         </nav>
       )}
+      <Suspense fallback={<RouteFallback />}>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
@@ -165,6 +174,7 @@ function AppShell() {
         <Route path="/admin/field-notes/new" element={<AdminRoute><FieldNoteForm /></AdminRoute>} />
         <Route path="/admin/field-notes/:id/edit" element={<AdminRoute><FieldNoteForm /></AdminRoute>} />
       </Routes>
+      </Suspense>
     </>
   );
 }

@@ -3,6 +3,25 @@
   Access-Control-Allow-Origin: *
   Content-Type: application/pdf
 
+# Long-lived caching for static asset folders
+# (Content rarely changes; bust by renaming the file if needed.)
+/wallpapers/*
+  Cache-Control: public, max-age=31536000, immutable
+/logos/*
+  Cache-Control: public, max-age=31536000, immutable
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+/signatures/*
+  Cache-Control: public, max-age=31536000, immutable
+/pdfs/*
+  Cache-Control: public, max-age=31536000, immutable
+/downloads/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Vite-hashed assets — fingerprinted filenames, safe to cache forever
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
 # General headers
 /*
   X-Frame-Options: SAMEORIGIN

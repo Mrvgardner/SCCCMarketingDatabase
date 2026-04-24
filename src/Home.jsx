@@ -202,7 +202,7 @@ export default function Home() {
                 className="group relative flex flex-col items-center gap-2"
               >
                 <div className="w-14 h-14 bg-white rounded-xl p-2.5 shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#0951fa]/20">
-                  <img src={tool.icon} alt="" className="w-full h-full object-contain" />
+                  <img src={tool.icon} alt="" loading="lazy" decoding="async" width="56" height="56" className="w-full h-full object-contain" />
                 </div>
                 <span className="text-xs text-gray-400 group-hover:text-white transition-colors">
                   {tool.name}
