@@ -22,6 +22,7 @@ import ProductForm from './pages/admin/ProductForm.jsx';
 import FieldNotesAdmin from './pages/admin/FieldNotesAdmin.jsx';
 import FieldNoteForm from './pages/admin/FieldNoteForm.jsx';
 import Login from './pages/Login.jsx';
+import SiteFooter from './components/SiteFooter.jsx';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { useState } from 'react';
 import './index.css'
@@ -30,7 +31,12 @@ function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
   if (loading) return null;
   if (!user) return <Navigate to="/login" replace />;
-  return children;
+  return (
+    <>
+      {children}
+      <SiteFooter />
+    </>
+  );
 }
 
 function AdminRoute({ children }) {
