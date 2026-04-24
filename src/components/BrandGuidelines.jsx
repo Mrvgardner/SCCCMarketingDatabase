@@ -46,7 +46,7 @@ export default function BrandGuidelines({
                 Back to Home
               </Link>
               
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              <h1 className="font-switch-bold text-4xl md:text-5xl mb-4">
                 {brandName} <span className={`text-${primaryColor}`}>Brand Guidelines</span>
               </h1>
               

@@ -33,7 +33,7 @@ export default function MarketingRequestPage() {
             </svg>
             Back to Home
           </Link>
-          <h1 className="text-5xl font-bold mb-4">Marketing Request Form</h1>
+          <h1 className="font-switch-bold text-5xl mb-4">Marketing Request Form</h1>
           <p className="text-xl text-white/90 max-w-3xl">
             Submit your marketing requests, campaign ideas, and project inquiries. 
             Our team will review and get back to you promptly.

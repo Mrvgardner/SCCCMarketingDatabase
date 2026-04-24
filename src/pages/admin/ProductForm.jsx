@@ -179,7 +179,7 @@ export default function ProductForm() {
         </Link>
 
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-[#0951fa] to-[#0a7cff] bg-clip-text text-transparent">
+          <h1 className="font-switch-bold text-3xl bg-gradient-to-r from-[#0951fa] to-[#0a7cff] bg-clip-text text-transparent">
             {isNew ? "New Product" : "Edit Product"}
           </h1>
           {!isNew && (

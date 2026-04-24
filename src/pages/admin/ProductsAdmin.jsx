@@ -41,7 +41,7 @@ export default function ProductsAdmin() {
 
         <div className="flex items-center justify-between mb-2">
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-[#0951fa] to-[#0a7cff] bg-clip-text text-transparent">
+            <h1 className="font-switch-bold text-3xl bg-gradient-to-r from-[#0951fa] to-[#0a7cff] bg-clip-text text-transparent">
               Knowledge Base Admin
             </h1>
             <p className="text-gray-400 mt-1">

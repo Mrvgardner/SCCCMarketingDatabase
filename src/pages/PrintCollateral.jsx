@@ -64,7 +64,7 @@ export default function PrintCollateralPage() {
             </svg>
             Back to Home
           </Link>
-          <h1 className="text-5xl font-bold mb-4">Print Collateral</h1>
+          <h1 className="font-switch-bold text-5xl mb-4">Print Collateral</h1>
           <p className="text-xl text-white/90 max-w-3xl">
             Access the latest brochures, one-pagers, and marketing materials for Switch Commerce and Clear Choice
           </p>

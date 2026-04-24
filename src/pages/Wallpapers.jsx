@@ -34,7 +34,7 @@ const wallpapers = [
 export default function Wallpapers() {
   return (
     <div className="p-8 min-h-screen bg-gradient-to-b from-gray-900 to-black">
-      <h1 className="text-4xl font-bold mb-6 text-center text-white">Wallpapers</h1>
+      <h1 className="font-switch-bold text-4xl mb-6 text-center text-white tracking-wide">Wallpapers</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {wallpapers.map((wp) => (
           <div key={wp.id} className="group bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg">

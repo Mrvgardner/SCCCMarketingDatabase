@@ -28,7 +28,7 @@ export default function AdminDashboard() {
           <ArrowLeftIcon className="h-4 w-4" /> Back to Home
         </Link>
 
-        <h1 className="text-4xl font-bold mb-2 text-white">Admin</h1>
+        <h1 className="font-switch-bold text-4xl mb-2 text-white tracking-wide">Admin</h1>
         <p className="text-gray-400 mb-10">Pick what you want to manage.</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

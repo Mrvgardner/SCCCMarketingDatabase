@@ -47,7 +47,7 @@ function AdminRoute({ children }) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8 flex items-center justify-center">
         <div className="max-w-md text-center">
-          <h1 className="text-2xl font-bold mb-2">Admin access required</h1>
+          <h1 className="font-switch-bold text-2xl mb-2">Admin access required</h1>
           <p className="text-gray-400 mb-6">
             Your account doesn't have the <code className="px-2 py-0.5 rounded bg-gray-800 text-[#0a7cff]">admin</code> role in Netlify Identity.
             Ask a site admin to assign it, then sign out and back in to refresh your token.

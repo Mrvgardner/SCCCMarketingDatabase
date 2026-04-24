@@ -2,7 +2,7 @@
 @font-face {
   font-family: 'SWITCH COMMERCE BOLD';
   src: url('/fonts/SWITCHCOMMERCEBOLD.otf') format('opentype');
-  font-weight: 700; /* Using numeric value for better browser compatibility */
+  font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
@@ -10,7 +10,14 @@
 @font-face {
   font-family: 'SWITCH COMMERCE REG';
   src: url('/fonts/SWITCHCOMMERCEREG.otf') format('opentype');
-  font-weight: 400; /* Using numeric value for better browser compatibility */
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
+}
+
+/* The brand face is an all-caps identity — anything using it renders uppercase */
+.font-switch-bold,
+.font-switch-reg {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }

@@ -34,7 +34,7 @@ export default function FieldNotesAdmin() {
           <div>
             <div className="flex items-center gap-3 mb-1">
               <NewspaperIcon className="h-8 w-8 text-[#5fae4b]" />
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-[#5fae4b] to-[#7bc966] bg-clip-text text-transparent">
+              <h1 className="font-switch-bold text-3xl bg-gradient-to-r from-[#5fae4b] to-[#7bc966] bg-clip-text text-transparent">
                 Field Notes Admin
               </h1>
             </div>
