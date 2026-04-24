@@ -7,7 +7,7 @@ export default function SiteFooter() {
   if (HIDE_ON.includes(pathname)) return null;
 
   return (
-    <footer className="bg-gray-900/40 border-t border-white/10 backdrop-blur-md py-12 mt-12">
+    <footer className="bg-gray-900 border-t border-white/10 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h3 className="font-switch-bold text-2xl text-white mb-4">
           Need something custom?

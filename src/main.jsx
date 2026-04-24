@@ -32,7 +32,7 @@ function ProtectedRoute({ children }) {
   if (loading) return null;
   if (!user) return <Navigate to="/login" replace />;
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-gray-900">
       <div className="flex-1 flex flex-col">{children}</div>
       <SiteFooter />
     </div>
