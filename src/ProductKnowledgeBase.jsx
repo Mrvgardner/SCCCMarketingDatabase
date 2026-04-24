@@ -129,8 +129,8 @@ export default function ProductKnowledgeBase() {
           </div>
           <input
             type="text"
-            placeholder="Search pain points, product names, or use cases..."
-            className="w-full pl-11 pr-4 py-3 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800/50 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-shadow duration-200"
+            placeholder="Search pain points, product names, or use cases…"
+            className="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-gray-900/70 border border-white/15 focus:border-[#0951fa]/60 focus:outline-none focus:ring-2 focus:ring-[#0951fa]/30 backdrop-blur-md text-white placeholder-gray-300 text-base transition-all"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -138,32 +138,38 @@ export default function ProductKnowledgeBase() {
       </div>
 
       <div className="flex flex-wrap justify-center gap-2 mb-10">
-        <div className="flex gap-2 mb-2 w-full justify-center">
-          {["Switch Commerce", "Clear Choice"].map((name) => (
-            <button
-              key={name}
-              onClick={() => toggleFilter("company", name)}
-              className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                filters.company === name
-                  ? name === "Clear Choice"
-                    ? "bg-gradient-to-r from-[#ff4f00] to-[#ff4f00]/90 text-white shadow-lg shadow-[#ff4f00]/30"
-                    : "bg-gradient-to-r from-[#0951fa] to-[#0951fa]/90 text-white shadow-lg shadow-[#0951fa]/30"
-                  : "bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700/50"
-              }`}
-            >
-              {name}
-            </button>
-          ))}
+        <div className="flex gap-3 mb-2 w-full justify-center">
+          {["Switch Commerce", "Clear Choice"].map((name) => {
+            const isActive = filters.company === name;
+            const isCC = name === "Clear Choice";
+            const color = isCC ? "#ff4f00" : "#0951fa";
+            return (
+              <button
+                key={name}
+                onClick={() => toggleFilter("company", name)}
+                className={`px-6 py-2 rounded-full text-sm font-medium border backdrop-blur-md transition-all duration-300 ${
+                  isActive
+                    ? isCC
+                      ? "bg-gradient-to-br from-[#ff4f00]/60 from-0% via-[#ff4f00]/20 via-50% to-gray-900/60 to-100% border-[#ff4f00]/50 text-white shadow-lg shadow-[#ff4f00]/20"
+                      : "bg-gradient-to-br from-[#0951fa]/60 from-0% via-[#0951fa]/20 via-50% to-gray-900/60 to-100% border-[#0951fa]/50 text-white shadow-lg shadow-[#0951fa]/20"
+                    : "bg-gradient-to-br from-gray-800/60 to-gray-900/40 border-white/10 hover:border-white/25 text-gray-400 hover:text-gray-200"
+                }`}
+                style={isActive ? { boxShadow: `0 10px 24px -10px ${color}33` } : undefined}
+              >
+                {name}
+              </button>
+            );
+          })}
         </div>
         <div className="flex flex-wrap justify-center gap-2">
           {["ATM", "Hardware", "Kiosk", "Platform", "Service", "Software"].map((type) => (
             <button
               key={type}
               onClick={() => toggleFilter("type", type)}
-              className={`px-6 py-2 rounded-full text-sm transition-all duration-300 ${
+              className={`px-5 py-1.5 rounded-full text-sm border backdrop-blur-md transition-all duration-300 ${
                 filters.type === type
-                  ? "bg-[#0951fa] text-white shadow-lg shadow-[#0951fa]/30"
-                  : "bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200"
+                  ? "bg-gradient-to-br from-[#0951fa]/50 from-0% via-[#0951fa]/15 via-50% to-gray-900/60 to-100% border-[#0951fa]/40 text-white"
+                  : "bg-gradient-to-br from-gray-800/50 to-gray-900/30 border-white/10 hover:border-white/25 text-gray-400 hover:text-gray-200"
               }`}
             >
               {type}
