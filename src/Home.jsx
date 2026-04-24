@@ -33,7 +33,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8">
+    <div className="flex-1 bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8">
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto text-center mb-6">
         <h1 className="font-switch-bold text-5xl tracking-wide mb-2 bg-gradient-to-r from-[#0951fa] from-10% via-[#0951fa] via-30% to-[#ff4f00] to-80% bg-clip-text text-transparent">

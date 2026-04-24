@@ -51,7 +51,7 @@ export default function PrintCollateralPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+    <div className="flex-1 bg-gradient-to-b from-gray-900 to-gray-800 text-white">
       {/* Header */}
       <div className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -14,7 +14,7 @@ export default function EmailSignature() {
     id.replace(/-/g, ' ').toLowerCase().includes(query.toLowerCase())
   );
   return (
-    <div className="p-8 min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+    <div className="p-8 flex-1 bg-gradient-to-b from-gray-900 to-gray-800 text-white">
       <div className="max-w-6xl mx-auto">
         <h1 className="font-switch-bold text-4xl mb-6 text-center bg-gradient-to-r from-[#0951fa] to-[#0a7cff] bg-clip-text text-transparent">Email Signatures</h1>
         <div className="flex justify-center mb-8">

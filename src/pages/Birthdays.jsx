@@ -7,7 +7,7 @@ export default function Birthdays() {
   const all = getUpcoming(birthdays, birthdays.length);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8">
+    <div className="flex-1 bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8">
       <div className="max-w-3xl mx-auto">
         <Link
           to="/"

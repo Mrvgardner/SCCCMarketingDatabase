@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 export default function ClearChoiceLayout({ children }) {
   return (
-    <div className="bg-gray-100 dark:bg-gray-900 min-h-screen text-gray-900 dark:text-white">
+    <div className="bg-gray-100 dark:bg-gray-900 flex-1 text-gray-900 dark:text-white">
       <header className="bg-brand-orange text-white p-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <img src="/logos/clear-choice-logo.png" alt="Clear Choice Logo" className="h-10" />

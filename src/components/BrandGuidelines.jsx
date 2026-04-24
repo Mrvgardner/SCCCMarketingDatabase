@@ -30,7 +30,7 @@ export default function BrandGuidelines({
   ];
   
   return (
-    <div className={`min-h-screen bg-gradient-to-b ${heroBackground} text-white`}>
+    <div className={`flex-1 bg-gradient-to-b ${heroBackground} text-white`}>
       {/* Hero Section */}
       <div className="py-20 px-8">
         <div className="max-w-7xl mx-auto">

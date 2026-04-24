@@ -33,7 +33,7 @@ const wallpapers = [
 
 export default function Wallpapers() {
   return (
-    <div className="p-8 min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+    <div className="p-8 flex-1 bg-gradient-to-b from-gray-900 to-gray-800 text-white">
       <div className="max-w-6xl mx-auto">
         <h1 className="font-switch-bold text-4xl mb-8 text-center bg-gradient-to-r from-[#ff4f00] to-[#ff7f50] bg-clip-text text-transparent">Wallpapers</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

@@ -7,7 +7,7 @@ export default function MarketingRequestPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+    <div className="flex-1 bg-gradient-to-b from-gray-900 to-gray-800 text-white">
       {/* Header */}
       <div className="py-16 px-4">
         <div className="max-w-7xl mx-auto">

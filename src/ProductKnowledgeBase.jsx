@@ -142,7 +142,7 @@ export default function ProductKnowledgeBase() {
   });
 
   return (
-    <div className="p-8 min-h-screen bg-gradient-to-b from-gray-900 to-black">
+    <div className="p-8 flex-1 bg-gradient-to-b from-gray-900 to-black">
       <h1 className="font-switch-bold text-4xl mb-6 text-center text-white tracking-wide">Product Knowledge Base</h1>
 
       <div className="flex justify-center mb-8">
