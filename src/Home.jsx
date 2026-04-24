@@ -169,7 +169,7 @@ export default function Home() {
           <FloatingTile delay={0.4} className="lg:col-start-1 lg:row-start-2">
             <Link
               to="/marketing-request"
-              className="block rounded-xl p-6 bg-gradient-to-br from-[#6b46c1]/60 from-0% via-[#6b46c1]/10 via-45% to-gray-900/70 to-100% border border-[#6b46c1]/25 hover:border-[#6b46c1]/50 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl backdrop-blur-md h-full min-h-[180px]"
+              className="block rounded-xl p-6 bg-gradient-to-br from-[#ff4f00]/55 from-0% via-[#ff4f00]/10 via-45% to-gray-900/70 to-100% border border-[#ff4f00]/25 hover:border-[#ff4f00]/50 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl backdrop-blur-md h-full min-h-[180px]"
             >
               <div className="h-full flex flex-col justify-between">
                 <div className="flex items-center gap-2">
