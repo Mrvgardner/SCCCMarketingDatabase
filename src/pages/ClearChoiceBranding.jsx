@@ -319,9 +319,9 @@ export default function ClearChoiceBrandingPage() {
 
   const ActionButtons = () => (
     <div className="flex flex-wrap gap-4 mb-6">
-      <a 
-        href="/downloads/BrandingKit.zip" 
-        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#ff4f00] hover:bg-[#e24600] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#ff4f00]"
+      <a
+        href="/downloads/BrandingKit.zip"
+        className="inline-flex items-center px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-gradient-to-br from-[#ff4f00]/55 from-0% via-[#ff4f00]/15 via-45% to-gray-900/60 to-100% border border-[#ff4f00]/40 hover:border-[#ff4f00]/70 shadow-xl backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-[#ff4f00]/40 transition-all"
         download
       >
         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -337,7 +337,7 @@ export default function ClearChoiceBrandingPage() {
       brandName="Clear Choice"
       brandDescription="Clear Choice is the transparent alternative in payment processing, offering straightforward solutions with no hidden fees. Our brand tagline is 'Clear Pricing. Clear Choice.'"
       brandLogo="/logos/clearchoice/Logo Icon/CC Logo Only- Orange & W.png"
-      heroBackground="from-[#002b5e] to-[#ff4f00]"
+      heroBackground="from-gray-900 to-gray-800"
       primaryColor="[#ff4f00]"
       accentColor="[#002b5e]"
       actionButtons={<ActionButtons />}

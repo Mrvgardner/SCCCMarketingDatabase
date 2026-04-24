@@ -58,7 +58,7 @@ export default function BrandGuidelines({
                 <a
                   href={styleKitDownload.url}
                   download
-                  className={`mt-8 inline-flex items-center px-6 py-3 bg-${primaryColor} hover:bg-opacity-90 text-white font-medium rounded-lg transition-colors shadow-lg`}
+                  className={`mt-8 inline-flex items-center px-6 py-3 bg-gradient-to-br from-${primaryColor}/60 from-0% via-${primaryColor}/15 via-45% to-gray-900/60 to-100% border border-${primaryColor}/40 hover:border-${primaryColor}/70 text-white font-medium rounded-lg shadow-xl backdrop-blur-md transition-all`}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -82,17 +82,17 @@ export default function BrandGuidelines({
       </div>
       
       {/* Navigation Tabs */}
-      <div className="bg-gray-800 sticky top-0 z-10 shadow-md">
+      <div className="bg-gray-900/70 border-y border-white/10 backdrop-blur-md sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4">
           <nav className="flex overflow-x-auto no-scrollbar">
             {sections.map((section) => (
               <button
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}
-                className={`px-6 py-4 font-bold text-base transition-colors whitespace-nowrap ${
+                className={`px-6 py-4 font-semibold text-sm tracking-wide uppercase transition-colors whitespace-nowrap ${
                   activeSection === section.id
                     ? `border-b-2 border-${primaryColor} text-white`
-                    : 'text-gray-300 hover:text-white'
+                    : 'border-b-2 border-transparent text-gray-400 hover:text-white'
                 }`}
               >
                 {section.label}
@@ -108,7 +108,7 @@ export default function BrandGuidelines({
         {activeSection === 'colors' && (
           <div className="space-y-12">
             <div className="mb-8">
-              <h2 className="text-3xl font-bold mb-4">Brand Colors</h2>
+              <h2 className="font-switch-bold text-3xl mb-4">Brand Colors</h2>
               <p className="text-gray-300 max-w-3xl">
                 Our color palette reinforces our brand identity. These colors should be used consistently across all materials.
               </p>
@@ -121,7 +121,7 @@ export default function BrandGuidelines({
         {activeSection === 'typography' && (
           <div className="space-y-12">
             <div className="mb-8">
-              <h2 className="text-3xl font-bold mb-4">Typography</h2>
+              <h2 className="font-switch-bold text-3xl mb-4">Typography</h2>
               <p className="text-gray-300 max-w-3xl">
                 Typography plays a crucial role in our brand identity. Consistent use of our brand fonts ensures recognition and reinforces our brand values.
               </p>
@@ -134,7 +134,7 @@ export default function BrandGuidelines({
         {activeSection === 'logos' && (
           <div className="space-y-12">
             <div className="mb-8">
-              <h2 className="text-3xl font-bold mb-4">Logos & Brand Assets</h2>
+              <h2 className="font-switch-bold text-3xl mb-4">Logos & Brand Assets</h2>
               <p className="text-gray-300 max-w-3xl">
                 Our logo is the most visible element of our brand identity. Follow these guidelines to ensure consistent and proper usage.
               </p>
@@ -147,7 +147,7 @@ export default function BrandGuidelines({
         {activeSection === 'usage' && usageGuidelinesSection && (
           <div className="space-y-12">
             <div className="mb-8">
-              <h2 className="text-3xl font-bold mb-4">Usage Guidelines</h2>
+              <h2 className="font-switch-bold text-3xl mb-4">Usage Guidelines</h2>
               <p className="text-gray-300 max-w-3xl">
                 Proper application of our brand elements is crucial for maintaining brand integrity and recognition.
               </p>

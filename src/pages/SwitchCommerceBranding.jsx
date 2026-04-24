@@ -305,9 +305,9 @@ export default function SwitchCommerceBrandingPage() {
 
   const ActionButtons = () => (
     <div className="flex flex-wrap gap-4 mb-6">
-      <a 
-        href="/downloads/BrandingKit.zip" 
-        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#0951fa] hover:bg-[#0038cc] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0951fa]"
+      <a
+        href="/downloads/BrandingKit.zip"
+        className="inline-flex items-center px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-gradient-to-br from-[#0951fa]/60 from-0% via-[#0951fa]/15 via-45% to-gray-900/60 to-100% border border-[#0951fa]/40 hover:border-[#0951fa]/70 shadow-xl backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-[#0951fa]/40 transition-all"
         download
       >
         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -323,7 +323,7 @@ export default function SwitchCommerceBrandingPage() {
       brandName="Switch Commerce"
       brandDescription="Switch Commerce delivers innovative payment processing solutions that prioritize security, reliability, and merchant success. Our brand tagline is 'Global Transactions. Connected.'"
       brandLogo="/logos/switch/Logo Main/SC Logo Main - White.png"
-      heroBackground="from-[#002b5e] to-[#0951fa]"
+      heroBackground="from-gray-900 to-gray-800"
       primaryColor="[#0951fa]"
       accentColor="[#002b5e]"
       actionButtons={<ActionButtons />}

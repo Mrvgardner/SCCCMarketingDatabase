@@ -51,31 +51,31 @@ export default function PrintCollateralPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-black">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
       {/* Header */}
-      <div className="bg-gradient-to-br from-[#002b5e] to-[#0951fa] text-white py-16">
+      <div className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link
             to="/"
-            className="inline-flex items-center text-white/80 hover:text-white mb-6 transition-colors"
+            className="inline-flex items-center text-gray-400 hover:text-white mb-6 transition-colors"
           >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Back to Home
           </Link>
-          <h1 className="font-switch-bold text-5xl mb-4">Print Collateral</h1>
-          <p className="text-xl text-white/90 max-w-3xl">
-            Access the latest brochures, one-pagers, and marketing materials for Switch Commerce and Clear Choice
+          <h1 className="font-switch-bold text-5xl mb-4 bg-gradient-to-r from-[#0951fa] to-[#ff4f00] bg-clip-text text-transparent">Print Collateral</h1>
+          <p className="text-lg text-gray-300 max-w-3xl">
+            Access the latest brochures, one-pagers, and marketing materials for Switch Commerce and Clear Choice.
           </p>
         </div>
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         {collateral.map((section, idx) => (
           <div key={idx} className="mb-16">
-            <h2 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white border-b-2 border-[#0951fa] pb-2">
+            <h2 className="font-switch-bold text-2xl mb-6 text-white border-b border-white/10 pb-3">
               {section.category}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -85,7 +85,7 @@ export default function PrintCollateralPage() {
                   href={item.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700 hover:border-[#0951fa] dark:hover:border-[#0951fa]"
+                  className="group rounded-xl overflow-hidden bg-gradient-to-br from-[#0951fa]/30 from-0% via-[#0951fa]/5 via-45% to-gray-900/70 to-100% border border-white/10 hover:border-[#0951fa]/50 shadow-xl hover:shadow-2xl backdrop-blur-md transition-all duration-300"
                 >
                   <div className="p-6">
                     <div className="flex items-start space-x-4">
@@ -101,13 +101,13 @@ export default function PrintCollateralPage() {
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-[#0951fa] dark:group-hover:text-[#0951fa] transition-colors mb-2">
+                        <h3 className="text-lg font-semibold text-white group-hover:text-[#0a7cff] transition-colors mb-2">
                           {item.name}
                         </h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                        <p className="text-sm text-gray-400 mb-4">
                           {item.description}
                         </p>
-                        <div className="flex items-center text-[#0951fa] dark:text-[#0a7cff] font-medium group-hover:underline">
+                        <div className="flex items-center text-[#0a7cff] font-medium group-hover:underline">
                           <span>View PDF</span>
                           <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -124,17 +124,17 @@ export default function PrintCollateralPage() {
       </div>
 
       {/* Footer CTA */}
-      <div className="bg-gray-100 dark:bg-gray-800 py-12 mt-12">
+      <div className="bg-gray-900/40 border-t border-white/10 backdrop-blur-md py-12 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          <h3 className="font-switch-bold text-2xl text-white mb-4">
             Need something custom?
           </h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            Contact the marketing team for custom collateral requests
+          <p className="text-gray-400 mb-6">
+            Contact the marketing team for custom collateral requests.
           </p>
           <a
             href="mailto:marketing@switchcommerce.com"
-            className="inline-flex items-center px-6 py-3 bg-[#0951fa] text-white font-semibold rounded-lg hover:bg-[#002b5e] transition-colors"
+            className="inline-flex items-center px-6 py-3 rounded-lg font-semibold text-white bg-gradient-to-br from-[#0951fa]/60 from-0% via-[#0951fa]/15 via-45% to-gray-900/60 to-100% border border-[#0951fa]/40 hover:border-[#0951fa]/70 shadow-xl backdrop-blur-md transition-all"
           >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />

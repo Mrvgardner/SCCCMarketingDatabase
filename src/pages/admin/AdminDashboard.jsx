@@ -7,16 +7,16 @@ const CARDS = [
     title: "Knowledge Base",
     description: "Add, edit, or remove product cards shown in the Knowledge Base.",
     icon: BookOpenIcon,
-    gradient: "from-[#0951fa] to-[#0a7cff]",
-    shadow: "shadow-[#0951fa]/20",
+    tone: "from-[#0951fa]/60 via-[#0951fa]/10 border-[#0951fa]/25 hover:border-[#0951fa]/50",
+    shadow: "shadow-[#0951fa]/10",
   },
   {
     to: "/admin/field-notes",
     title: "Field Notes",
     description: "Publish team announcements, updates, and news.",
     icon: NewspaperIcon,
-    gradient: "from-[#5fae4b] to-[#7bc966]",
-    shadow: "shadow-[#5fae4b]/20",
+    tone: "from-[#5fae4b]/60 via-[#5fae4b]/10 border-[#5fae4b]/25 hover:border-[#5fae4b]/50",
+    shadow: "shadow-[#5fae4b]/10",
   },
 ];
 
@@ -32,20 +32,20 @@ export default function AdminDashboard() {
         <p className="text-gray-400 mb-10">Pick what you want to manage.</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {CARDS.map(({ to, title, description, icon: Icon, gradient, shadow }) => (
+          {CARDS.map(({ to, title, description, icon: Icon, tone, shadow }) => (
             <Link
               key={to}
               to={to}
-              className={`group block rounded-2xl p-6 bg-gradient-to-br ${gradient} shadow-xl ${shadow} hover:scale-[1.02] transition-transform`}
+              className={`group block rounded-2xl p-6 bg-gradient-to-br ${tone} from-0% via-45% to-gray-900/70 to-100% border backdrop-blur-md shadow-xl ${shadow} hover:shadow-2xl hover:scale-[1.02] transition-all`}
             >
               <div className="flex items-center gap-3 mb-3">
-                <div className="p-2 rounded-lg bg-white/20">
+                <div className="p-2 rounded-lg bg-white/10 border border-white/10">
                   <Icon className="h-6 w-6 text-white" />
                 </div>
                 <h2 className="text-2xl font-bold text-white">{title}</h2>
               </div>
-              <p className="text-white/90 text-sm leading-relaxed">{description}</p>
-              <div className="mt-4 text-white/80 text-sm font-medium group-hover:text-white transition-colors">
+              <p className="text-gray-200 text-sm leading-relaxed">{description}</p>
+              <div className="mt-4 text-gray-300 text-sm font-medium group-hover:text-white transition-colors">
                 Manage →
               </div>
             </Link>
