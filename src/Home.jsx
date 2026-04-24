@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { DocumentIcon, PhotoIcon, BookOpenIcon, DocumentTextIcon, NewspaperIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 import { listFieldNotes } from "./api/fieldNotes";
+import GlobalSearch from "./components/GlobalSearch.jsx";
 
 const externalTools = [
   { name: "Slack", icon: "/logos/slack-logo.png", url: "https://switch-commerce.slack.com/" },
@@ -92,6 +93,11 @@ export default function Home() {
           {" "}
           <span className="animate-slide-in-delayed inline-block opacity-0">One Goal.</span>
         </h2>
+      </div>
+
+      {/* Global Search */}
+      <div className="mb-8 px-4">
+        <GlobalSearch />
       </div>
 
       {/* Section Navigation */}
