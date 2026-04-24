@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
-import { DocumentIcon, PhotoIcon, BookOpenIcon, DocumentTextIcon, CakeIcon, SparklesIcon, NewspaperIcon } from "@heroicons/react/24/solid";
+import { DocumentIcon, PhotoIcon, BookOpenIcon, DocumentTextIcon, NewspaperIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 import { listFieldNotes } from "./api/fieldNotes";
-import { birthdays, anniversaries } from "./data/celebrations";
-import { getUpcoming, formatDate, yearsOfService } from "./utils/celebrations";
 
 const externalTools = [
   { name: "Slack", icon: "/logos/slack-logo.png", url: "https://switch-commerce.slack.com/" },
@@ -69,12 +67,10 @@ const SectionSeparator = () => (
 
 export default function Home() {
   const [activeFilter, setActiveFilter] = useState("all");
-  const sections = ["All", "Branding Assets", "Resources"];
+  const sections = ["All", "Resources"];
   const isVisible = (section) => activeFilter === "all" || activeFilter === section.toLowerCase();
 
   const [latestFieldNote, setLatestFieldNote] = useState(null);
-  const upcomingBirthdays = getUpcoming(birthdays, 3);
-  const upcomingAnniversaries = getUpcoming(anniversaries, 3);
 
   useEffect(() => {
     let cancelled = false;
@@ -104,10 +100,10 @@ export default function Home() {
           <button
             key={section}
             onClick={() => setActiveFilter(section.toLowerCase())}
-            className={`px-6 py-2 rounded-full transition-all duration-300 ${
+            className={`px-6 py-2 rounded-full border backdrop-blur-md transition-all duration-300 ${
               activeFilter === section.toLowerCase()
-                ? "bg-[#0951fa] text-white shadow-lg shadow-[#0951fa]/30"
-                : "bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200"
+                ? "bg-gradient-to-br from-[#0951fa]/60 from-0% via-[#0951fa]/20 via-50% to-gray-900/60 to-100% border-[#0951fa]/50 text-white shadow-lg shadow-[#0951fa]/20"
+                : "bg-gradient-to-br from-gray-800/60 to-gray-900/40 border-white/10 hover:border-white/25 text-gray-400 hover:text-gray-200"
             }`}
           >
             {section}
@@ -115,9 +111,7 @@ export default function Home() {
         ))}
       </div>
 
-      {(activeFilter === "all" || (
-        (isVisible("quick tools") || isVisible("branding assets") || isVisible("resources"))
-      )) && <SectionSeparator />}
+      {activeFilter === "all" && <SectionSeparator />}
 
       {/* Quick Tools Section */}
       <div
@@ -158,31 +152,19 @@ export default function Home() {
             </Link>
           </FloatingTile>
 
-          {/* Upcoming Birthdays - right column, top */}
+          {/* Switch Commerce - right column, top */}
           <FloatingTile delay={0.1} className="lg:col-start-3 lg:row-start-1">
-            <Link
-              to="/birthdays"
-              className="block rounded-xl p-6 bg-gradient-to-br from-[#ff4f00]/55 from-0% via-[#ff4f00]/10 via-45% to-gray-900/70 to-100% border border-[#ff4f00]/25 hover:border-[#ff4f00]/50 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl backdrop-blur-md h-full min-h-[180px]"
-            >
-              <div className="h-full flex flex-col justify-between">
-                <div className="flex items-center gap-2">
-                  <CakeIcon className="h-7 w-7 text-white flex-shrink-0" />
-                  <h3 className="text-2xl font-bold text-white">Upcoming Birthdays</h3>
-                </div>
-                {upcomingBirthdays.length > 0 ? (
-                  <ul className="space-y-1.5">
-                    {upcomingBirthdays.slice(0, 3).map((b) => (
-                      <li key={b.name} className="flex items-center justify-between text-white/95 text-sm">
-                        <span className="font-medium truncate pr-2">{b.name}</span>
-                        <span className="text-white/80 flex-shrink-0">{formatDate(b.next)}</span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <div className="text-white/80 text-sm">No upcoming birthdays →</div>
-                )}
+            <div className="rounded-xl p-6 bg-gradient-to-br from-[#0951fa]/60 from-0% via-[#0951fa]/10 via-45% to-gray-900/70 to-100% border border-[#0951fa]/25 hover:border-[#0951fa]/50 transition-all duration-300 shadow-xl hover:shadow-2xl backdrop-blur-md h-full min-h-[180px]">
+              <h3 className="text-2xl font-bold text-white mb-4">Switch Commerce</h3>
+              <div className="space-y-2">
+                <Link to="/print-collateral" className="block px-4 py-2.5 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/25 rounded-lg transition-colors text-white/90 hover:text-white text-sm font-medium">
+                  Brochures & Flyers
+                </Link>
+                <Link to="/switch-commerce/branding" className="block px-4 py-2.5 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/25 rounded-lg transition-colors text-white/90 hover:text-white text-sm font-medium">
+                  Brand Guidelines
+                </Link>
               </div>
-            </Link>
+            </div>
           </FloatingTile>
 
           {/* Knowledge Base - left column, top */}
@@ -208,33 +190,19 @@ export default function Home() {
             </Link>
           </FloatingTile>
 
-          {/* Upcoming Anniversaries - right column, bottom */}
+          {/* Clear Choice - right column, bottom */}
           <FloatingTile delay={0.3} className="lg:col-start-3 lg:row-start-2">
-            <Link
-              to="/anniversaries"
-              className="block rounded-xl p-6 bg-gradient-to-br from-[#9333ea]/55 from-0% via-[#9333ea]/10 via-45% to-gray-900/70 to-100% border border-[#9333ea]/25 hover:border-[#9333ea]/50 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl backdrop-blur-md h-full min-h-[180px]"
-            >
-              <div className="h-full flex flex-col justify-between">
-                <div className="flex items-center gap-2">
-                  <SparklesIcon className="h-7 w-7 text-white flex-shrink-0" />
-                  <h3 className="text-2xl font-bold text-white">Upcoming Anniversaries</h3>
-                </div>
-                {upcomingAnniversaries.length > 0 ? (
-                  <ul className="space-y-1.5">
-                    {upcomingAnniversaries.slice(0, 3).map((a) => (
-                      <li key={a.name} className="flex items-center justify-between text-white/95 text-sm">
-                        <span className="font-medium truncate pr-2">{a.name}</span>
-                        <span className="text-white/80 flex-shrink-0">
-                          {yearsOfService(a.startYear, a.next)} yr · {formatDate(a.next)}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <div className="text-white/80 text-sm">No upcoming anniversaries →</div>
-                )}
+            <div className="rounded-xl p-6 bg-gradient-to-br from-[#ff4f00]/55 from-0% via-[#ff4f00]/10 via-45% to-gray-900/70 to-100% border border-[#ff4f00]/25 hover:border-[#ff4f00]/50 transition-all duration-300 shadow-xl hover:shadow-2xl backdrop-blur-md h-full min-h-[180px]">
+              <h3 className="text-2xl font-bold text-white mb-4">Clear Choice</h3>
+              <div className="space-y-2">
+                <Link to="/print-collateral" className="block px-4 py-2.5 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/25 rounded-lg transition-colors text-white/90 hover:text-white text-sm font-medium">
+                  Brochures & Flyers
+                </Link>
+                <Link to="/clear-choice/branding" className="block px-4 py-2.5 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/25 rounded-lg transition-colors text-white/90 hover:text-white text-sm font-medium">
+                  Brand Guidelines
+                </Link>
               </div>
-            </Link>
+            </div>
           </FloatingTile>
 
           {/* Marketing Request - left column, bottom */}
@@ -287,64 +255,7 @@ export default function Home() {
         </div>
       </div>
 
-      {(activeFilter === "all" || (
-        (isVisible("quick tools") && (isVisible("branding assets") || isVisible("resources"))) ||
-        (isVisible("branding assets") && isVisible("resources"))
-      )) && <SectionSeparator />}
-
-      {/* Branding Assets Section */}
-      <div
-        className={`mb-16 ${isVisible("branding assets") ? "block" : "hidden"}`}
-      >
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          {/* Switch Commerce Assets */}
-          <FloatingTile delay={0.2}>
-            <div className="block rounded-xl overflow-hidden bg-gradient-to-br from-[#0951fa]/60 from-0% via-[#0951fa]/10 via-45% to-gray-900/70 to-100% border border-[#0951fa]/25 p-6 shadow-xl hover:shadow-2xl hover:border-[#0951fa]/50 hover:scale-105 transition-all duration-300 backdrop-blur-md h-full">
-              <h3 className="text-2xl font-bold mb-4">Switch Commerce</h3>
-              <div className="space-y-4">
-                <Link
-                  to="/print-collateral"
-                  className="block p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
-                >
-                  <span className="text-lg font-medium">Brochures & Flyers</span>
-                </Link>
-                <Link
-                  to="/switch-commerce/branding"
-                  className="block p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
-                >
-                  <span className="text-lg font-medium">Brand Guidelines</span>
-                </Link>
-              </div>
-            </div>
-          </FloatingTile>
-
-          {/* Clear Choice Assets */}
-          <FloatingTile delay={0.4}>
-            <div className="block rounded-xl overflow-hidden bg-gradient-to-br from-[#ff4f00]/55 from-0% via-[#ff4f00]/10 via-45% to-gray-900/70 to-100% border border-[#ff4f00]/25 p-6 shadow-xl hover:shadow-2xl hover:border-[#ff4f00]/50 hover:scale-105 transition-all duration-300 backdrop-blur-md h-full">
-              <h3 className="text-2xl font-bold mb-4">Clear Choice</h3>
-              <div className="space-y-4">
-                <Link
-                  to="/print-collateral"
-                  className="block p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
-                >
-                  <span className="text-lg font-medium">Brochures & Flyers</span>
-                </Link>
-                <Link
-                  to="/clear-choice/branding"
-                  className="block p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"
-                >
-                  <span className="text-lg font-medium">Brand Guidelines</span>
-                </Link>
-              </div>
-            </div>
-          </FloatingTile>
-        </div>
-      </div>
-
-      {(activeFilter === "all" || 
-        ((isVisible("branding assets") && isVisible("resources")) || 
-        (isVisible("quick tools") && isVisible("resources")))
-      ) && <SectionSeparator />}
+      {(activeFilter === "all" || isVisible("resources")) && <SectionSeparator />}
 
       {/* Resources Section */}
       <div
