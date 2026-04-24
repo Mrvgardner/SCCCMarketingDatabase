@@ -217,7 +217,7 @@ export default function GlobalSearch() {
           onFocus={() => setOpen(true)}
           onKeyDown={onKeyDown}
           placeholder="Search the portal — products, field notes, resources…"
-          className="w-full pl-12 pr-10 py-3.5 rounded-2xl bg-gradient-to-br from-gray-800/70 to-gray-900/50 border border-white/10 focus:border-[#0951fa]/50 focus:outline-none focus:ring-2 focus:ring-[#0951fa]/30 backdrop-blur-md text-white placeholder-gray-500 text-sm transition-all"
+          className="w-full pl-12 pr-10 py-3.5 rounded-2xl bg-gray-900/70 border border-white/15 focus:border-[#0951fa]/60 focus:outline-none focus:ring-2 focus:ring-[#0951fa]/30 backdrop-blur-md text-white placeholder-gray-300 text-base transition-all"
         />
         {query && (
           <button

@@ -38,7 +38,7 @@ export default function FieldNotes() {
           Back to Home
         </Link>
 
-        <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-[#5fae4b] to-[#7bc966] bg-clip-text text-transparent">
+        <h1 className="font-switch-bold text-4xl mb-2 bg-gradient-to-r from-[#5fae4b] to-[#7bc966] bg-clip-text text-transparent">
           Field Notes
         </h1>
         <p className="text-gray-400 mb-10">Team updates, announcements, and news.</p>

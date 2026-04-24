@@ -19,7 +19,7 @@ export default function Birthdays() {
 
         <div className="flex items-center gap-3 mb-2">
           <CakeIcon className="h-10 w-10 text-[#ff4f00]" />
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-[#ff4f00] to-[#ff7f50] bg-clip-text text-transparent">
+          <h1 className="font-switch-bold text-4xl bg-gradient-to-r from-[#ff4f00] to-[#ff7f50] bg-clip-text text-transparent">
             Upcoming Birthdays
           </h1>
         </div>

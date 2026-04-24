@@ -19,7 +19,7 @@ export default function Anniversaries() {
 
         <div className="flex items-center gap-3 mb-2">
           <SparklesIcon className="h-10 w-10 text-[#9333ea]" />
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-[#9333ea] to-[#c084fc] bg-clip-text text-transparent">
+          <h1 className="font-switch-bold text-4xl bg-gradient-to-r from-[#9333ea] to-[#c084fc] bg-clip-text text-transparent">
             Upcoming Anniversaries
           </h1>
         </div>

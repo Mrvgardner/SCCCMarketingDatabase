@@ -15,7 +15,7 @@ export default function Login() {
             alt="Switch Commerce"
             className="mx-auto h-12 mb-6"
           />
-          <h1 className="text-3xl font-bold text-white">Team Portal</h1>
+          <h1 className="font-switch-bold text-3xl text-white tracking-wide">Team Portal</h1>
           <p className="mt-2 text-gray-400">Sign in to access marketing resources</p>
         </div>
 

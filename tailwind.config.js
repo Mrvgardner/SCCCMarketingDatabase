@@ -4,6 +4,10 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        'switch-bold': ['"SWITCH COMMERCE BOLD"', 'system-ui', 'sans-serif'],
+        'switch-reg': ['"SWITCH COMMERCE REG"', 'system-ui', 'sans-serif'],
+      },
       colors: {
         'brand-blue': '#002b5e',
         'brand-orange': '#ff4f00'
