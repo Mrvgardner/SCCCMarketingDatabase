@@ -92,22 +92,22 @@ export default function Home() {
           <FloatingTile delay={0.1} className="lg:col-start-3 lg:row-start-1">
             <div className="rounded-xl p-6 bg-gradient-to-br from-[#0951fa]/60 from-0% via-[#0951fa]/10 via-45% to-gray-900/70 to-100% border border-[#0951fa]/25 hover:border-[#0951fa]/50 transition-all duration-300 shadow-xl hover:shadow-2xl backdrop-blur-md h-full min-h-[180px]">
               <h3 className="text-2xl font-bold text-white mb-4">Switch Commerce</h3>
-              <div className="space-y-2">
-                <Link to="/print-collateral" className="block px-4 py-2.5 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/25 rounded-lg transition-colors text-white/90 hover:text-white text-sm font-medium">
+              <div className="grid grid-cols-2 gap-2">
+                <Link to="/print-collateral" className="flex items-center justify-center text-center px-3 py-3 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/25 rounded-lg transition-colors text-white/90 hover:text-white text-sm font-medium">
                   Brochures & Flyers
                 </Link>
-                <Link to="/switch-commerce/branding" className="block px-4 py-2.5 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/25 rounded-lg transition-colors text-white/90 hover:text-white text-sm font-medium">
+                <Link to="/switch-commerce/branding" className="flex items-center justify-center text-center px-3 py-3 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/25 rounded-lg transition-colors text-white/90 hover:text-white text-sm font-medium">
                   Brand Guidelines
                 </Link>
-                <Link to="/email-signature" className="block px-4 py-2.5 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/25 rounded-lg transition-colors text-white/90 hover:text-white text-sm font-medium">
+                <Link to="/email-signature" className="flex items-center justify-center text-center px-3 py-3 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/25 rounded-lg transition-colors text-white/90 hover:text-white text-sm font-medium">
                   Email Signatures
                 </Link>
                 <div
                   aria-disabled="true"
-                  className="flex items-center justify-between px-4 py-2.5 bg-white/[0.02] border border-white/5 rounded-lg text-white/40 text-sm font-medium cursor-not-allowed select-none"
+                  className="flex flex-col items-center justify-center text-center px-3 py-2 bg-white/[0.02] border border-white/5 rounded-lg text-white/40 text-sm font-medium cursor-not-allowed select-none leading-tight"
                 >
                   <span>Slide Decks</span>
-                  <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-white/50">
+                  <span className="text-[9px] uppercase tracking-wider text-white/40 mt-0.5">
                     Coming Soon
                   </span>
                 </div>
@@ -142,22 +142,22 @@ export default function Home() {
           <FloatingTile delay={0.3} className="lg:col-start-3 lg:row-start-2">
             <div className="rounded-xl p-6 bg-gradient-to-br from-[#ff4f00]/55 from-0% via-[#ff4f00]/10 via-45% to-gray-900/70 to-100% border border-[#ff4f00]/25 hover:border-[#ff4f00]/50 transition-all duration-300 shadow-xl hover:shadow-2xl backdrop-blur-md h-full min-h-[180px]">
               <h3 className="text-2xl font-bold text-white mb-4">Clear Choice</h3>
-              <div className="space-y-2">
-                <Link to="/print-collateral" className="block px-4 py-2.5 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/25 rounded-lg transition-colors text-white/90 hover:text-white text-sm font-medium">
+              <div className="grid grid-cols-2 gap-2">
+                <Link to="/print-collateral" className="flex items-center justify-center text-center px-3 py-3 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/25 rounded-lg transition-colors text-white/90 hover:text-white text-sm font-medium">
                   Brochures & Flyers
                 </Link>
-                <Link to="/clear-choice/branding" className="block px-4 py-2.5 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/25 rounded-lg transition-colors text-white/90 hover:text-white text-sm font-medium">
+                <Link to="/clear-choice/branding" className="flex items-center justify-center text-center px-3 py-3 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/25 rounded-lg transition-colors text-white/90 hover:text-white text-sm font-medium">
                   Brand Guidelines
                 </Link>
-                <Link to="/wallpapers" className="block px-4 py-2.5 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/25 rounded-lg transition-colors text-white/90 hover:text-white text-sm font-medium">
+                <Link to="/wallpapers" className="flex items-center justify-center text-center px-3 py-3 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/25 rounded-lg transition-colors text-white/90 hover:text-white text-sm font-medium">
                   Wallpapers
                 </Link>
                 <div
                   aria-disabled="true"
-                  className="flex items-center justify-between px-4 py-2.5 bg-white/[0.02] border border-white/5 rounded-lg text-white/40 text-sm font-medium cursor-not-allowed select-none"
+                  className="flex flex-col items-center justify-center text-center px-3 py-2 bg-white/[0.02] border border-white/5 rounded-lg text-white/40 text-sm font-medium cursor-not-allowed select-none leading-tight"
                 >
                   <span>Slide Decks</span>
-                  <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-white/50">
+                  <span className="text-[9px] uppercase tracking-wider text-white/40 mt-0.5">
                     Coming Soon
                   </span>
                 </div>
