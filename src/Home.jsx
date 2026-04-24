@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { DocumentIcon, PhotoIcon, BookOpenIcon, DocumentTextIcon, NewspaperIcon } from "@heroicons/react/24/solid";
+import { BookOpenIcon, DocumentTextIcon, NewspaperIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 import { listFieldNotes } from "./api/fieldNotes";
 import GlobalSearch from "./components/GlobalSearch.jsx";
@@ -12,33 +12,6 @@ const externalTools = [
   { name: "Confluence", icon: "/logos/confluence-logo.jpg", url: "https://switchcommerce.atlassian.net/wiki/home" },
 ];
 
-const resources = [
-  {
-    name: "Email Signature",
-    type: "resource",
-    url: "/email-signature",
-    description: "Download your branded email signature",
-    color: "bg-gradient-to-br from-[#0951fa]/60 from-0% via-[#0951fa]/10 via-45% to-gray-900/70 to-100% border border-[#0951fa]/25 hover:border-[#0951fa]/50",
-    icon: "document",
-  },
-  {
-    name: "Wallpapers",
-    type: "download",
-    url: "/wallpapers",
-    description: "Branded desktop and mobile wallpapers",
-    color: "bg-gradient-to-br from-[#ff4f00]/55 from-0% via-[#ff4f00]/10 via-45% to-gray-900/70 to-100% border border-[#ff4f00]/25 hover:border-[#ff4f00]/50",
-    icon: "photo",
-  },
-  {
-    name: "Brochures & Flyers",
-    type: "resource",
-    url: "/print-collateral",
-    description: "Access the latest brochures and one-pagers",
-    color: "bg-gradient-to-br from-[#9333ea]/55 from-0% via-[#9333ea]/10 via-45% to-gray-900/70 to-100% border border-[#9333ea]/25 hover:border-[#9333ea]/50",
-    icon: "document-text",
-  },
-];
-
 const FloatingTile = ({ delay = 0, className = "", children }) => (
   <div
     className={`opacity-0 translate-y-8 animate-slide-in transform transition duration-300 hover:scale-105 hover:shadow-2xl ${className}`}
@@ -48,29 +21,7 @@ const FloatingTile = ({ delay = 0, className = "", children }) => (
   </div>
 );
 
-// Section separator component
-const SectionSeparator = () => (
-  <div className="max-w-5xl mx-auto my-16">
-    <div className="h-px bg-gradient-to-r from-transparent via-gray-500/30 to-transparent"></div>
-  </div>
-);
-
-// Add fade-in animation to global CSS (index.css or here)
-// In index.css, add:
-/*
-@keyframes fade-in {
-  to { opacity: 1; }
-}
-.animate-fade-in {
-  animation: fade-in 0.8s ease forwards;
-}
-*/
-
 export default function Home() {
-  const [activeFilter, setActiveFilter] = useState("all");
-  const sections = ["All", "Resources"];
-  const isVisible = (section) => activeFilter === "all" || activeFilter === section.toLowerCase();
-
   const [latestFieldNote, setLatestFieldNote] = useState(null);
 
   useEffect(() => {
@@ -100,29 +51,8 @@ export default function Home() {
         <GlobalSearch />
       </div>
 
-      {/* Section Navigation */}
-      <div className="flex justify-center gap-4 mb-12">
-        {sections.map((section) => (
-          <button
-            key={section}
-            onClick={() => setActiveFilter(section.toLowerCase())}
-            className={`px-6 py-2 rounded-full border backdrop-blur-md transition-all duration-300 ${
-              activeFilter === section.toLowerCase()
-                ? "bg-gradient-to-br from-[#0951fa]/60 from-0% via-[#0951fa]/20 via-50% to-gray-900/60 to-100% border-[#0951fa]/50 text-white shadow-lg shadow-[#0951fa]/20"
-                : "bg-gradient-to-br from-gray-800/60 to-gray-900/40 border-white/10 hover:border-white/25 text-gray-400 hover:text-gray-200"
-            }`}
-          >
-            {section}
-          </button>
-        ))}
-      </div>
-
-      {activeFilter === "all" && <SectionSeparator />}
-
       {/* Quick Tools Section */}
-      <div
-        className={`mb-16 ${isVisible("quick tools") ? "block" : "hidden"}`}
-      >
+      <div className="mb-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
           {/* Field Notes - tall card, middle column, spans 2 rows on lg */}
           <FloatingTile delay={0} className="lg:col-start-2 lg:row-start-1 lg:row-span-2">
@@ -169,6 +99,18 @@ export default function Home() {
                 <Link to="/switch-commerce/branding" className="block px-4 py-2.5 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/25 rounded-lg transition-colors text-white/90 hover:text-white text-sm font-medium">
                   Brand Guidelines
                 </Link>
+                <Link to="/email-signature" className="block px-4 py-2.5 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/25 rounded-lg transition-colors text-white/90 hover:text-white text-sm font-medium">
+                  Email Signatures
+                </Link>
+                <div
+                  aria-disabled="true"
+                  className="flex items-center justify-between px-4 py-2.5 bg-white/[0.02] border border-white/5 rounded-lg text-white/40 text-sm font-medium cursor-not-allowed select-none"
+                >
+                  <span>Slide Decks</span>
+                  <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-white/50">
+                    Coming Soon
+                  </span>
+                </div>
               </div>
             </div>
           </FloatingTile>
@@ -207,6 +149,18 @@ export default function Home() {
                 <Link to="/clear-choice/branding" className="block px-4 py-2.5 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/25 rounded-lg transition-colors text-white/90 hover:text-white text-sm font-medium">
                   Brand Guidelines
                 </Link>
+                <Link to="/wallpapers" className="block px-4 py-2.5 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/25 rounded-lg transition-colors text-white/90 hover:text-white text-sm font-medium">
+                  Wallpapers
+                </Link>
+                <div
+                  aria-disabled="true"
+                  className="flex items-center justify-between px-4 py-2.5 bg-white/[0.02] border border-white/5 rounded-lg text-white/40 text-sm font-medium cursor-not-allowed select-none"
+                >
+                  <span>Slide Decks</span>
+                  <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-white/50">
+                    Coming Soon
+                  </span>
+                </div>
               </div>
             </div>
           </FloatingTile>
@@ -259,82 +213,6 @@ export default function Home() {
         </div>
       </div>
 
-      {(activeFilter === "all" || isVisible("resources")) && <SectionSeparator />}
-
-      {/* Resources Section */}
-      <div
-        className={`${isVisible("resources") ? "block" : "hidden"}`}
-      >
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {resources.map((resource, index) => (
-            <FloatingTile key={resource.name} delay={index * 0.2}>
-              {resource.url.endsWith('.pdf') ? (
-                <a
-                  href={resource.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`block rounded-xl p-5 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl h-full backdrop-blur-md ${resource.color || 'bg-gray-800'}`}
-                >
-                  <div className="h-full flex flex-col items-center text-center">
-                    <div className="flex items-center justify-center mb-4">
-                      <h3 className="text-xl font-semibold mb-0 flex items-center gap-2">
-                        {resource.icon === "document" && <DocumentIcon className="h-7 w-7 text-white" />}
-                        {resource.icon === "photo" && <PhotoIcon className="h-7 w-7 text-white" />}
-                        {resource.icon === "book" && <BookOpenIcon className="h-7 w-7 text-white" />}
-                        {resource.icon === "document-text" && <DocumentTextIcon className="h-7 w-7 text-white" />}
-                        {resource.name}
-                      </h3>
-                    </div>
-                    {resource.thumbnail && (
-                      <div className="mb-4 rounded-lg overflow-hidden">
-                        <img
-                          src={resource.thumbnail}
-                          alt={resource.name}
-                          className="w-full h-48 object-cover"
-                        />
-                      </div>
-                    )}
-                    <p className="text-sm text-gray-100 mb-4">{resource.description}</p>
-                    <div className="mt-auto px-4 py-1.5 bg-gray-700 rounded-full text-xs uppercase tracking-wide">
-                      {resource.type}
-                    </div>
-                  </div>
-                </a>
-              ) : (
-                <Link
-                  to={resource.url}
-                  className={`block rounded-xl p-5 hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl h-full backdrop-blur-md ${resource.color || 'bg-gray-800'}`}
-                >
-                <div className="h-full flex flex-col items-center text-center">
-                  <div className="flex items-center justify-center mb-4">
-                    <h3 className="text-xl font-semibold mb-0 flex items-center gap-2">
-                      {resource.icon === "document" && <DocumentIcon className="h-7 w-7 text-white" />}
-                      {resource.icon === "photo" && <PhotoIcon className="h-7 w-7 text-white" />}
-                      {resource.icon === "book" && <BookOpenIcon className="h-7 w-7 text-white" />}
-                      {resource.name}
-                    </h3>
-                  </div>
-                  {resource.thumbnail && (
-                    <div className="mb-4 rounded-lg overflow-hidden">
-                      <img
-                        src={resource.thumbnail}
-                        alt={resource.name}
-                        className="w-full h-48 object-cover"
-                      />
-                    </div>
-                  )}
-                  {/* Removed duplicate card label */}
-                  <p className="text-sm text-gray-100 mb-4">{resource.description}</p>
-                    <div className="mt-auto px-4 py-1.5 bg-gray-700 rounded-full text-xs uppercase tracking-wide">
-                      {resource.type}
-                    </div>
-                  </div>
-                </Link>
-              )}
-            </FloatingTile>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
