@@ -1,10 +1,20 @@
 import { useState, useMemo, useEffect } from "react";
 import { Dialog } from "@headlessui/react";
 import { useSearchParams } from "react-router-dom";
+import { Squares2X2Icon, ListBulletIcon, ViewColumnsIcon, TableCellsIcon, QueueListIcon, ChevronUpIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
 import Fuse from "fuse.js";
 import { listProducts } from "./api/products";
 import RichText from "./components/RichText.jsx";
 import { buildProductShareMailto, copyProductText } from "./utils/shareProduct";
+
+const VIEW_STORAGE_KEY = "scc:kb-view";
+const VIEWS = [
+  { id: "cards", label: "Cards", icon: Squares2X2Icon },
+  { id: "list", label: "List", icon: ListBulletIcon },
+  { id: "columns", label: "Columns", icon: ViewColumnsIcon },
+  { id: "table", label: "Table", icon: TableCellsIcon },
+  { id: "grouped", label: "Grouped by type", icon: QueueListIcon },
+];
 
 export default function ProductKnowledgeBase() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -13,6 +23,15 @@ export default function ProductKnowledgeBase() {
   const [error, setError] = useState(null);
   const [selected, setSelected] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [view, setView] = useState(() => {
+    try {
+      return localStorage.getItem(VIEW_STORAGE_KEY) || "cards";
+    } catch {
+      return "cards";
+    }
+  });
+  const [sortKey, setSortKey] = useState("title");
+  const [sortDir, setSortDir] = useState("asc");
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState({
     company: null,
@@ -37,6 +56,10 @@ export default function ProductKnowledgeBase() {
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    try { localStorage.setItem(VIEW_STORAGE_KEY, view); } catch {}
+  }, [view]);
 
   // Open the modal for the product referenced in ?id= once products have loaded.
   useEffect(() => {
@@ -178,6 +201,28 @@ export default function ProductKnowledgeBase() {
         </div>
       </div>
 
+      {/* View switcher */}
+      <div className="flex justify-center mb-6 max-w-6xl mx-auto">
+        <div className="inline-flex items-center gap-1 p-1 rounded-full bg-gray-900/70 border border-white/10 backdrop-blur-md">
+          {VIEWS.map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              onClick={() => setView(id)}
+              title={label}
+              aria-label={label}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                view === id
+                  ? "bg-gradient-to-br from-[#0951fa]/60 via-[#0951fa]/15 to-gray-900/50 border border-[#0951fa]/50 text-white"
+                  : "text-gray-400 hover:text-white border border-transparent"
+              }`}
+            >
+              <Icon className="h-4 w-4" />
+              <span className="hidden sm:inline">{label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
       {loading ? (
         <div className="text-center py-16 text-gray-400">
           <div className="inline-block h-8 w-8 border-4 border-[#0951fa] border-t-transparent rounded-full animate-spin mb-4"></div>
@@ -212,26 +257,23 @@ export default function ProductKnowledgeBase() {
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {sorted.map((p) => {
-            const isSwitch = p.company === "Switch Commerce";
-            const tone = isSwitch
-              ? "from-[#0951fa]/60 via-[#0951fa]/10 border-[#0951fa]/25 hover:border-[#0951fa]/50 shadow-[#0951fa]/10"
-              : "from-[#ff4f00]/55 via-[#ff4f00]/10 border-[#ff4f00]/25 hover:border-[#ff4f00]/50 shadow-[#ff4f00]/10";
-            return (
-              <div
-                key={p.id || p.title}
-                onClick={() => openProduct(p)}
-                className={`rounded-xl p-6 cursor-pointer bg-gradient-to-br ${tone} from-0% via-45% to-gray-900/70 to-100% border hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl backdrop-blur-md`}
-              >
-                <h2 className="text-xl font-semibold mb-2 text-white text-center">{p.title}</h2>
-                <p className="text-sm text-gray-300 text-center mb-3">{p.company}</p>
-                {p.keywords && (
-                  <p className="text-xs text-white/90 bg-white/10 border border-white/10 py-1 px-2 rounded-full text-center">{p.keywords}</p>
-                )}
-              </div>
-            );
-          })}
+        <div className="max-w-6xl mx-auto">
+          {view === "cards" && <CardsView items={sorted} onOpen={openProduct} />}
+          {view === "list" && <ListView items={sorted} onOpen={openProduct} />}
+          {view === "columns" && <ColumnsView items={sorted} onOpen={openProduct} />}
+          {view === "table" && (
+            <TableView
+              items={sorted}
+              onOpen={openProduct}
+              sortKey={sortKey}
+              sortDir={sortDir}
+              onSort={(k) => {
+                if (sortKey === k) setSortDir(sortDir === "asc" ? "desc" : "asc");
+                else { setSortKey(k); setSortDir("asc"); }
+              }}
+            />
+          )}
+          {view === "grouped" && <GroupedView items={sorted} onOpen={openProduct} />}
         </div>
       )}
 
@@ -348,6 +390,233 @@ export default function ProductKnowledgeBase() {
           </div>
         </Dialog>
       )}
+    </div>
+  );
+}
+
+// ---------- View components ---------------------------------------------
+
+function toneFor(company) {
+  return company === "Switch Commerce"
+    ? {
+        gradient:
+          "from-[#0951fa]/60 via-[#0951fa]/10 border-[#0951fa]/25 hover:border-[#0951fa]/50 shadow-[#0951fa]/10",
+        badge: "bg-[#0951fa]/20 text-[#7ea9ff] border-[#0951fa]/40",
+        abbr: "SC",
+        accent: "[#0951fa]",
+      }
+    : {
+        gradient:
+          "from-[#ff4f00]/55 via-[#ff4f00]/10 border-[#ff4f00]/25 hover:border-[#ff4f00]/50 shadow-[#ff4f00]/10",
+        badge: "bg-[#ff4f00]/20 text-[#ff9f70] border-[#ff4f00]/40",
+        abbr: "CC",
+        accent: "[#ff4f00]",
+      };
+}
+
+function CardsView({ items, onOpen }) {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {items.map((p) => {
+        const t = toneFor(p.company);
+        return (
+          <div
+            key={p.id || p.title}
+            onClick={() => onOpen(p)}
+            className={`rounded-xl p-6 cursor-pointer bg-gradient-to-br ${t.gradient} from-0% via-45% to-gray-900/70 to-100% border hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl backdrop-blur-md`}
+          >
+            <h2 className="text-xl font-semibold mb-2 text-white text-center">{p.title}</h2>
+            <p className="text-sm text-gray-300 text-center mb-3">{p.company}</p>
+            {p.keywords && (
+              <p className="text-xs text-white/90 bg-white/10 border border-white/10 py-1 px-2 rounded-full text-center">
+                {p.keywords}
+              </p>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function ListView({ items, onOpen }) {
+  return (
+    <div className="space-y-2">
+      {items.map((p) => {
+        const t = toneFor(p.company);
+        return (
+          <button
+            key={p.id || p.title}
+            onClick={() => onOpen(p)}
+            className="w-full flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-gray-800/50 to-gray-900/40 border border-white/10 hover:border-white/30 hover:bg-white/5 backdrop-blur-md transition-all text-left group"
+          >
+            <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border ${t.badge} flex-shrink-0`}>
+              {t.abbr}
+            </span>
+            <div className="flex-1 min-w-0">
+              <div className="font-semibold text-white truncate">{p.title}</div>
+              <div className="text-xs text-gray-400 truncate">{p.company} · {p.type}</div>
+            </div>
+            {p.keywords && (
+              <div className="hidden md:block text-xs text-gray-400 truncate max-w-[300px]">
+                {p.keywords}
+              </div>
+            )}
+            <svg className="h-5 w-5 text-gray-500 group-hover:text-white transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function ColumnsView({ items, onOpen }) {
+  const sc = items.filter((p) => p.company === "Switch Commerce");
+  const cc = items.filter((p) => p.company === "Clear Choice");
+  const Column = ({ title, titleColor, borderColor, list }) => (
+    <div className="flex-1 min-w-0">
+      <div
+        className="flex items-center justify-between mb-4 pb-3 border-b-2"
+        style={{ borderColor }}
+      >
+        <h3 className="font-switch-bold text-xl" style={{ color: titleColor }}>{title}</h3>
+        <span className="text-sm text-gray-400">{list.length}</span>
+      </div>
+      <div className="space-y-3">
+        {list.length === 0 ? (
+          <div className="text-center py-8 text-gray-500 text-sm border border-dashed border-white/10 rounded-xl">
+            No matches in {title}.
+          </div>
+        ) : (
+          list.map((p) => {
+            const t = toneFor(p.company);
+            return (
+              <button
+                key={p.id || p.title}
+                onClick={() => onOpen(p)}
+                className={`w-full text-left rounded-xl p-4 bg-gradient-to-br ${t.gradient} from-0% via-45% to-gray-900/70 to-100% border hover:scale-[1.015] transition-all shadow-lg backdrop-blur-md`}
+              >
+                <div className="font-semibold text-white">{p.title}</div>
+                <div className="text-xs text-gray-300 mt-0.5">{p.type}</div>
+              </button>
+            );
+          })
+        )}
+      </div>
+    </div>
+  );
+  return (
+    <div className="flex flex-col md:flex-row gap-8">
+      <Column title="Switch Commerce" titleColor="#0a7cff" borderColor="rgba(10,124,255,0.4)" list={sc} />
+      <Column title="Clear Choice" titleColor="#ff9f70" borderColor="rgba(255,79,0,0.4)" list={cc} />
+    </div>
+  );
+}
+
+function TableView({ items, onOpen, sortKey, sortDir, onSort }) {
+  const sorted = useMemo(() => {
+    const arr = [...items];
+    arr.sort((a, b) => {
+      const av = (a[sortKey] || "").toString().toLowerCase();
+      const bv = (b[sortKey] || "").toString().toLowerCase();
+      if (av < bv) return sortDir === "asc" ? -1 : 1;
+      if (av > bv) return sortDir === "asc" ? 1 : -1;
+      return 0;
+    });
+    return arr;
+  }, [items, sortKey, sortDir]);
+
+  const Header = ({ id, children, className = "" }) => (
+    <th
+      onClick={() => onSort(id)}
+      className={`px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-300 cursor-pointer select-none hover:text-white ${className}`}
+    >
+      <span className="inline-flex items-center gap-1">
+        {children}
+        {sortKey === id && (
+          sortDir === "asc" ? <ChevronUpIcon className="h-3 w-3" /> : <ChevronDownIcon className="h-3 w-3" />
+        )}
+      </span>
+    </th>
+  );
+
+  return (
+    <div className="overflow-x-auto rounded-xl border border-white/10 bg-gray-900/40 backdrop-blur-md">
+      <table className="min-w-full text-sm">
+        <thead className="bg-gray-900/60 border-b border-white/10">
+          <tr>
+            <Header id="title">Title</Header>
+            <Header id="company">Company</Header>
+            <Header id="type">Type</Header>
+            <Header id="keywords" className="hidden md:table-cell">Keywords</Header>
+          </tr>
+        </thead>
+        <tbody>
+          {sorted.map((p, i) => {
+            const t = toneFor(p.company);
+            return (
+              <tr
+                key={p.id || p.title}
+                onClick={() => onOpen(p)}
+                className={`cursor-pointer hover:bg-white/5 transition-colors ${i % 2 === 0 ? "bg-transparent" : "bg-white/[0.02]"}`}
+              >
+                <td className="px-4 py-3 text-white font-medium">{p.title}</td>
+                <td className="px-4 py-3">
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${t.badge}`}>
+                    {p.company}
+                  </span>
+                </td>
+                <td className="px-4 py-3 text-gray-300">{p.type}</td>
+                <td className="px-4 py-3 text-gray-400 hidden md:table-cell truncate max-w-[360px]">
+                  {p.keywords}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function GroupedView({ items, onOpen }) {
+  const groups = useMemo(() => {
+    const map = new Map();
+    for (const p of items) {
+      const key = p.type || "Other";
+      if (!map.has(key)) map.set(key, []);
+      map.get(key).push(p);
+    }
+    return [...map.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+  }, [items]);
+
+  return (
+    <div className="space-y-8">
+      {groups.map(([type, list]) => (
+        <section key={type}>
+          <div className="flex items-center justify-between mb-3 pb-2 border-b border-white/10">
+            <h3 className="font-switch-bold text-lg text-white">{type}</h3>
+            <span className="text-xs text-gray-400">{list.length} {list.length === 1 ? "product" : "products"}</span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {list.map((p) => {
+              const t = toneFor(p.company);
+              return (
+                <button
+                  key={p.id || p.title}
+                  onClick={() => onOpen(p)}
+                  className={`text-left rounded-lg p-3 bg-gradient-to-br ${t.gradient} from-0% via-50% to-gray-900/70 to-100% border transition-all hover:scale-[1.015] shadow-lg backdrop-blur-md`}
+                >
+                  <div className="font-semibold text-white text-sm truncate">{p.title}</div>
+                  <div className="text-xs text-gray-300 truncate">{p.company}</div>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      ))}
     </div>
   );
 }
