@@ -4,19 +4,6 @@ import { Link } from 'react-router-dom';
 export default function MarketingRequestPage() {
   useEffect(() => {
     document.title = 'Marketing Request Form - Switch Commerce';
-    
-    // Load Typeform embed script
-    const script = document.createElement('script');
-    script.src = '//embed.typeform.com/next/embed.js';
-    script.async = true;
-    document.body.appendChild(script);
-    
-    return () => {
-      // Cleanup script on unmount
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
-    };
   }, []);
 
   return (
@@ -42,11 +29,14 @@ export default function MarketingRequestPage() {
 
       {/* Form Container */}
       <div className="max-w-7xl mx-auto px-4 pb-12">
-        <div className="rounded-2xl bg-gray-900/40 border border-white/10 backdrop-blur-md p-4 shadow-xl">
-          <div
-            data-tf-live="01K9DD51ZAQBYYXREMECWSSXJB"
-            style={{ minHeight: '700px', width: '100%' }}
-          ></div>
+        <div className="rounded-2xl bg-gray-900/40 border border-white/10 backdrop-blur-md p-2 sm:p-4 shadow-xl overflow-hidden">
+          <iframe
+            src="https://lumioboards.netlify.app/f/marketing-request-cbkday"
+            title="Marketing Request Form"
+            className="w-full rounded-xl bg-white"
+            style={{ height: '85vh', minHeight: '800px', border: 0 }}
+            allow="clipboard-write"
+          />
         </div>
       </div>
 

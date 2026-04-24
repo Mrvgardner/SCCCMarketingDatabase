@@ -132,15 +132,15 @@ export default function PrintCollateralPage() {
           <p className="text-gray-400 mb-6">
             Contact the marketing team for custom collateral requests.
           </p>
-          <a
-            href="mailto:marketing@switchcommerce.com"
+          <Link
+            to="/marketing-request"
             className="inline-flex items-center px-6 py-3 rounded-lg font-semibold text-white bg-gradient-to-br from-[#0951fa]/60 from-0% via-[#0951fa]/15 via-45% to-gray-900/60 to-100% border border-[#0951fa]/40 hover:border-[#0951fa]/70 shadow-xl backdrop-blur-md transition-all"
           >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
             </svg>
-            Email Marketing Team
-          </a>
+            Submit Marketing Request
+          </Link>
         </div>
       </div>
     </div>
