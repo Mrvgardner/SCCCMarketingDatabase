@@ -206,30 +206,26 @@ export default function ProductKnowledgeBase() {
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sorted.map((p, idx) => (
-            <div
-              key={idx}
-              className={`rounded-xl p-6 cursor-pointer shadow-xl backdrop-blur-sm bg-opacity-90 hover:scale-105 transition-transform duration-300 ${
-                p.company === "Switch Commerce"
-                  ? (idx % 3 === 0
-                      ? "bg-gradient-to-br from-[#0951fa] to-[#0a7cff]"
-                      : idx % 3 === 1
-                        ? "bg-gradient-to-t from-[#0a7cff] to-[#0951fa]"
-                        : "bg-gradient-to-l from-[#0a7cff] to-[#0951fa]")
-                  : (idx % 3 === 0
-                      ? "bg-gradient-to-r from-[#ff4f00] to-[#ff6a1a]"
-                      : idx % 3 === 1
-                        ? "bg-gradient-to-tl from-[#ff6a1a] to-[#ff4f00]"
-                        : "bg-gradient-to-b from-[#ff4f00] to-[#d84315]")
-              }`}
-              onClick={() => openProduct(p)}
-            >
-              <h2 className="text-xl font-semibold mb-2 text-white text-center">{p.title}</h2>
-              <p className="text-sm text-gray-200 text-center mb-3">{p.company}</p>
-              <p className="text-xs text-white bg-white/20 py-1 px-2 rounded-full text-center">{p.keywords}</p>
-            </div>
-          ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {sorted.map((p) => {
+            const isSwitch = p.company === "Switch Commerce";
+            const tone = isSwitch
+              ? "from-[#0951fa]/60 via-[#0951fa]/10 border-[#0951fa]/25 hover:border-[#0951fa]/50 shadow-[#0951fa]/10"
+              : "from-[#ff4f00]/55 via-[#ff4f00]/10 border-[#ff4f00]/25 hover:border-[#ff4f00]/50 shadow-[#ff4f00]/10";
+            return (
+              <div
+                key={p.id || p.title}
+                onClick={() => openProduct(p)}
+                className={`rounded-xl p-6 cursor-pointer bg-gradient-to-br ${tone} from-0% via-45% to-gray-900/70 to-100% border hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl backdrop-blur-md`}
+              >
+                <h2 className="text-xl font-semibold mb-2 text-white text-center">{p.title}</h2>
+                <p className="text-sm text-gray-300 text-center mb-3">{p.company}</p>
+                {p.keywords && (
+                  <p className="text-xs text-white/90 bg-white/10 border border-white/10 py-1 px-2 rounded-full text-center">{p.keywords}</p>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
 
