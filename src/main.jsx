@@ -74,45 +74,56 @@ function AppShell() {
   return (
     <>
       {user && (
-        <nav className="bg-gray-800 p-4 shadow">
-          <div className="max-w-5xl mx-auto flex items-center gap-6">
-            <div className="flex flex-1 items-center justify-center gap-6">
-              <Link to="/" className="text-gray-200 hover:text-white">
-                <HomeIcon className="h-6 w-6" />
+        <nav className="bg-gray-900 border-b border-white/10 px-6 py-3 shadow">
+          <div className="max-w-7xl mx-auto flex items-center gap-6">
+            <div className="flex flex-1 items-center justify-center gap-2 sm:gap-4">
+              <Link
+                to="/"
+                className="inline-flex items-center justify-center p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                aria-label="Home"
+              >
+                <HomeIcon className="h-5 w-5" />
+              </Link>
+              <Link to="/products" className="px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors">
+                Knowledge Base
+              </Link>
+              <Link to="/field-notes" className="px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors">
+                Field Notes
+              </Link>
+              <Link to="/marketing-request" className="px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors">
+                Marketing Request
               </Link>
               <Menu as="div" className="relative">
-                <Menu.Button className="inline-flex items-center text-gray-200 hover:text-white">
-                  Team Assets
+                <Menu.Button className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors">
+                  Other
                   <ChevronDownIcon className="h-4 w-4 ml-1" />
                 </Menu.Button>
-                <Menu.Items className="absolute mt-2 w-48 bg-white dark:bg-gray-700 rounded shadow-lg z-10">
+                <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right rounded-lg bg-gray-800 border border-white/10 shadow-2xl z-20 py-1 focus:outline-none">
                   <Menu.Item>
                     {({ active }) => (
-                      <Link to="/switch-commerce/branding" className={`block px-4 py-2 text-gray-800 dark:text-gray-200 ${active ? 'bg-gray-200 dark:bg-gray-600' : ''}`}>Switch Commerce Brand Guidelines</Link>
+                      <Link to="/print-collateral" className={`block px-4 py-2 text-sm ${active ? 'bg-white/10 text-white' : 'text-gray-200'}`}>
+                        Brochures & One-Pagers
+                      </Link>
                     )}
                   </Menu.Item>
                   <Menu.Item>
                     {({ active }) => (
-                      <a href="/brochures/SwitchCommerceClearChoiceBrochure.pdf" target="_blank" rel="noopener noreferrer" className={`block px-4 py-2 text-gray-800 dark:text-gray-200 ${active ? 'bg-gray-200 dark:bg-gray-600' : ''}`}>Switch Commerce Brochure</a>
+                      <Link to="/email-signature" className={`block px-4 py-2 text-sm ${active ? 'bg-white/10 text-white' : 'text-gray-200'}`}>
+                        Email Signatures
+                      </Link>
                     )}
                   </Menu.Item>
                   <Menu.Item>
                     {({ active }) => (
-                      <Link to="/clear-choice/branding" className={`block px-4 py-2 text-gray-800 dark:text-gray-200 ${active ? 'bg-gray-200 dark:bg-gray-600' : ''}`}>Clear Choice Brand Guidelines</Link>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <a href="/brochures/SwitchCommerceClearChoiceBrochure.pdf" target="_blank" rel="noopener noreferrer" className={`block px-4 py-2 text-gray-800 dark:text-gray-200 ${active ? 'bg-gray-200 dark:bg-gray-600' : ''}`}>Clear Choice Brochure</a>
+                      <Link to="/wallpapers" className={`block px-4 py-2 text-sm ${active ? 'bg-white/10 text-white' : 'text-gray-200'}`}>
+                        Wallpapers
+                      </Link>
                     )}
                   </Menu.Item>
                 </Menu.Items>
               </Menu>
-              <Link to="/products" className="inline-flex items-center text-gray-200 hover:text-white">
-                Knowledge Base
-              </Link>
               {isAdmin && (
-                <Link to="/admin" className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#0951fa]/20 border border-[#0951fa]/40 text-[#0a7cff] hover:bg-[#0951fa]/30 transition-colors text-sm font-medium">
+                <Link to="/admin" className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#0951fa]/20 border border-[#0951fa]/40 text-[#0a7cff] hover:bg-[#0951fa]/30 transition-colors text-xs font-semibold">
                   Admin
                 </Link>
               )}
