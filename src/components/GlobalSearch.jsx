@@ -142,6 +142,18 @@ export default function GlobalSearch() {
     [items]
   );
 
+  // Quick links shown when the input is focused but empty
+  const quickLinks = useMemo(
+    () => STATIC_PAGES.filter((p) => [
+      "Knowledge Base",
+      "Field Notes",
+      "Email Signature",
+      "Brochures & Flyers",
+      "Marketing Request",
+    ].includes(p.title)),
+    []
+  );
+
   const results = useMemo(() => {
     const q = query.trim();
     if (!q) return [];
@@ -190,7 +202,8 @@ export default function GlobalSearch() {
     }
   };
 
-  const showDropdown = open && query.trim().length > 0;
+  const showDropdown = open;
+  const hasQuery = query.trim().length > 0;
 
   return (
     <div ref={containerRef} className="relative w-full max-w-2xl mx-auto">
@@ -220,7 +233,43 @@ export default function GlobalSearch() {
 
       {showDropdown && (
         <div className="absolute left-0 right-0 mt-2 rounded-2xl bg-gray-900/95 border border-white/10 shadow-2xl backdrop-blur-md overflow-hidden z-50">
-          {grouped.length === 0 ? (
+          {!hasQuery ? (
+            <div className="py-1 max-h-[60vh] overflow-y-auto">
+              <div className="flex items-center gap-2 px-4 pt-3 pb-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-gray-400" />
+                <span className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                  Quick links
+                </span>
+              </div>
+              {quickLinks.map((item) => {
+                const cfg = CATEGORIES.page;
+                return (
+                  <button
+                    key={`ql-${item.title}`}
+                    onClick={() => goTo(item)}
+                    className="w-full flex items-start gap-3 px-4 py-3 hover:bg-white/5 transition-colors text-left group"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-white truncate group-hover:text-[#0a7cff] transition-colors">
+                          {item.title}
+                        </span>
+                        <span className={`flex-shrink-0 px-1.5 py-0.5 rounded text-[10px] font-semibold border ${cfg.color}`}>
+                          {cfg.label}
+                        </span>
+                      </div>
+                      {item.subtitle && (
+                        <div className="text-xs text-gray-400 mt-0.5 line-clamp-1">{item.subtitle}</div>
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
+              <div className="px-4 py-2 text-[11px] text-gray-500 border-t border-white/5">
+                Start typing to search products, field notes, and more.
+              </div>
+            </div>
+          ) : grouped.length === 0 ? (
             <div className="p-6 text-center text-sm text-gray-400">
               No matches for <span className="text-white">"{query}"</span>.
             </div>
