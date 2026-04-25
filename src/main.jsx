@@ -93,7 +93,7 @@ function TopNav({ user, logout, isAdmin }) {
           className="inline-flex items-center justify-center p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-colors flex-shrink-0"
           aria-label="Home"
         >
-          <HomeIcon className="h-5 w-5" />
+          <img src="/favicon.png" alt="Home" className="h-5 w-5 object-contain" />
         </Link>
 
         {/* Desktop links */}
