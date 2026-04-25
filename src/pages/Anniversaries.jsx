@@ -7,7 +7,7 @@ export default function Anniversaries() {
   const all = getUpcoming(anniversaries, anniversaries.length);
 
   return (
-    <div className="flex-1 bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8">
+    <div className="flex-1 bg-gradient-to-b from-gray-900 to-gray-800 text-white p-4 sm:p-8">
       <div className="max-w-3xl mx-auto">
         <Link
           to="/"
@@ -19,7 +19,7 @@ export default function Anniversaries() {
 
         <div className="flex items-center gap-3 mb-2">
           <SparklesIcon className="h-10 w-10 text-[#9333ea]" />
-          <h1 className="font-switch-bold text-4xl bg-gradient-to-r from-[#9333ea] to-[#c084fc] bg-clip-text text-transparent">
+          <h1 className="font-switch-bold text-3xl sm:text-4xl bg-gradient-to-r from-[#9333ea] to-[#c084fc] bg-clip-text text-transparent">
             Upcoming Anniversaries
           </h1>
         </div>

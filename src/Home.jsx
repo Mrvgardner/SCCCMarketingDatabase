@@ -33,10 +33,10 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex-1 bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8">
+    <div className="flex-1 bg-gradient-to-b from-gray-900 to-gray-800 text-white p-4 sm:p-8">
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto text-center mb-6">
-        <h1 className="font-switch-bold text-5xl tracking-wide mb-2 bg-gradient-to-r from-[#0951fa] from-10% via-[#0951fa] via-30% to-[#ff4f00] to-80% bg-clip-text text-transparent">
+        <h1 className="font-switch-bold text-3xl sm:text-4xl md:text-5xl tracking-wide mb-2 bg-gradient-to-r from-[#0951fa] from-10% via-[#0951fa] via-30% to-[#ff4f00] to-80% bg-clip-text text-transparent">
           Team Switch Commerce
         </h1>
         <h2 className="font-switch-reg text-lg md:text-xl tracking-[0.2em] text-gray-300">

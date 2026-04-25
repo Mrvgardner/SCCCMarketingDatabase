@@ -53,7 +53,7 @@ export default function PrintCollateralPage() {
   return (
     <div className="flex-1 bg-gradient-to-b from-gray-900 to-gray-800 text-white">
       {/* Header */}
-      <div className="py-16">
+      <div className="py-10 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link
             to="/"
@@ -64,8 +64,8 @@ export default function PrintCollateralPage() {
             </svg>
             Back to Home
           </Link>
-          <h1 className="font-switch-bold text-5xl mb-4 bg-gradient-to-r from-[#0951fa] to-[#ff4f00] bg-clip-text text-transparent">Print Collateral</h1>
-          <p className="text-lg text-gray-300 max-w-3xl">
+          <h1 className="font-switch-bold text-3xl sm:text-4xl md:text-5xl mb-4 bg-gradient-to-r from-[#0951fa] to-[#ff4f00] bg-clip-text text-transparent">Print Collateral</h1>
+          <p className="text-base sm:text-lg text-gray-300 max-w-3xl">
             Access the latest brochures, one-pagers, and marketing materials for Switch Commerce and Clear Choice.
           </p>
         </div>
@@ -87,9 +87,9 @@ export default function PrintCollateralPage() {
                   rel="noopener noreferrer"
                   className="group rounded-xl overflow-hidden bg-gradient-to-br from-[#0951fa]/30 from-0% via-[#0951fa]/5 via-45% to-gray-900/70 to-100% border border-white/10 hover:border-[#0951fa]/50 shadow-xl hover:shadow-2xl backdrop-blur-md transition-all duration-300"
                 >
-                  <div className="p-6">
-                    <div className="flex items-start space-x-4">
-                      <div className="flex-shrink-0 w-24 h-32 rounded-lg overflow-hidden shadow-md">
+                  <div className="p-5 sm:p-6">
+                    <div className="flex items-start gap-3 sm:gap-4">
+                      <div className="flex-shrink-0 w-20 h-28 sm:w-24 sm:h-32 rounded-lg overflow-hidden shadow-md">
                         <img 
                           src={item.thumbnail} 
                           alt={`${item.name} cover`}

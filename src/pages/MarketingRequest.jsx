@@ -9,7 +9,7 @@ export default function MarketingRequestPage() {
   return (
     <div className="flex-1 bg-gradient-to-b from-gray-900 to-gray-800 text-white">
       {/* Header */}
-      <div className="py-16 px-4">
+      <div className="py-10 sm:py-16 px-4">
         <div className="max-w-7xl mx-auto">
           <Link
             to="/"
@@ -20,8 +20,8 @@ export default function MarketingRequestPage() {
             </svg>
             Back to Home
           </Link>
-          <h1 className="font-switch-bold text-5xl mb-4 bg-gradient-to-r from-[#9333ea] to-[#c084fc] bg-clip-text text-transparent">Marketing Request Form</h1>
-          <p className="text-lg text-gray-300 max-w-3xl">
+          <h1 className="font-switch-bold text-3xl sm:text-4xl md:text-5xl mb-4 bg-gradient-to-r from-[#9333ea] to-[#c084fc] bg-clip-text text-transparent">Marketing Request Form</h1>
+          <p className="text-base sm:text-lg text-gray-300 max-w-3xl">
             Submit your marketing requests, campaign ideas, and project inquiries. Our team will review and get back to you promptly.
           </p>
         </div>
@@ -34,7 +34,7 @@ export default function MarketingRequestPage() {
             src="https://lumioboards.netlify.app/f/marketing-request-cbkday"
             title="Marketing Request Form"
             className="w-full rounded-xl bg-white"
-            style={{ height: '85vh', minHeight: '800px', border: 0 }}
+            style={{ height: '85vh', minHeight: '600px', border: 0 }}
             allow="clipboard-write"
           />
         </div>

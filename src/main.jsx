@@ -1,8 +1,8 @@
-import React, { lazy, Suspense } from 'react'
+import React, { lazy, Suspense, useState } from 'react'
 import ReactDOM from 'react-dom/client'
-import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom'
 import { Menu } from '@headlessui/react'
-import { HomeIcon, ChevronDownIcon } from '@heroicons/react/24/solid'
+import { HomeIcon, ChevronDownIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid'
 import Home from './Home'
 import Login from './pages/Login.jsx';
 import SiteFooter from './components/SiteFooter.jsx';
@@ -76,80 +76,119 @@ function AdminRoute({ children }) {
   return children;
 }
 
+function TopNav({ user, logout, isAdmin }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const location = useLocation();
+  React.useEffect(() => { setMobileOpen(false); }, [location.pathname]);
+
+  const primaryLinkClass = "px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors";
+  const mobileLinkClass = "block px-3 py-3 rounded-lg text-base font-medium text-gray-200 hover:text-white hover:bg-white/5 transition-colors";
+
+  return (
+    <nav className="bg-gray-900 border-b border-white/10 shadow">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-3">
+        <Link
+          to="/"
+          className="inline-flex items-center justify-center p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-colors flex-shrink-0"
+          aria-label="Home"
+        >
+          <HomeIcon className="h-5 w-5" />
+        </Link>
+
+        {/* Desktop links */}
+        <div className="hidden md:flex flex-1 items-center justify-center gap-2 lg:gap-4">
+          <Link to="/products" className={primaryLinkClass}>Knowledge Base</Link>
+          <Link to="/field-notes" className={primaryLinkClass}>Field Notes</Link>
+          <Link to="/marketing-request" className={primaryLinkClass}>Marketing Request</Link>
+          <Menu as="div" className="relative">
+            <Menu.Button className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors">
+              Other
+              <ChevronDownIcon className="h-4 w-4 ml-1" />
+            </Menu.Button>
+            <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right rounded-lg bg-gray-800 border border-white/10 shadow-2xl z-20 py-1 focus:outline-none">
+              <Menu.Item>{({ active }) => (
+                <Link to="/print-collateral" className={`block px-4 py-2 text-sm ${active ? 'bg-white/10 text-white' : 'text-gray-200'}`}>Brochures & One-Pagers</Link>
+              )}</Menu.Item>
+              <Menu.Item>{({ active }) => (
+                <Link to="/email-signature" className={`block px-4 py-2 text-sm ${active ? 'bg-white/10 text-white' : 'text-gray-200'}`}>Email Signatures</Link>
+              )}</Menu.Item>
+              <Menu.Item>{({ active }) => (
+                <Link to="/wallpapers" className={`block px-4 py-2 text-sm ${active ? 'bg-white/10 text-white' : 'text-gray-200'}`}>Wallpapers</Link>
+              )}</Menu.Item>
+            </Menu.Items>
+          </Menu>
+          {isAdmin && (
+            <Link to="/admin" className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#0951fa]/20 border border-[#0951fa]/40 text-[#0a7cff] hover:bg-[#0951fa]/30 transition-colors text-xs font-semibold">
+              Admin
+            </Link>
+          )}
+        </div>
+
+        {/* Right cluster: name + sign out (desktop) */}
+        <div className="hidden md:flex items-center gap-4 text-gray-200 flex-shrink-0">
+          <div className="text-right text-xs leading-tight hidden lg:block">
+            <div className="text-gray-300 truncate max-w-[180px]" title={user.email}>
+              {user.user_metadata?.full_name || user.email}
+            </div>
+            {isAdmin && <div className="text-[#0a7cff]">Admin</div>}
+          </div>
+          <button onClick={logout} className="text-sm text-gray-400 hover:text-white transition-colors">
+            Sign Out
+          </button>
+        </div>
+
+        {/* Mobile hamburger */}
+        <div className="flex md:hidden flex-1 items-center justify-end">
+          {isAdmin && (
+            <Link to="/admin" className="mr-2 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#0951fa]/20 border border-[#0951fa]/40 text-[#0a7cff] text-[11px] font-semibold">
+              Admin
+            </Link>
+          )}
+          <button
+            type="button"
+            onClick={() => setMobileOpen((v) => !v)}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-nav"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            className="inline-flex items-center justify-center p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+          >
+            {mobileOpen ? <XMarkIcon className="h-6 w-6" /> : <Bars3Icon className="h-6 w-6" />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile drawer */}
+      {mobileOpen && (
+        <div id="mobile-nav" className="md:hidden border-t border-white/10 bg-gray-900 px-4 py-3 space-y-1">
+          <Link to="/products" className={mobileLinkClass}>Knowledge Base</Link>
+          <Link to="/field-notes" className={mobileLinkClass}>Field Notes</Link>
+          <Link to="/marketing-request" className={mobileLinkClass}>Marketing Request</Link>
+          <div className="pt-2 mt-2 border-t border-white/10">
+            <div className="px-3 pt-1 pb-2 text-[11px] uppercase tracking-wider text-gray-500">Downloads</div>
+            <Link to="/print-collateral" className={mobileLinkClass}>Brochures & One-Pagers</Link>
+            <Link to="/email-signature" className={mobileLinkClass}>Email Signatures</Link>
+            <Link to="/wallpapers" className={mobileLinkClass}>Wallpapers</Link>
+          </div>
+          <div className="pt-3 mt-3 border-t border-white/10 flex items-center justify-between">
+            <div className="text-xs text-gray-400 truncate pr-3">
+              {user.user_metadata?.full_name || user.email}
+            </div>
+            <button onClick={logout} className="text-sm text-gray-300 hover:text-white transition-colors flex-shrink-0">
+              Sign Out
+            </button>
+          </div>
+        </div>
+      )}
+    </nav>
+  );
+}
+
 function AppShell() {
   const { user, logout, isAdmin } = useAuth();
 
   return (
     <>
-      {user && (
-        <nav className="bg-gray-900 border-b border-white/10 px-6 py-3 shadow">
-          <div className="max-w-7xl mx-auto flex items-center gap-6">
-            <div className="flex flex-1 items-center justify-center gap-2 sm:gap-4">
-              <Link
-                to="/"
-                className="inline-flex items-center justify-center p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
-                aria-label="Home"
-              >
-                <HomeIcon className="h-5 w-5" />
-              </Link>
-              <Link to="/products" className="px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors">
-                Knowledge Base
-              </Link>
-              <Link to="/field-notes" className="px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors">
-                Field Notes
-              </Link>
-              <Link to="/marketing-request" className="px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors">
-                Marketing Request
-              </Link>
-              <Menu as="div" className="relative">
-                <Menu.Button className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors">
-                  Other
-                  <ChevronDownIcon className="h-4 w-4 ml-1" />
-                </Menu.Button>
-                <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right rounded-lg bg-gray-800 border border-white/10 shadow-2xl z-20 py-1 focus:outline-none">
-                  <Menu.Item>
-                    {({ active }) => (
-                      <Link to="/print-collateral" className={`block px-4 py-2 text-sm ${active ? 'bg-white/10 text-white' : 'text-gray-200'}`}>
-                        Brochures & One-Pagers
-                      </Link>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <Link to="/email-signature" className={`block px-4 py-2 text-sm ${active ? 'bg-white/10 text-white' : 'text-gray-200'}`}>
-                        Email Signatures
-                      </Link>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <Link to="/wallpapers" className={`block px-4 py-2 text-sm ${active ? 'bg-white/10 text-white' : 'text-gray-200'}`}>
-                        Wallpapers
-                      </Link>
-                    )}
-                  </Menu.Item>
-                </Menu.Items>
-              </Menu>
-              {isAdmin && (
-                <Link to="/admin" className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#0951fa]/20 border border-[#0951fa]/40 text-[#0a7cff] hover:bg-[#0951fa]/30 transition-colors text-xs font-semibold">
-                  Admin
-                </Link>
-              )}
-            </div>
-            <div className="flex items-center gap-4 text-gray-200">
-              <div className="text-right text-xs leading-tight hidden sm:block">
-                <div className="text-gray-300 truncate max-w-[180px]" title={user.email}>
-                  {user.user_metadata?.full_name || user.email}
-                </div>
-                {isAdmin && <div className="text-[#0a7cff]">Admin</div>}
-              </div>
-              <button onClick={logout} className="text-sm text-gray-400 hover:text-white transition-colors">
-                Sign Out
-              </button>
-            </div>
-          </div>
-        </nav>
-      )}
+      {user && <TopNav user={user} logout={logout} isAdmin={isAdmin} />}
       <Suspense fallback={<RouteFallback />}>
       <Routes>
         <Route path="/login" element={<Login />} />

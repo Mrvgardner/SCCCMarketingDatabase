@@ -215,7 +215,7 @@ export default function FieldNotes() {
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
           <div>
-            <h1 className="font-switch-bold text-5xl mb-2 bg-gradient-to-r from-[#5fae4b] to-[#7bc966] bg-clip-text text-transparent">
+            <h1 className="font-switch-bold text-3xl sm:text-4xl md:text-5xl mb-2 bg-gradient-to-r from-[#5fae4b] to-[#7bc966] bg-clip-text text-transparent">
               Field Notes
             </h1>
             <p className="text-gray-400">Team updates, announcements, and news.</p>
