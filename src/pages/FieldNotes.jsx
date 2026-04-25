@@ -187,7 +187,14 @@ export default function FieldNotes() {
   useEffect(() => {
     let cancelled = false;
     listFieldNotes()
-      .then((data) => !cancelled && setNotes(data))
+      .then((data) => {
+        if (cancelled) return;
+        setNotes(data);
+        if (data[0]?.date) {
+          localStorage.setItem('fieldNotes_lastSeenDate', data[0].date);
+          window.dispatchEvent(new Event('fieldNotesRead'));
+        }
+      })
       .catch((err) => !cancelled && setError(err.message || "Failed to load notes"))
       .finally(() => !cancelled && setLoading(false));
     return () => { cancelled = true; };

@@ -23,13 +23,27 @@ const FloatingTile = ({ delay = 0, className = "", children }) => (
 
 export default function Home() {
   const [latestFieldNote, setLatestFieldNote] = useState(null);
+  const [hasUnreadNote, setHasUnreadNote] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     listFieldNotes()
-      .then((notes) => !cancelled && setLatestFieldNote(notes[0] || null))
+      .then((notes) => {
+        if (cancelled) return;
+        const latest = notes[0] || null;
+        setLatestFieldNote(latest);
+        if (latest?.date) {
+          const lastSeen = localStorage.getItem('fieldNotes_lastSeenDate');
+          setHasUnreadNote(!lastSeen || latest.date > lastSeen);
+        }
+      })
       .catch(() => {});
-    return () => { cancelled = true; };
+    const onRead = () => setHasUnreadNote(false);
+    window.addEventListener('fieldNotesRead', onRead);
+    return () => {
+      cancelled = true;
+      window.removeEventListener('fieldNotesRead', onRead);
+    };
   }, []);
 
   return (
@@ -64,6 +78,11 @@ export default function Home() {
                 <div className="flex items-center gap-2 mb-4">
                   <NewspaperIcon className="h-6 w-6 text-white" />
                   <h3 className="text-2xl font-bold text-white">Field Notes</h3>
+                  {hasUnreadNote && (
+                    <span className="ml-1 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-green-500 text-white">
+                      New
+                    </span>
+                  )}
                 </div>
                 {latestFieldNote ? (
                   <>

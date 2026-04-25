@@ -18,6 +18,7 @@ const EmailSignature = lazy(() => import('./pages/EmailSignature.jsx'));
 const Wallpapers = lazy(() => import('./pages/Wallpapers.jsx'));
 const MarketingRequest = lazy(() => import('./pages/MarketingRequest.jsx'));
 const PrintCollateral = lazy(() => import('./pages/PrintCollateral.jsx'));
+const OnePagerBuilder = lazy(() => import('./pages/OnePagerBuilder.jsx'));
 const FieldNotes = lazy(() => import('./pages/FieldNotes.jsx'));
 const Birthdays = lazy(() => import('./pages/Birthdays.jsx'));
 const Anniversaries = lazy(() => import('./pages/Anniversaries.jsx'));
@@ -202,6 +203,7 @@ function AppShell() {
         <Route path="/wallpapers" element={<ProtectedRoute><Wallpapers /></ProtectedRoute>} />
         <Route path="/marketing-request" element={<ProtectedRoute><MarketingRequest /></ProtectedRoute>} />
         <Route path="/print-collateral" element={<ProtectedRoute><PrintCollateral /></ProtectedRoute>} />
+        <Route path="/one-pager-builder" element={<ProtectedRoute><OnePagerBuilder /></ProtectedRoute>} />
         <Route path="/field-notes" element={<ProtectedRoute><FieldNotes /></ProtectedRoute>} />
         <Route path="/birthdays" element={<ProtectedRoute><Birthdays /></ProtectedRoute>} />
         <Route path="/anniversaries" element={<ProtectedRoute><Anniversaries /></ProtectedRoute>} />

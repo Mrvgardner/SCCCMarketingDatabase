@@ -2,11 +2,13 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu } from '@headlessui/react';
 import { useTheme } from '../contexts/ThemeContext';
+import { listFieldNotes } from '../api/fieldNotes';
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [hasUnreadNote, setHasUnreadNote] = useState(false);
   const settingsRef = useRef(null);
   const timeoutRef = useRef(null);
   const location = useLocation();
@@ -20,6 +22,22 @@ const Navbar = () => {
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const checkUnread = () => {
+      listFieldNotes()
+        .then((notes) => {
+          const latestDate = notes[0]?.date;
+          if (!latestDate) return;
+          const lastSeen = localStorage.getItem('fieldNotes_lastSeenDate');
+          setHasUnreadNote(!lastSeen || latestDate > lastSeen);
+        })
+        .catch(() => {});
+    };
+    checkUnread();
+    window.addEventListener('fieldNotesRead', checkUnread);
+    return () => window.removeEventListener('fieldNotesRead', checkUnread);
   }, []);
 
   useEffect(() => {
@@ -93,10 +111,23 @@ const Navbar = () => {
             </Menu.Items>
           </Menu>
 
+          {/* Field Notes Link */}
+          <Link
+            to="/field-notes"
+            className={`relative text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors ${
+              location.pathname === '/field-notes' ? 'text-green-600 dark:text-green-400' : ''
+            }`}
+          >
+            Field Notes
+            {hasUnreadNote && location.pathname !== '/field-notes' && (
+              <span className="absolute -top-1 -right-2 h-2 w-2 rounded-full bg-green-500" />
+            )}
+          </Link>
+
           {/* Knowledge Base Link */}
           <Link 
             to="/products"
-            className={`text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors ${
+            className={`text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors ${`
               location.pathname === '/products' ? 'text-blue-600 dark:text-blue-400' : ''
             }`}
           >
