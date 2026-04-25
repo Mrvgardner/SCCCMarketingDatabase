@@ -6,7 +6,7 @@ import Fuse from "fuse.js";
 import { listProducts } from "./api/products";
 import RichText from "./components/RichText.jsx";
 import ShareRecipientDialog from "./components/ShareRecipientDialog.jsx";
-import { buildProductShareMailto, copyProductText } from "./utils/shareProduct";
+import { buildProductShareMailto, copyProductText, copyProductShareHtml } from "./utils/shareProduct";
 
 const VIEW_STORAGE_KEY = "scc:kb-view";
 const VIEWS = [
@@ -34,6 +34,7 @@ export default function ProductKnowledgeBase() {
   const [sortKey, setSortKey] = useState("title");
   const [sortDir, setSortDir] = useState("asc");
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [shareNotice, setShareNotice] = useState("");
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState({
     company: null,
@@ -101,6 +102,7 @@ export default function ProductKnowledgeBase() {
       // Clipboard can fail silently — ignore
     }
   };
+
 
   const toggleFilter = (key, value) => {
     setFilters((prev) => ({
@@ -400,13 +402,33 @@ export default function ProductKnowledgeBase() {
         open={shareDialogOpen}
         onClose={() => setShareDialogOpen(false)}
         productTitle={selected?.title}
-        onSubmit={({ name, email }) => {
+        onSubmit={async ({ name, email }) => {
           setShareDialogOpen(false);
           if (!selected) return;
+
+          try {
+            const { copiedHtml } = await copyProductShareHtml(selected, { name, email });
+            setShareNotice(
+              copiedHtml
+                ? "Styled email content copied. Paste into the message body to keep formatting."
+                : "Email opened. Your browser only copied plain text (HTML clipboard not supported)."
+            );
+            setTimeout(() => setShareNotice(""), 6000);
+          } catch {
+            setShareNotice("Email opened. Could not copy styled content to clipboard.");
+            setTimeout(() => setShareNotice(""), 6000);
+          }
+
           const href = buildProductShareMailto(selected, { name, email });
           window.location.href = href;
         }}
       />
+
+      {shareNotice && (
+        <div className="fixed bottom-4 right-4 z-[80] max-w-md rounded-xl bg-gray-900/95 border border-white/15 text-gray-100 text-sm px-4 py-3 shadow-2xl backdrop-blur-md">
+          {shareNotice}
+        </div>
+      )}
     </div>
   );
 }

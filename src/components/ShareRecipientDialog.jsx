@@ -89,7 +89,7 @@ export default function ShareRecipientDialog({ open, onClose, onSubmit, productT
               </button>
             </div>
             <div className="text-[11px] text-gray-500 text-center">
-              Opens in your default email client — you can still edit before sending.
+              Opens in your default email client and copies a styled version you can paste into the body.
             </div>
           </form>
         </Dialog.Panel>
