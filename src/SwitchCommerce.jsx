@@ -39,10 +39,11 @@ export default function SwitchCommerce() {
           </div>
           <div className="md:w-1/3 flex justify-center">
             <div className="bg-white p-4 rounded-lg shadow-md">
-              <img 
-                src="/logos/switch-commerce-logo.png" 
-                alt="Switch Commerce Logo" 
+              <img
+                src="/logos/switch-commerce-logo.png"
+                alt="Switch Commerce Logo"
                 className="h-32 object-contain"
+                loading="lazy"
               />
             </div>
           </div>

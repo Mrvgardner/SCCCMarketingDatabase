@@ -111,15 +111,23 @@ async function devToggleReaction(id, emoji) {
 
 // --- Prod-mode Netlify Function backend ---------------------------
 
+const _cache = { data: null, ts: 0 };
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+function cacheValid() {
+  return _cache.data !== null && Date.now() - _cache.ts < CACHE_TTL;
+}
+
+function cacheClear() {
+  _cache.data = null;
+  _cache.ts = 0;
+}
+
 async function authHeaders() {
   const user = window.netlifyIdentity?.currentUser();
-  if (!user) return {};
-  try {
-    const token = await user.jwt();
-    return { Authorization: `Bearer ${token}` };
-  } catch {
-    return {};
-  }
+  if (!user) throw new Error("Not authenticated");
+  const token = await user.jwt();
+  return { Authorization: `Bearer ${token}` };
 }
 
 async function prodRequest(method, body) {
@@ -140,13 +148,21 @@ async function prodRequest(method, body) {
   return res.json();
 }
 
+async function prodList() {
+  if (cacheValid()) return _cache.data;
+  const data = await prodRequest("GET");
+  _cache.data = data;
+  _cache.ts = Date.now();
+  return data;
+}
+
 const useDev = import.meta.env.DEV;
 
-export const listFieldNotes = useDev ? devList : () => prodRequest("GET");
-export const listAllFieldNotes = useDev ? devListAll : () => prodRequest("GET");
-export const createFieldNote = useDev ? devCreate : (n) => prodRequest("POST", n);
-export const updateFieldNote = useDev ? devUpdate : (n) => prodRequest("PUT", n);
-export const deleteFieldNote = useDev ? devDelete : (id) => prodRequest("DELETE", { id });
+export const listFieldNotes = useDev ? devList : prodList;
+export const listAllFieldNotes = useDev ? devListAll : prodList;
+export const createFieldNote = useDev ? devCreate : (n) => { cacheClear(); return prodRequest("POST", n); };
+export const updateFieldNote = useDev ? devUpdate : (n) => { cacheClear(); return prodRequest("PUT", n); };
+export const deleteFieldNote = useDev ? devDelete : (id) => { cacheClear(); return prodRequest("DELETE", { id }); };
 export const toggleFieldNoteReaction = useDev
   ? devToggleReaction
-  : (id, emoji) => prodRequest("PATCH", { id, emoji });
+  : (id, emoji) => { cacheClear(); return prodRequest("PATCH", { id, emoji }); };

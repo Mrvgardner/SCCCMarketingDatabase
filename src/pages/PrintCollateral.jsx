@@ -91,10 +91,11 @@ export default function PrintCollateralPage() {
                   <div className="p-5 sm:p-6">
                     <div className="flex items-start gap-3 sm:gap-4">
                       <div className="flex-shrink-0 w-20 h-28 sm:w-24 sm:h-32 rounded-lg overflow-hidden shadow-md">
-                        <img 
-                          src={item.thumbnail} 
+                        <img
+                          src={item.thumbnail}
                           alt={`${item.name} cover`}
                           className="w-full h-full object-cover"
+                          loading="lazy"
                           onError={(e) => {
                             e.target.onerror = null;
                             e.target.src = 'data:image/svg+xml,%3Csvg width="96" height="128" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="96" height="128" fill="%23e5e7eb"/%3E%3Ctext x="50%25" y="50%25" font-family="Arial" font-size="48" fill="%239ca3af" text-anchor="middle" dy=".3em"%3E📄%3C/text%3E%3C/svg%3E';

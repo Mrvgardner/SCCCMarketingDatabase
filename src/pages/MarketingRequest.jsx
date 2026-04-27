@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const LUMIO_STYLES = `
@@ -121,8 +121,18 @@ const LUMIO_STYLES = `
   }
 `;
 
+function FormLoader() {
+  return (
+    <div className="flex flex-col items-center justify-center py-16 gap-4">
+      <div className="h-8 w-8 rounded-full border-4 border-purple-500/30 border-t-purple-500 animate-spin" />
+      <p className="text-sm text-gray-400">Loading Request Form</p>
+    </div>
+  );
+}
+
 export default function MarketingRequestPage() {
   const scriptRef = useRef(null);
+  const [formLoaded, setFormLoaded] = useState(false);
 
   useEffect(() => {
     document.title = 'Marketing Request Form - Switch Commerce';
@@ -133,6 +143,17 @@ export default function MarketingRequestPage() {
     style.textContent = LUMIO_STYLES;
     document.head.appendChild(style);
 
+    const formEl = document.getElementById('lumio-form');
+    const observer = new MutationObserver(() => {
+      if (formEl && formEl.children.length > 0) {
+        setFormLoaded(true);
+        observer.disconnect();
+      }
+    });
+    if (formEl) {
+      observer.observe(formEl, { childList: true, subtree: true });
+    }
+
     const script = document.createElement('script');
     script.src = `https://lumioboards.netlify.app/embed.js?v=${Date.now()}`;
     script.setAttribute('data-form', 'marketing-requests-7proue');
@@ -141,6 +162,7 @@ export default function MarketingRequestPage() {
     scriptRef.current.appendChild(script);
 
     return () => {
+      observer.disconnect();
       document.head.removeChild(style);
       if (scriptRef.current?.contains(script)) {
         scriptRef.current.removeChild(script);
@@ -174,7 +196,8 @@ export default function MarketingRequestPage() {
       {/* Form */}
       <div className="max-w-3xl mx-auto px-4 pb-16">
         <div className="rounded-2xl bg-gray-900/40 border border-white/10 backdrop-blur-md p-6 sm:p-8 shadow-xl">
-          <div ref={scriptRef}>
+          {!formLoaded && <FormLoader />}
+          <div ref={scriptRef} style={formLoaded ? undefined : { display: 'none' }}>
             <div id="lumio-form" />
           </div>
         </div>

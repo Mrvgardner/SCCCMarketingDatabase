@@ -28,23 +28,24 @@ export function AuthProvider({ children }) {
       return;
     }
 
-    identity.init();
-
-    const currentUser = identity.currentUser();
-    if (currentUser) setUser(currentUser);
-    setLoading(false);
-    setReady(true);
-
+    const onInit = (u) => {
+      if (u) setUser(u);
+      setLoading(false);
+      setReady(true);
+    };
     const onLogin = (u) => {
       setUser(u);
       identity.close();
     };
     const onLogout = () => setUser(null);
 
+    identity.on("init", onInit);
     identity.on("login", onLogin);
     identity.on("logout", onLogout);
+    identity.init();
 
     return () => {
+      identity.off("init", onInit);
       identity.off("login", onLogin);
       identity.off("logout", onLogout);
     };

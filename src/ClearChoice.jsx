@@ -39,10 +39,11 @@ export default function ClearChoice() {
           </div>
           <div className="md:w-1/3 flex justify-center">
             <div className="bg-white p-4 rounded-lg shadow-md">
-              <img 
-                src="/logos/clear-choice-logo.png" 
-                alt="Clear Choice Logo" 
+              <img
+                src="/logos/clear-choice-logo.png"
+                alt="Clear Choice Logo"
                 className="h-32 object-contain"
+                loading="lazy"
               />
             </div>
           </div>

@@ -9,10 +9,11 @@ export default function LogoDisplay({ logos }) {
       {logos.map((logo) => (
         <div key={logo.name} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
           <div className={`p-8 flex items-center justify-center ${logo.bgClass || 'bg-gray-100 dark:bg-gray-700'}`}>
-            <img 
-              src={logo.src} 
-              alt={logo.name} 
+            <img
+              src={logo.src}
+              alt={logo.name}
               className={`${logo.maxWidth || 'max-w-xs'} ${logo.maxHeight || 'max-h-32'}`}
+              loading="lazy"
             />
           </div>
           

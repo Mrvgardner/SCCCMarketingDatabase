@@ -26,10 +26,11 @@ export default function EnhancedLogoDisplay({ logos }) {
           {logosInCategory[0] && (
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden mb-6">
               <div className={`p-8 flex items-center justify-center ${logosInCategory[0].bgClass || 'bg-gray-100 dark:bg-gray-700'}`}>
-                <img 
-                  src={logosInCategory[0].src} 
-                  alt={logosInCategory[0].name} 
+                <img
+                  src={logosInCategory[0].src}
+                  alt={logosInCategory[0].name}
                   className="max-h-48 max-w-full"
+                  loading="lazy"
                 />
               </div>
               
@@ -85,10 +86,11 @@ export default function EnhancedLogoDisplay({ logos }) {
                 {logosInCategory.slice(1).map((logo) => (
                   <div key={logo.name} className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
                     <div className={`p-3 flex items-center justify-center ${logo.bgClass || 'bg-gray-100 dark:bg-gray-700'}`} style={{height: '120px'}}>
-                      <img 
-                        src={logo.src} 
+                      <img
+                        src={logo.src}
                         alt={logo.name}
                         className="max-h-full max-w-full"
+                        loading="lazy"
                       />
                     </div>
                     <div className="p-2">

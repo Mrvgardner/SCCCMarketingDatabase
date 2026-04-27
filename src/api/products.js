@@ -76,15 +76,23 @@ async function devDelete(id) {
 
 // --- Prod-mode Netlify Function backend ---------------------------
 
+const _cache = { data: null, ts: 0 };
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+function cacheValid() {
+  return _cache.data !== null && Date.now() - _cache.ts < CACHE_TTL;
+}
+
+function cacheClear() {
+  _cache.data = null;
+  _cache.ts = 0;
+}
+
 async function authHeaders() {
   const user = window.netlifyIdentity?.currentUser();
-  if (!user) return {};
-  try {
-    const token = await user.jwt();
-    return { Authorization: `Bearer ${token}` };
-  } catch {
-    return {};
-  }
+  if (!user) throw new Error("Not authenticated");
+  const token = await user.jwt();
+  return { Authorization: `Bearer ${token}` };
 }
 
 async function prodRequest(method, body) {
@@ -106,15 +114,22 @@ async function prodRequest(method, body) {
 }
 
 async function prodList() {
-  return prodRequest("GET");
+  if (cacheValid()) return _cache.data;
+  const data = await prodRequest("GET");
+  _cache.data = data;
+  _cache.ts = Date.now();
+  return data;
 }
 async function prodCreate(product) {
+  cacheClear();
   return prodRequest("POST", product);
 }
 async function prodUpdate(product) {
+  cacheClear();
   return prodRequest("PUT", product);
 }
 async function prodDelete(id) {
+  cacheClear();
   return prodRequest("DELETE", { id });
 }
 

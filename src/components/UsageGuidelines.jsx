@@ -17,10 +17,11 @@ export default function UsageGuidelines({ guidelines }) {
                 <div key={exIndex} className="border border-gray-200 dark:border-gray-700 rounded p-3">
                   <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">{example.title}</div>
                   {example.image && (
-                    <img 
-                      src={example.image} 
-                      alt={example.title} 
+                    <img
+                      src={example.image}
+                      alt={example.title}
                       className="w-full h-auto mb-2 rounded"
+                      loading="lazy"
                     />
                   )}
                   <p className="text-sm text-gray-600 dark:text-gray-300">{example.description}</p>
