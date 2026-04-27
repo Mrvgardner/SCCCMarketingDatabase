@@ -340,6 +340,17 @@ function OnePagerBuilderPage() {
               border-radius: 10px !important;
             }
 
+            /* brand logo on page 1 */
+            .one-pager-brand-logo {
+              padding: 5px 8px !important;
+              border-radius: 8px !important;
+            }
+
+            .one-pager-brand-logo img {
+              height: 22px !important;
+              width: auto !important;
+            }
+
             /* internal card spacing */
             .one-pager-sheet .mt-5 { margin-top: 5px !important; }
             .one-pager-sheet .mt-4 { margin-top: 5px !important; }
@@ -585,14 +596,16 @@ function OnePagerBuilderPage() {
                   <div className="one-pager-header flex flex-wrap items-start justify-between gap-6 border-b border-slate-200 pb-8">
                     <div className="max-w-2xl">
                       <div
-                        className="inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-bold uppercase tracking-[0.28em]"
-                        style={{
-                          borderColor: theme.accent,
-                          color: theme.accent,
-                          backgroundColor: theme.accentSoft,
-                        }}
+                        className="one-pager-brand-logo inline-flex items-center rounded-xl px-3 py-2"
+                        style={{ backgroundColor: theme.accent }}
                       >
-                        {theme.badge}
+                        <img
+                          src={isClearChoice
+                            ? '/logos/clearchoice/Logo Main/CC Logo Full White.png'
+                            : '/logos/switch/Logo Stacked/SC Logo Stacked large - White.png'}
+                          alt={theme.badge}
+                          className="h-9 object-contain"
+                        />
                       </div>
                       <h2 className="mt-5 text-4xl font-switch-bold leading-tight text-slate-950 sm:text-[2.65rem]">
                         {buildHeadline(selectedProduct, form.prospectName.trim())}
@@ -736,22 +749,13 @@ function OnePagerBuilderPage() {
               >
                 {/* Body */}
                 <div style={{ flex: 1 }}>
-                  <div
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      border: '1px solid rgba(255,255,255,0.35)',
-                      borderRadius: '999px',
-                      padding: '4px 14px',
-                      fontSize: '10px',
-                      fontWeight: 700,
-                      letterSpacing: '0.28em',
-                      textTransform: 'uppercase',
-                      marginBottom: '20px',
-                    }}
-                  >
-                    {theme.badge}
-                  </div>
+                  <img
+                    src={isClearChoice
+                      ? '/logos/clearchoice/Logo Main/CC Logo Full White.png'
+                      : '/logos/switch/Logo Stacked/SC Logo Stacked large - White.png'}
+                    alt={theme.badge}
+                    style={{ height: '52px', objectFit: 'contain', display: 'block', marginBottom: '22px' }}
+                  />
 
                   <h2
                     className="font-switch-bold"
@@ -802,12 +806,13 @@ function OnePagerBuilderPage() {
                   }}
                 >
                   <div>
-                    <div
-                      className="font-switch-bold"
-                      style={{ fontSize: '22px', marginBottom: '6px', color: 'white' }}
-                    >
-                      {theme.badge}
-                    </div>
+                    <img
+                      src={isClearChoice
+                        ? '/logos/clearchoice/Logo Main/CC Logo Full White.png'
+                        : '/logos/switch/Logo Stacked/SC Logo Stacked large - White.png'}
+                      alt={theme.badge}
+                      style={{ height: '30px', objectFit: 'contain', display: 'block', marginBottom: '8px' }}
+                    />
                     <div style={{ fontSize: '13px', opacity: 0.6 }}>{p2Tagline}</div>
                   </div>
                   <div style={{ textAlign: 'right', fontSize: '13px', opacity: 0.75 }}>
