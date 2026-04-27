@@ -90,6 +90,32 @@ function BuilderField({ label, children, hint }) {
   );
 }
 
+const SC_SERVICES = [
+  'Payment Processing & Merchant Services',
+  'ATM Management & Cash Access Programs',
+  'Loyalty & Rewards Programs',
+  'Business Intelligence & Analytics',
+  'Fleet & Commercial Fuel Solutions',
+];
+const SC_BUILT_FOR = [
+  'Travel Plazas & Truck Stops',
+  'Convenience & Fuel Retailers',
+  'Independent Store Operators',
+  'Multi-Location Chains',
+];
+const CC_SERVICES = [
+  'ATM Management & Cash Access',
+  'Merchant Processing Services',
+  'Financial Product Distribution',
+  'In-Store Promotions & Loyalty',
+];
+const CC_BUILT_FOR = [
+  'Independent Retailers',
+  'Convenience Stores',
+  'Hospitality Operators',
+  'Regional Chains',
+];
+
 function OnePagerBuilderPage() {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -136,6 +162,19 @@ function OnePagerBuilderPage() {
   const painPoint = buildPainPoint(form.painPoint, selectedProduct);
   const callToAction = buildCTA(selectedProduct, form.callToAction);
   const outcome = buildOutcome(selectedProduct);
+
+  const isClearChoice = selectedProduct?.company === 'Clear Choice';
+  const p2Services = isClearChoice ? CC_SERVICES : SC_SERVICES;
+  const p2BuiltFor = isClearChoice ? CC_BUILT_FOR : SC_BUILT_FOR;
+  const p2Headline = isClearChoice
+    ? "Clear-cut solutions for today's business."
+    : 'Powering smarter commerce for independent operators.';
+  const p2Body = isClearChoice
+    ? 'Clear Choice delivers straightforward financial services and business solutions that give operators the tools and transparency they need to compete and grow.'
+    : 'Switch Commerce is the technology partner for travel plazas, truck stops, and independent operators who want payment, cash, loyalty, and analytics—all from one team that understands their business.';
+  const p2Tagline = isClearChoice
+    ? 'A Clear Choice for better business outcomes.'
+    : 'Commerce technology for operators who mean business.';
 
   function updateField(name, value) {
     setForm((current) => ({ ...current, [name]: value }));
@@ -203,6 +242,8 @@ function OnePagerBuilderPage() {
               min-width: 0 !important;
             }
 
+            /* ── PAGE 1: force to exactly one printed page ── */
+
             .one-pager-sheet {
               box-shadow: none !important;
               border: none !important;
@@ -211,87 +252,152 @@ function OnePagerBuilderPage() {
               max-width: none !important;
               width: 100% !important;
               min-height: 0 !important;
-              overflow: visible !important;
-              page-break-inside: auto;
-              break-inside: auto;
+              height: 10.3in !important;
+              overflow: hidden !important;
+              page-break-after: always !important;
+              break-after: page !important;
             }
 
             .one-pager-content {
-              padding: 0.22in 0.24in 0.18in !important;
+              padding: 0.19in 0.21in 0.14in !important;
               background: #ffffff !important;
               background-image: none !important;
+              height: 100% !important;
+              box-sizing: border-box !important;
+              display: flex !important;
+              flex-direction: column !important;
             }
 
             .one-pager-header {
               display: grid !important;
-              grid-template-columns: minmax(0, 1.7fr) minmax(2.2in, 0.9fr) !important;
-              gap: 0.2in !important;
+              grid-template-columns: minmax(0, 1.7fr) minmax(1.8in, 0.85fr) !important;
+              gap: 0.16in !important;
               align-items: start !important;
-              padding-bottom: 0.18in !important;
+              padding-bottom: 0.13in !important;
               margin-bottom: 0 !important;
-              break-inside: avoid;
-              page-break-inside: avoid;
+              flex-shrink: 0 !important;
             }
 
             .one-pager-body {
               display: grid !important;
-              grid-template-columns: minmax(0, 1.35fr) minmax(2.2in, 0.85fr) !important;
-              gap: 0.18in !important;
-              padding-top: 0.18in !important;
-            }
-
-            .one-pager-main,
-            .one-pager-side,
-            .one-pager-bottom {
+              grid-template-columns: minmax(0, 1.35fr) minmax(1.8in, 0.82fr) !important;
               gap: 0.14in !important;
+              padding-top: 0.13in !important;
+              flex: 1 !important;
+              min-height: 0 !important;
+            }
+
+            .one-pager-main {
+              display: flex !important;
+              flex-direction: column !important;
+              gap: 0.1in !important;
+            }
+
+            .one-pager-side {
+              display: flex !important;
+              flex-direction: column !important;
+              gap: 0.1in !important;
+            }
+
+            /* knock out the space-y-* margin gaps */
+            .one-pager-main > * + *,
+            .one-pager-side > * + * {
+              margin-top: 0 !important;
             }
 
             .one-pager-bottom {
-              padding-top: 0.14in !important;
+              display: grid !important;
+              grid-template-columns: 1fr 1fr !important;
+              gap: 0.1in !important;
+              padding-top: 0.1in !important;
+              flex-shrink: 0 !important;
             }
 
-            .one-pager-card,
-            .one-pager-cta,
-            .one-pager-prepared {
+            .one-pager-bottom > * + * {
+              margin-top: 0 !important;
+            }
+
+            /* card / cta / prepared-for padding */
+            .one-pager-card {
+              padding: 0.1in 0.13in !important;
               break-inside: avoid;
               page-break-inside: avoid;
               box-shadow: none !important;
+              border-radius: 10px !important;
             }
 
+            .one-pager-cta {
+              padding: 0.1in 0.13in !important;
+              break-inside: avoid;
+              page-break-inside: avoid;
+              border-radius: 10px !important;
+            }
+
+            .one-pager-prepared {
+              padding: 0.1in 0.13in !important;
+              break-inside: avoid;
+              page-break-inside: avoid;
+              border-radius: 10px !important;
+            }
+
+            /* internal card spacing */
+            .one-pager-sheet .mt-5 { margin-top: 5px !important; }
+            .one-pager-sheet .mt-4 { margin-top: 5px !important; }
+            .one-pager-sheet .mt-3 { margin-top: 4px !important; }
+            .one-pager-sheet .mt-1 { margin-top: 2px !important; }
+            .one-pager-sheet .space-y-3 > * + * { margin-top: 4px !important; }
+            .one-pager-sheet .gap-2 { gap: 4px !important; }
+            .one-pager-sheet .gap-3 { gap: 5px !important; }
+
+            /* typography */
             .one-pager-sheet h2 {
-              font-size: 25px !important;
-              line-height: 1.08 !important;
-              margin-top: 0.14in !important;
+              font-size: 20px !important;
+              line-height: 1.1 !important;
+              margin-top: 6px !important;
             }
 
             .one-pager-sheet p,
             .one-pager-sheet span,
             .one-pager-sheet div {
-              line-height: 1.35 !important;
+              line-height: 1.28 !important;
             }
 
-            .one-pager-sheet .text-lg {
-              font-size: 15px !important;
-            }
-
-            .one-pager-sheet .text-base {
-              font-size: 12px !important;
-            }
-
-            .one-pager-sheet .text-sm {
-              font-size: 11px !important;
-            }
+            .one-pager-sheet .text-lg { font-size: 12px !important; }
+            .one-pager-sheet .text-base { font-size: 11px !important; }
+            .one-pager-sheet .text-sm { font-size: 10px !important; }
+            .one-pager-sheet .text-xs { font-size: 8px !important; }
 
             .one-pager-sheet .leading-8,
             .one-pager-sheet .leading-7,
-            .one-pager-sheet .leading-6 {
-              line-height: 1.35 !important;
+            .one-pager-sheet .leading-6,
+            .one-pager-sheet .leading-tight {
+              line-height: 1.2 !important;
             }
 
             .one-pager-sheet * {
               color-adjust: exact;
               -webkit-print-color-adjust: exact;
               print-color-adjust: exact;
+            }
+
+            /* ── PAGE 2: brand + contact sheet ── */
+
+            .print-page2 {
+              margin: 0 !important;
+              max-width: none !important;
+              width: 100% !important;
+              height: 10.3in !important;
+              overflow: hidden !important;
+              page-break-before: always !important;
+              break-before: page !important;
+              border-radius: 0 !important;
+              box-shadow: none !important;
+              border: none !important;
+            }
+
+            .print-page2 * {
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
             }
           }
         `}
@@ -326,7 +432,7 @@ function OnePagerBuilderPage() {
               <div className="flex items-center justify-between gap-4">
                 <div>
                   <p className="text-sm font-semibold text-white">Output</p>
-                  <p className="text-sm text-gray-400">Print-ready single page with live preview</p>
+                  <p className="text-sm text-gray-400">2-page print: one-pager + brand contact sheet</p>
                 </div>
                 <button
                   type="button"
@@ -468,6 +574,7 @@ function OnePagerBuilderPage() {
             </section>
 
             <section className="print-preview min-w-0">
+              {/* ── Page 1: One-Pager ── */}
               <div className="one-pager-sheet mx-auto min-h-[1056px] max-w-[816px] overflow-hidden rounded-[32px] border border-black/10 bg-[#fcfbf8] text-slate-900 shadow-[0_40px_100px_rgba(0,0,0,0.35)]">
                 <div
                   className="one-pager-content px-8 pb-8 pt-8 sm:px-10"
@@ -600,6 +707,115 @@ function OnePagerBuilderPage() {
                         {outcome || 'Your one-pager will summarize the before-and-after change.'}
                       </p>
                     </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Screen divider between page previews */}
+              <div className="print-hide mt-6 mb-4 flex items-center gap-3 max-w-[816px] mx-auto">
+                <div className="h-px flex-1 bg-white/10"></div>
+                <span className="text-xs font-semibold uppercase tracking-[0.22em] text-gray-400">
+                  Page 2 · Brand &amp; Contact
+                </span>
+                <div className="h-px flex-1 bg-white/10"></div>
+              </div>
+
+              {/* ── Page 2: Brand + Contact Sheet ── */}
+              <div
+                className="print-page2 mx-auto max-w-[816px] overflow-hidden rounded-[32px] border border-black/10 shadow-[0_40px_100px_rgba(0,0,0,0.35)]"
+                style={{
+                  background: `linear-gradient(145deg, ${theme.accent} 0%, #0b1020 65%)`,
+                  color: 'white',
+                  minHeight: '900px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  padding: '0.45in 0.5in 0.38in',
+                  WebkitPrintColorAdjust: 'exact',
+                  printColorAdjust: 'exact',
+                }}
+              >
+                {/* Body */}
+                <div style={{ flex: 1 }}>
+                  <div
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      border: '1px solid rgba(255,255,255,0.35)',
+                      borderRadius: '999px',
+                      padding: '4px 14px',
+                      fontSize: '10px',
+                      fontWeight: 700,
+                      letterSpacing: '0.28em',
+                      textTransform: 'uppercase',
+                      marginBottom: '20px',
+                    }}
+                  >
+                    {theme.badge}
+                  </div>
+
+                  <h2
+                    className="font-switch-bold"
+                    style={{ fontSize: '40px', lineHeight: '1.1', margin: '0 0 18px', maxWidth: '5.4in', color: 'white' }}
+                  >
+                    {p2Headline}
+                  </h2>
+
+                  <p style={{ fontSize: '15px', lineHeight: '1.65', maxWidth: '5.3in', opacity: 0.85, margin: '0 0 42px' }}>
+                    {p2Body}
+                  </p>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 0.55in' }}>
+                    <div>
+                      <div style={{ fontSize: '9px', fontWeight: 700, letterSpacing: '0.24em', textTransform: 'uppercase', opacity: 0.6, marginBottom: '14px' }}>
+                        What we offer
+                      </div>
+                      {p2Services.map((item) => (
+                        <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', fontSize: '13px' }}>
+                          <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.65)', flexShrink: 0 }} />
+                          {item}
+                        </div>
+                      ))}
+                    </div>
+
+                    <div>
+                      <div style={{ fontSize: '9px', fontWeight: 700, letterSpacing: '0.24em', textTransform: 'uppercase', opacity: 0.6, marginBottom: '14px' }}>
+                        Built for
+                      </div>
+                      {p2BuiltFor.map((item) => (
+                        <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', fontSize: '13px' }}>
+                          <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.65)', flexShrink: 0 }} />
+                          {item}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div
+                  style={{
+                    borderTop: '1px solid rgba(255,255,255,0.2)',
+                    paddingTop: '22px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-end',
+                  }}
+                >
+                  <div>
+                    <div
+                      className="font-switch-bold"
+                      style={{ fontSize: '22px', marginBottom: '6px', color: 'white' }}
+                    >
+                      {theme.badge}
+                    </div>
+                    <div style={{ fontSize: '13px', opacity: 0.6 }}>{p2Tagline}</div>
+                  </div>
+                  <div style={{ textAlign: 'right', fontSize: '13px', opacity: 0.75 }}>
+                    <div style={{ marginBottom: '5px' }}>switchcommerce.team</div>
+                    {form.repEmail.trim() ? (
+                      <div style={{ marginBottom: '4px' }}>{form.repEmail.trim()}</div>
+                    ) : null}
+                    {form.repPhone.trim() ? <div>{form.repPhone.trim()}</div> : null}
                   </div>
                 </div>
               </div>
