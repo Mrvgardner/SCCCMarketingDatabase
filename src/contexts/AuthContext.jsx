@@ -58,7 +58,7 @@ export function AuthProvider({ children }) {
     ...(user?.app_metadata?.roles || []),
     ...(user?.user_metadata?.roles || []),
   ];
-  const isAdmin = roles.includes("admin");
+  const isAdmin = roles.some((r) => r.toLowerCase() === "admin");
 
   return (
     <AuthContext.Provider value={{ user, loading, ready, isAdmin, login, signup, logout }}>
