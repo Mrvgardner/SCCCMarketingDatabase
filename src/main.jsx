@@ -203,6 +203,7 @@ function AppShell() {
         <Route path="/marketing-request" element={<ProtectedRoute><MarketingRequest /></ProtectedRoute>} />
         <Route path="/print-collateral" element={<ProtectedRoute><PrintCollateral /></ProtectedRoute>} />
         <Route path="/field-notes" element={<ProtectedRoute><FieldNotes /></ProtectedRoute>} />
+        <Route path="/field-notes/:id" element={<ProtectedRoute><FieldNotes /></ProtectedRoute>} />
         <Route path="/birthdays" element={<ProtectedRoute><Birthdays /></ProtectedRoute>} />
         <Route path="/anniversaries" element={<ProtectedRoute><Anniversaries /></ProtectedRoute>} />
         <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />

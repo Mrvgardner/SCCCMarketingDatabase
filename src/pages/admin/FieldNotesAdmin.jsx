@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeftIcon, PlusIcon, PencilSquareIcon, NewspaperIcon } from "@heroicons/react/24/solid";
-import { listFieldNotes } from "../../api/fieldNotes";
+import { listAllFieldNotes } from "../../api/fieldNotes";
 
 function formatDate(isoDate) {
   if (!isoDate) return "—";
   const d = new Date(isoDate + "T00:00:00");
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+function todayISO() {
+  const d = new Date();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${m}-${day}`;
 }
 
 export default function FieldNotesAdmin() {
@@ -16,7 +23,7 @@ export default function FieldNotesAdmin() {
 
   useEffect(() => {
     let cancelled = false;
-    listFieldNotes()
+    listAllFieldNotes()
       .then((list) => !cancelled && setNotes(list))
       .catch((err) => !cancelled && setError(err.message))
       .finally(() => !cancelled && setLoading(false));
@@ -73,9 +80,19 @@ export default function FieldNotesAdmin() {
                 to={`/admin/field-notes/${note.id}/edit`}
                 className="flex items-start gap-4 p-5 bg-gray-800/60 border border-gray-700/50 rounded-xl hover:bg-gray-700/40 hover:border-[#5fae4b]/40 transition-colors group"
               >
-                {i === 0 && (
+                {i === 0 && note.published !== false && (
                   <div className="px-2 py-0.5 rounded-full bg-[#5fae4b]/20 text-[#7bc966] border border-[#5fae4b]/40 text-xs font-semibold flex-shrink-0 mt-0.5">
                     LATEST
+                  </div>
+                )}
+                {note.published === false && (
+                  <div className="px-2 py-0.5 rounded-full bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 text-xs font-semibold flex-shrink-0 mt-0.5">
+                    DRAFT
+                  </div>
+                )}
+                {note.published !== false && note.publishAt && note.publishAt > todayISO() && (
+                  <div className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/40 text-xs font-semibold flex-shrink-0 mt-0.5 whitespace-nowrap">
+                    SCHEDULED · {formatDate(note.publishAt)}
                   </div>
                 )}
                 <div className="flex-1 min-w-0">

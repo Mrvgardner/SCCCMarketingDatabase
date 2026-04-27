@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeftIcon, TrashIcon } from "@heroicons/react/24/solid";
-import { listFieldNotes, createFieldNote, updateFieldNote, deleteFieldNote } from "../../api/fieldNotes";
+import { ClockIcon } from "@heroicons/react/24/outline";
+import { listAllFieldNotes, createFieldNote, updateFieldNote, deleteFieldNote } from "../../api/fieldNotes";
 import RichTextEditor from "../../components/RichTextEditor.jsx";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -58,6 +59,8 @@ export default function FieldNoteForm() {
     author: user?.user_metadata?.full_name || "",
     excerpt: "",
     content: "",
+    published: true,
+    publishAt: "",
   });
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
@@ -66,7 +69,7 @@ export default function FieldNoteForm() {
   useEffect(() => {
     if (isNew) return;
     let cancelled = false;
-    listFieldNotes()
+    listAllFieldNotes()
       .then((list) => {
         if (cancelled) return;
         const found = list.find((n) => n.id === id);
@@ -86,13 +89,23 @@ export default function FieldNoteForm() {
     setNote((prev) => ({ ...prev, content: html }));
   };
 
-  const handleSubmit = async (e) => {
+  function todayISO() {
+    return today();
+  }
+
+  const isScheduled = note.published && note.publishAt && note.publishAt > todayISO();
+  const statusLabel = !note.published ? "Draft" : isScheduled ? "Scheduled" : "Published";
+  const statusColor = !note.published ? "text-gray-400" : isScheduled ? "text-blue-400" : "text-[#7bc966]";
+  const toggleBg = !note.published ? "bg-gray-600" : isScheduled ? "bg-blue-500" : "bg-[#5fae4b]";
+
+  const handleSubmit = async (e, overridePublished) => {
     e.preventDefault();
     setSaving(true);
     setError(null);
+    const payload = overridePublished !== undefined ? { ...note, published: overridePublished } : note;
     try {
-      if (isNew) await createFieldNote(note);
-      else await updateFieldNote(note);
+      if (isNew) await createFieldNote(payload);
+      else await updateFieldNote(payload);
       navigate("/admin/field-notes");
     } catch (err) {
       setError(err.message || "Save failed");
@@ -155,6 +168,25 @@ export default function FieldNoteForm() {
               <TextField label="Title" name="title" value={note.title} onChange={handleChange} placeholder="Welcome to Field Notes" />
               <TextField label="Date" name="date" value={note.date} onChange={handleChange} type="date" />
             </div>
+            {note.published && (
+              <label className="block">
+                <div className="flex items-center gap-1.5 text-sm font-medium text-gray-300 mb-1">
+                  <ClockIcon className="h-4 w-4" />
+                  Publish on <span className="text-gray-500 font-normal">(optional — leave blank to publish immediately)</span>
+                </div>
+                <input
+                  type="date"
+                  name="publishAt"
+                  value={note.publishAt || ""}
+                  min={todayISO()}
+                  onChange={handleChange}
+                  className="w-48 px-3 py-2 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors"
+                />
+                {isScheduled && (
+                  <p className="text-xs text-blue-400 mt-1">Will go live on {note.publishAt}.</p>
+                )}
+              </label>
+            )}
             <TextField label="Author" name="author" value={note.author} onChange={handleChange} placeholder="Your name" hint="Shown under the title" />
             <TextAreaField
               label="Excerpt"
@@ -175,17 +207,56 @@ export default function FieldNoteForm() {
             <RichTextEditor value={note.content} onChange={handleContentChange} />
           </section>
 
-          <div className="flex items-center justify-end gap-3 pt-2">
-            <Link to="/admin/field-notes" className="px-5 py-2.5 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg transition-colors">
-              Cancel
-            </Link>
-            <button
-              type="submit"
-              disabled={saving || !note.title}
-              className="px-6 py-2.5 bg-[#5fae4b] hover:bg-[#5fae4b]/90 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {saving ? "Saving…" : isNew ? "Publish note" : "Save changes"}
-            </button>
+          <div className="flex items-center justify-between gap-3 pt-2">
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setNote((prev) => ({ ...prev, published: !prev.published, publishAt: prev.published ? "" : prev.publishAt }))}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
+                  toggleBg
+                }`}
+                aria-pressed={note.published}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+                    note.published ? "translate-x-6" : "translate-x-1"
+                  }`}
+                />
+              </button>
+              <span className={`text-sm font-medium ${statusColor}`}>
+                {statusLabel}
+              </span>
+            </div>
+            <div className="flex items-center gap-3">
+              <Link to="/admin/field-notes" className="px-5 py-2.5 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg transition-colors">
+                Cancel
+              </Link>
+              {isScheduled ? (
+                <button
+                  type="submit"
+                  disabled={saving || !note.title}
+                  className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {saving ? "Saving…" : isNew ? "Schedule note" : "Save changes"}
+                </button>
+              ) : note.published ? (
+                <button
+                  type="submit"
+                  disabled={saving || !note.title}
+                  className="px-6 py-2.5 bg-[#5fae4b] hover:bg-[#5fae4b]/90 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {saving ? "Saving…" : isNew ? "Publish note" : "Save changes"}
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  disabled={saving || !note.title}
+                  className="px-6 py-2.5 bg-gray-600 hover:bg-gray-500 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {saving ? "Saving…" : "Save draft"}
+                </button>
+              )}
+            </div>
           </div>
         </form>
       </div>

@@ -1,16 +1,21 @@
-import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   ArrowLeftIcon,
   MagnifyingGlassIcon,
   XMarkIcon,
   CakeIcon,
   SparklesIcon,
+  LinkIcon,
+  CheckIcon,
 } from "@heroicons/react/24/solid";
-import { listFieldNotes } from "../api/fieldNotes";
+import { listFieldNotes, toggleFieldNoteReaction } from "../api/fieldNotes";
+import { useAuth } from "../contexts/AuthContext";
 import RichText from "../components/RichText.jsx";
 import { birthdays, anniversaries } from "../data/celebrations";
 import { getUpcoming, formatDate as formatCelebDate, yearsOfService } from "../utils/celebrations";
+
+const REACTION_EMOJIS = ["👍", "✅", "🔥"];
 
 function formatDate(isoDate) {
   if (!isoDate) return "";
@@ -24,22 +29,57 @@ function formatShortDate(isoDate) {
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
-function FieldNoteCard({ note, onOpen }) {
+function getReactionUsers(note, emoji) {
+  const users = note?.reactions?.[emoji];
+  return Array.isArray(users) ? users : [];
+}
+
+function getReactionCount(note, emoji) {
+  return getReactionUsers(note, emoji).length;
+}
+
+function FieldNoteCard({ note, onOpen, isNew }) {
+  const hasReactions = REACTION_EMOJIS.some((emoji) => getReactionCount(note, emoji) > 0);
+
   return (
     <button
       onClick={() => onOpen(note)}
       className="group text-left rounded-2xl bg-gray-900/40 border border-white/10 backdrop-blur-md p-6 shadow-xl hover:border-[#5fae4b]/50 hover:bg-gray-900/60 hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 flex flex-col h-full"
     >
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs uppercase tracking-wider text-[#7bc966] font-semibold">
-          Field Note
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-xs uppercase tracking-wider text-[#7bc966] font-semibold">
+            Field Note
+          </span>
+          {isNew && (
+            <span className="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-green-500 text-white leading-none">
+              New
+            </span>
+          )}
+        </div>
         <span className="text-xs text-gray-400">{formatShortDate(note.date)}</span>
       </div>
       <h3 className="font-switch-bold text-xl text-white group-hover:text-[#7bc966] transition-colors mb-3 leading-tight">
         {note.title}
       </h3>
       <p className="text-sm text-gray-300 line-clamp-4 mb-4 flex-1">{note.excerpt}</p>
+      {hasReactions && (
+        <div className="flex items-center flex-wrap gap-2 mb-3">
+          {REACTION_EMOJIS.map((emoji) => {
+            const count = getReactionCount(note, emoji);
+            if (count === 0) return null;
+            return (
+              <span
+                key={emoji}
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-white/10 bg-black/20 text-xs text-gray-200"
+              >
+                <span>{emoji}</span>
+                <span>{count}</span>
+              </span>
+            );
+          })}
+        </div>
+      )}
       <div className="flex items-center justify-between pt-3 border-t border-white/10 mt-auto">
         <span className="text-xs text-gray-500">{note.author || "Team"}</span>
         <span className="text-xs text-[#7bc966] group-hover:underline inline-flex items-center">
@@ -53,7 +93,39 @@ function FieldNoteCard({ note, onOpen }) {
   );
 }
 
-function NoteModal({ note, onClose }) {
+function CopyLinkButton({ noteId }) {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = () => {
+    const url = `${window.location.origin}/field-notes/${noteId}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+  return (
+    <button
+      type="button"
+      onClick={handleCopy}
+      title="Copy link to this note"
+      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/15 bg-white/5 text-xs text-gray-300 hover:bg-white/10 hover:text-white transition-colors"
+    >
+      {copied ? (
+        <><CheckIcon className="h-3.5 w-3.5 text-[#7bc966]" /> Copied!</>
+      ) : (
+        <><LinkIcon className="h-3.5 w-3.5" /> Copy link</>
+      )}
+    </button>
+  );
+}
+
+function NoteModal({
+  note,
+  onClose,
+  currentUserId,
+  onToggleReaction,
+  isSavingReaction,
+  reactionError,
+}) {
   useEffect(() => {
     if (!note) return;
     const onKey = (e) => e.key === "Escape" && onClose();
@@ -92,6 +164,39 @@ function NoteModal({ note, onClose }) {
           </h2>
           <div className="prose prose-invert max-w-none text-gray-200">
             <RichText content={note.content} />
+          </div>
+          <div className="mt-8 pt-5 border-t border-white/10">
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-xs uppercase tracking-wider text-gray-400">Reactions</div>
+              <CopyLinkButton noteId={note.id} />
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              {REACTION_EMOJIS.map((emoji) => {
+                const users = getReactionUsers(note, emoji);
+                const count = users.length;
+                const hasReacted = !!currentUserId && users.includes(currentUserId);
+                return (
+                  <button
+                    key={emoji}
+                    type="button"
+                    onClick={() => onToggleReaction(emoji)}
+                    disabled={isSavingReaction}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm transition-colors ${
+                      hasReacted
+                        ? "bg-[#5fae4b]/25 border-[#7bc966]/60 text-white"
+                        : "bg-white/5 border-white/15 text-gray-200 hover:bg-white/10"
+                    } ${isSavingReaction ? "opacity-60 cursor-not-allowed" : ""}`}
+                    aria-pressed={hasReacted}
+                  >
+                    <span>{emoji}</span>
+                    <span>{count}</span>
+                  </button>
+                );
+              })}
+            </div>
+            {reactionError && (
+              <p className="mt-3 text-xs text-red-400">{reactionError}</p>
+            )}
           </div>
         </div>
       </div>
@@ -178,26 +283,45 @@ function SidebarAnniversaries() {
 }
 
 export default function FieldNotes() {
+  const { user } = useAuth();
+  const { id: routeId } = useParams();
+  const navigate = useNavigate();
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [query, setQuery] = useState("");
   const [activeNote, setActiveNote] = useState(null);
+  const [savingReaction, setSavingReaction] = useState(false);
+  const [reactionError, setReactionError] = useState(null);
+  // Capture before the effect stamps the new visit date so "new" reflects the previous visit
+  const [prevSeenDate] = useState(() => localStorage.getItem('fieldNotes_lastSeenDate'));
+  const currentUserId = user?.id || user?.sub || user?.email || user?.user_metadata?.full_name || null;
+  // Track whether we've already auto-opened the deep-linked note
+  const didAutoOpen = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
     listFieldNotes()
       .then((data) => {
         if (cancelled) return;
-        setNotes(data);
+        // Defensive: never show drafts in the public feed even if the server slips one through.
+        const now = new Date().toISOString().slice(0, 10);
+        setNotes(data.filter((n) => n.published !== false && (!n.publishAt || n.publishAt <= now)));
         if (data[0]?.date) {
           localStorage.setItem('fieldNotes_lastSeenDate', data[0].date);
           window.dispatchEvent(new Event('fieldNotesRead'));
+        }
+        // Auto-open a deep-linked note on first load
+        if (routeId && !didAutoOpen.current) {
+          didAutoOpen.current = true;
+          const target = data.find((n) => n.id === routeId);
+          if (target) setActiveNote(target);
         }
       })
       .catch((err) => !cancelled && setError(err.message || "Failed to load notes"))
       .finally(() => !cancelled && setLoading(false));
     return () => { cancelled = true; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const filtered = useMemo(() => {
@@ -207,6 +331,32 @@ export default function FieldNotes() {
       [n.title, n.excerpt, n.author, n.content].some((f) => (f || "").toLowerCase().includes(q))
     );
   }, [notes, query]);
+
+  const handleOpenNote = (note) => {
+    setActiveNote(note);
+    navigate(`/field-notes/${note.id}`, { replace: true });
+  };
+
+  const handleCloseNote = () => {
+    setActiveNote(null);
+    setReactionError(null);
+    navigate("/field-notes", { replace: true });
+  };
+
+  const handleToggleReaction = async (emoji) => {
+    if (!activeNote || savingReaction) return;
+    setSavingReaction(true);
+    setReactionError(null);
+    try {
+      const updated = await toggleFieldNoteReaction(activeNote.id, emoji);
+      setNotes((prev) => prev.map((note) => (note.id === updated.id ? updated : note)));
+      setActiveNote(updated);
+    } catch (err) {
+      setReactionError(err.message || "Failed to save reaction");
+    } finally {
+      setSavingReaction(false);
+    }
+  };
 
   return (
     <div className="flex-1 bg-gradient-to-b from-gray-900 to-gray-800 text-white">
@@ -260,7 +410,12 @@ export default function FieldNotes() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {filtered.map((note) => (
-                  <FieldNoteCard key={note.id} note={note} onOpen={setActiveNote} />
+                  <FieldNoteCard
+                    key={note.id}
+                    note={note}
+                    onOpen={handleOpenNote}
+                    isNew={!!prevSeenDate && note.date > prevSeenDate}
+                  />
                 ))}
               </div>
             )}
@@ -282,7 +437,14 @@ export default function FieldNotes() {
         </div>
       </div>
 
-      <NoteModal note={activeNote} onClose={() => setActiveNote(null)} />
+      <NoteModal
+        note={activeNote}
+        onClose={handleCloseNote}
+        currentUserId={currentUserId}
+        onToggleReaction={handleToggleReaction}
+        isSavingReaction={savingReaction}
+        reactionError={reactionError}
+      />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import{r as i,j as e,L as a}from"./main-60e2ea39.js";const n=`
+import{r as i,j as e,L as a}from"./main-f44446eb.js";const s=`
   #lumio-form {
     font-family: inherit;
     color: #f3f4f6;
@@ -6,10 +6,12 @@ import{r as i,j as e,L as a}from"./main-60e2ea39.js";const n=`
   #lumio-form h1,
   #lumio-form h2,
   #lumio-form h3 {
-    color: #ffffff;
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
+    display: none;
+  }
+  #lumio-form > p,
+  #lumio-form form > p,
+  #lumio-form > div > p:first-child {
+    display: none;
   }
   #lumio-form label {
     display: block;
@@ -114,4 +116,4 @@ import{r as i,j as e,L as a}from"./main-60e2ea39.js";const n=`
   #lumio-form [class*="success"] {
     color: #86efac;
   }
-`;function l(){const t=i.useRef(null);return i.useEffect(()=>{document.title="Marketing Request Form - Switch Commerce"},[]),i.useEffect(()=>{const r=document.createElement("style");r.textContent=n,document.head.appendChild(r);const o=document.createElement("script");return o.src="https://lumioboards.netlify.app/embed.js",o.setAttribute("data-form","marketing-request-cbkday"),o.setAttribute("data-target","#lumio-form"),o.async=!0,t.current.appendChild(o),()=>{var m;document.head.removeChild(r),(m=t.current)!=null&&m.contains(o)&&t.current.removeChild(o)}},[]),e.jsxs("div",{className:"flex-1 bg-gradient-to-b from-gray-900 to-gray-800 text-white",children:[e.jsx("div",{className:"py-10 sm:py-16 px-4",children:e.jsxs("div",{className:"max-w-3xl mx-auto",children:[e.jsxs(a,{to:"/",className:"inline-flex items-center text-gray-400 hover:text-white mb-6 transition-colors text-sm",children:[e.jsx("svg",{className:"w-4 h-4 mr-1.5",fill:"none",stroke:"currentColor",viewBox:"0 0 24 24",children:e.jsx("path",{strokeLinecap:"round",strokeLinejoin:"round",strokeWidth:2,d:"M10 19l-7-7m0 0l7-7m-7 7h18"})}),"Back to Home"]}),e.jsx("h1",{className:"font-switch-bold text-3xl sm:text-4xl md:text-5xl mb-4 bg-gradient-to-r from-[#9333ea] to-[#c084fc] bg-clip-text text-transparent",children:"Marketing Request Form"}),e.jsx("p",{className:"text-base sm:text-lg text-gray-300 max-w-2xl",children:"Submit your marketing requests, campaign ideas, and project inquiries. Our team will review and get back to you promptly."})]})}),e.jsx("div",{className:"max-w-3xl mx-auto px-4 pb-16",children:e.jsx("div",{className:"rounded-2xl bg-gray-900/40 border border-white/10 backdrop-blur-md p-6 sm:p-8 shadow-xl",children:e.jsx("div",{ref:t,children:e.jsx("div",{id:"lumio-form"})})})}),e.jsx("div",{className:"max-w-3xl mx-auto px-4 py-8 text-center text-gray-400 text-sm",children:e.jsxs("p",{children:["Questions? ",e.jsx("a",{href:"mailto:marketing@switchcommerce.com",className:"text-gray-200 hover:text-white underline transition-colors",children:"Contact the marketing team"})," directly."]})})]})}export{l as default};
+`;function l(){const r=i.useRef(null);return i.useEffect(()=>{document.title="Marketing Request Form - Switch Commerce"},[]),i.useEffect(()=>{const t=document.createElement("style");t.textContent=s,document.head.appendChild(t);const o=document.createElement("script");return o.src=`https://lumioboards.netlify.app/embed.js?v=${Date.now()}`,o.setAttribute("data-form","marketing-requests-7proue"),o.setAttribute("data-target","#lumio-form"),o.async=!0,r.current.appendChild(o),()=>{var m;document.head.removeChild(t),(m=r.current)!=null&&m.contains(o)&&r.current.removeChild(o)}},[]),e.jsxs("div",{className:"flex-1 bg-gradient-to-b from-gray-900 to-gray-800 text-white",children:[e.jsx("div",{className:"py-6 sm:py-10 px-4",children:e.jsxs("div",{className:"max-w-3xl mx-auto",children:[e.jsxs(a,{to:"/",className:"inline-flex items-center text-gray-400 hover:text-white mb-4 transition-colors text-sm",children:[e.jsx("svg",{className:"w-4 h-4 mr-1.5",fill:"none",stroke:"currentColor",viewBox:"0 0 24 24",children:e.jsx("path",{strokeLinecap:"round",strokeLinejoin:"round",strokeWidth:2,d:"M10 19l-7-7m0 0l7-7m-7 7h18"})}),"Back to Home"]}),e.jsx("h1",{className:"font-switch-bold text-2xl sm:text-3xl mb-2 bg-gradient-to-r from-[#9333ea] to-[#c084fc] bg-clip-text text-transparent",children:"Marketing Request"}),e.jsx("p",{className:"text-sm text-gray-400 max-w-2xl",children:"Submit your requests and our team will get back to you promptly."})]})}),e.jsx("div",{className:"max-w-3xl mx-auto px-4 pb-16",children:e.jsx("div",{className:"rounded-2xl bg-gray-900/40 border border-white/10 backdrop-blur-md p-6 sm:p-8 shadow-xl",children:e.jsx("div",{ref:r,children:e.jsx("div",{id:"lumio-form"})})})}),e.jsx("div",{className:"max-w-3xl mx-auto px-4 py-8 text-center text-gray-400 text-sm",children:e.jsxs("p",{children:["Questions? ",e.jsx("a",{href:"mailto:marketing@switchcommerce.com",className:"text-gray-200 hover:text-white underline transition-colors",children:"Contact the marketing team"})," directly."]})})]})}export{l as default};

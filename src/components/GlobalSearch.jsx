@@ -118,7 +118,7 @@ export default function GlobalSearch() {
             title: n.title,
             subtitle: n.excerpt,
             body: stripHtml(n.content),
-            url: "/field-notes",
+            url: `/field-notes/${n.id}`,
           })),
           ...STATIC_PAGES,
         ];

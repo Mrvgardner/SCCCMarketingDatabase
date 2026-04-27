@@ -4,6 +4,7 @@ import seedData from "./field-notes-seed.json";
 
 const STORE_NAME = "knowledge-base";
 const KEY = "field-notes.json";
+const ALLOWED_REACTIONS = new Set(["👍", "✅", "🔥"]);
 
 async function loadSeed() {
   return seedData;
@@ -22,9 +23,27 @@ function ensureId(note) {
   return note;
 }
 
+function userKey(user) {
+  return user?.sub || user?.id || user?.email || user?.user_metadata?.full_name || null;
+}
+
 // Newest first, stable across equal dates
 function sortByDate(notes) {
   return [...notes].sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+}
+
+function todayISO() {
+  const d = new Date();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${m}-${day}`;
+}
+
+// A note is publicly visible when it's published AND its publishAt date (if any) has arrived.
+function isPubliclyVisible(note) {
+  if (note.published === false) return false;
+  if (note.publishAt && note.publishAt > todayISO()) return false;
+  return true;
 }
 
 export async function handler(event, context) {
@@ -45,7 +64,48 @@ export async function handler(event, context) {
       notes = (await loadSeed()).map(ensureId);
       await store.setJSON(KEY, notes);
     }
-    return json(200, sortByDate(notes));
+    // Admins see all notes (including drafts); public only sees published ones.
+    const visible = isAdmin ? notes : notes.filter(isPubliclyVisible);
+    return json(200, sortByDate(visible));
+  }
+
+  if (method === "PATCH") {
+    let notes = await store.get(KEY, { type: "json" });
+    if (!notes) {
+      notes = (await loadSeed()).map(ensureId);
+      await store.setJSON(KEY, notes);
+    }
+
+    let body;
+    try {
+      body = event.body ? JSON.parse(event.body) : {};
+    } catch {
+      return json(400, { error: "Invalid JSON body" });
+    }
+
+    if (!body.id) return json(400, { error: "Missing id" });
+    if (!ALLOWED_REACTIONS.has(body.emoji)) return json(400, { error: "Unsupported reaction" });
+
+    const uid = userKey(user);
+    if (!uid) return json(400, { error: "Unable to resolve user identity" });
+
+    const idx = notes.findIndex((n) => n.id === body.id);
+    if (idx === -1) return json(404, { error: "Not found" });
+
+    const note = notes[idx];
+    const reactions = { ...(note.reactions || {}) };
+    const users = Array.isArray(reactions[body.emoji]) ? reactions[body.emoji] : [];
+    const hasReacted = users.includes(uid);
+    const nextUsers = hasReacted
+      ? users.filter((u) => u !== uid)
+      : [...users, uid];
+
+    if (nextUsers.length > 0) reactions[body.emoji] = nextUsers;
+    else delete reactions[body.emoji];
+
+    notes[idx] = { ...note, reactions };
+    await store.setJSON(KEY, notes);
+    return json(200, notes[idx]);
   }
 
   if (!isAdmin) return json(403, { error: "Forbidden — admin role required" });
