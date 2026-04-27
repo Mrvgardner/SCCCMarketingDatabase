@@ -1,7 +1,4 @@
-import React, { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-
-const LUMIO_STYLES = `
+import{r as i,j as e,L as a}from"./main-60e2ea39.js";const n=`
   #lumio-form {
     font-family: inherit;
     color: #f3f4f6;
@@ -9,12 +6,10 @@ const LUMIO_STYLES = `
   #lumio-form h1,
   #lumio-form h2,
   #lumio-form h3 {
-    display: none;
-  }
-  #lumio-form > p,
-  #lumio-form form > p,
-  #lumio-form > div > p:first-child {
-    display: none;
+    color: #ffffff;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
   }
   #lumio-form label {
     display: block;
@@ -119,71 +114,4 @@ const LUMIO_STYLES = `
   #lumio-form [class*="success"] {
     color: #86efac;
   }
-`;
-
-export default function MarketingRequestPage() {
-  const scriptRef = useRef(null);
-
-  useEffect(() => {
-    document.title = 'Marketing Request Form - Switch Commerce';
-  }, []);
-
-  useEffect(() => {
-    const style = document.createElement('style');
-    style.textContent = LUMIO_STYLES;
-    document.head.appendChild(style);
-
-    const script = document.createElement('script');
-    script.src = `https://lumioboards.netlify.app/embed.js?v=${Date.now()}`;
-    script.setAttribute('data-form', 'marketing-requests-7proue');
-    script.setAttribute('data-target', '#lumio-form');
-    script.async = true;
-    scriptRef.current.appendChild(script);
-
-    return () => {
-      document.head.removeChild(style);
-      if (scriptRef.current?.contains(script)) {
-        scriptRef.current.removeChild(script);
-      }
-    };
-  }, []);
-
-  return (
-    <div className="flex-1 bg-gradient-to-b from-gray-900 to-gray-800 text-white">
-      {/* Header */}
-      <div className="py-6 sm:py-10 px-4">
-        <div className="max-w-3xl mx-auto">
-          <Link
-            to="/"
-            className="inline-flex items-center text-gray-400 hover:text-white mb-4 transition-colors text-sm"
-          >
-            <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Back to Home
-          </Link>
-          <h1 className="font-switch-bold text-2xl sm:text-3xl mb-2 bg-gradient-to-r from-[#9333ea] to-[#c084fc] bg-clip-text text-transparent">
-            Marketing Request
-          </h1>
-          <p className="text-sm text-gray-400 max-w-2xl">
-            Submit your requests and our team will get back to you promptly.
-          </p>
-        </div>
-      </div>
-
-      {/* Form */}
-      <div className="max-w-3xl mx-auto px-4 pb-16">
-        <div className="rounded-2xl bg-gray-900/40 border border-white/10 backdrop-blur-md p-6 sm:p-8 shadow-xl">
-          <div ref={scriptRef}>
-            <div id="lumio-form" />
-          </div>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="max-w-3xl mx-auto px-4 py-8 text-center text-gray-400 text-sm">
-        <p>Questions? <a href="mailto:marketing@switchcommerce.com" className="text-gray-200 hover:text-white underline transition-colors">Contact the marketing team</a> directly.</p>
-      </div>
-    </div>
-  );
-}
+`;function l(){const t=i.useRef(null);return i.useEffect(()=>{document.title="Marketing Request Form - Switch Commerce"},[]),i.useEffect(()=>{const r=document.createElement("style");r.textContent=n,document.head.appendChild(r);const o=document.createElement("script");return o.src="https://lumioboards.netlify.app/embed.js",o.setAttribute("data-form","marketing-request-cbkday"),o.setAttribute("data-target","#lumio-form"),o.async=!0,t.current.appendChild(o),()=>{var m;document.head.removeChild(r),(m=t.current)!=null&&m.contains(o)&&t.current.removeChild(o)}},[]),e.jsxs("div",{className:"flex-1 bg-gradient-to-b from-gray-900 to-gray-800 text-white",children:[e.jsx("div",{className:"py-10 sm:py-16 px-4",children:e.jsxs("div",{className:"max-w-3xl mx-auto",children:[e.jsxs(a,{to:"/",className:"inline-flex items-center text-gray-400 hover:text-white mb-6 transition-colors text-sm",children:[e.jsx("svg",{className:"w-4 h-4 mr-1.5",fill:"none",stroke:"currentColor",viewBox:"0 0 24 24",children:e.jsx("path",{strokeLinecap:"round",strokeLinejoin:"round",strokeWidth:2,d:"M10 19l-7-7m0 0l7-7m-7 7h18"})}),"Back to Home"]}),e.jsx("h1",{className:"font-switch-bold text-3xl sm:text-4xl md:text-5xl mb-4 bg-gradient-to-r from-[#9333ea] to-[#c084fc] bg-clip-text text-transparent",children:"Marketing Request Form"}),e.jsx("p",{className:"text-base sm:text-lg text-gray-300 max-w-2xl",children:"Submit your marketing requests, campaign ideas, and project inquiries. Our team will review and get back to you promptly."})]})}),e.jsx("div",{className:"max-w-3xl mx-auto px-4 pb-16",children:e.jsx("div",{className:"rounded-2xl bg-gray-900/40 border border-white/10 backdrop-blur-md p-6 sm:p-8 shadow-xl",children:e.jsx("div",{ref:t,children:e.jsx("div",{id:"lumio-form"})})})}),e.jsx("div",{className:"max-w-3xl mx-auto px-4 py-8 text-center text-gray-400 text-sm",children:e.jsxs("p",{children:["Questions? ",e.jsx("a",{href:"mailto:marketing@switchcommerce.com",className:"text-gray-200 hover:text-white underline transition-colors",children:"Contact the marketing team"})," directly."]})})]})}export{l as default};
