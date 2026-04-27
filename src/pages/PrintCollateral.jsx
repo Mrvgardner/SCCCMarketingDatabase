@@ -69,28 +69,6 @@ export default function PrintCollateralPage() {
             Access the latest brochures, one-pagers, and marketing materials for Switch Commerce and Clear Choice.
           </p>
 
-          <div className="mt-8 max-w-4xl rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-2xl backdrop-blur-md">
-            <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-              <div className="max-w-2xl">
-                <div className="inline-flex items-center rounded-full border border-[#ff4f00]/40 bg-[#ff4f00]/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#ffb08a]">
-                  New custom collateral
-                </div>
-                <h2 className="mt-4 font-switch-bold text-2xl text-white sm:text-3xl">
-                  Build a prospect-ready sales one-pager from the knowledge base.
-                </h2>
-                <p className="mt-3 text-sm leading-7 text-gray-300 sm:text-base">
-                  Select a product, add a prospect name and pain point, and generate a styled leave-behind your reps can print or save as PDF.
-                </p>
-              </div>
-
-              <Link
-                to="/one-pager-builder"
-                className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#0951fa] to-[#ff4f00] px-6 py-3 text-sm font-semibold text-white shadow-lg transition-transform hover:scale-[1.02]"
-              >
-                Open Builder
-              </Link>
-            </div>
-          </div>
         </div>
       </div>
 
