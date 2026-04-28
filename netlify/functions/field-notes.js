@@ -54,7 +54,16 @@ export async function handler(event, context) {
   const isAdmin = roles.includes("admin");
   const method = event.httpMethod;
 
-  if (!user) return json(401, { error: "Unauthorized" });
+  // Token-gated public GET — used by the Yodeck kitchen TV (server-to-server
+  // via env var). Token is never exposed to the browser. Writes still require
+  // Netlify Identity + admin role.
+  const publicToken = process.env.KITCHEN_READ_TOKEN;
+  const provided    = event.queryStringParameters?.token
+                   || event.headers?.['x-read-token']
+                   || event.headers?.['X-Read-Token'];
+  const isTokenRead = method === "GET" && publicToken && provided === publicToken;
+
+  if (!user && !isTokenRead) return json(401, { error: "Unauthorized" });
 
   const store = getStore(STORE_NAME);
 
