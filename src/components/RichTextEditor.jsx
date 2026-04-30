@@ -5,6 +5,7 @@ import { Underline } from "@tiptap/extension-underline";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { Color } from "@tiptap/extension-color";
 import { Image } from "@tiptap/extension-image";
+import { TextAlign } from "@tiptap/extension-text-align";
 import { useEffect, useRef, useState } from "react";
 import { uploadImage } from "../api/images";
 
@@ -17,6 +18,33 @@ const PALETTE = [
   { label: "Gray", value: "#9ca3af" },
   { label: "Red", value: "#ef4444" },
 ];
+
+function AlignIcon({ align }) {
+  // Three short bars; the targeted line is offset to indicate alignment.
+  const long = "M3 6h14";
+  const short =
+    align === "left"
+      ? "M3 12h10"
+      : align === "right"
+      ? "M7 12h10"
+      : "M5 12h10";
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 20 20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    >
+      <path d={long} />
+      <path d={short} />
+      <path d="M3 18h14" />
+    </svg>
+  );
+}
 
 function ToolbarButton({ onClick, active, disabled, title, children }) {
   return (
@@ -60,6 +88,10 @@ export default function RichTextEditor({ value, onChange, placeholder }) {
         HTMLAttributes: {
           class: "rounded-lg max-w-full h-auto my-2",
         },
+      }),
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+        alignments: ["left", "center", "right"],
       }),
     ],
     content: value || "",
@@ -168,6 +200,30 @@ export default function RichTextEditor({ value, onChange, placeholder }) {
           title="Numbered list"
         >
           1. List
+        </ToolbarButton>
+
+        <div className="w-px h-6 bg-gray-700 mx-1" />
+
+        <ToolbarButton
+          onClick={() => editor.chain().focus().setTextAlign("left").run()}
+          active={editor.isActive({ textAlign: "left" })}
+          title="Align left"
+        >
+          <AlignIcon align="left" />
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() => editor.chain().focus().setTextAlign("center").run()}
+          active={editor.isActive({ textAlign: "center" })}
+          title="Align center"
+        >
+          <AlignIcon align="center" />
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() => editor.chain().focus().setTextAlign("right").run()}
+          active={editor.isActive({ textAlign: "right" })}
+          title="Align right"
+        >
+          <AlignIcon align="right" />
         </ToolbarButton>
 
         <div className="w-px h-6 bg-gray-700 mx-1" />
