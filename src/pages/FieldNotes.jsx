@@ -14,6 +14,7 @@ import { useAuth } from "../contexts/AuthContext";
 import RichText from "../components/RichText.jsx";
 import { birthdays, anniversaries } from "../data/celebrations";
 import { getUpcoming, formatDate as formatCelebDate, yearsOfService } from "../utils/celebrations";
+import { extractFirstImage } from "../utils/extractFirstImage";
 
 const REACTION_EMOJIS = ["👍", "✅", "🔥"];
 
@@ -40,12 +41,25 @@ function getReactionCount(note, emoji) {
 
 function FieldNoteCard({ note, onOpen, isNew }) {
   const hasReactions = REACTION_EMOJIS.some((emoji) => getReactionCount(note, emoji) > 0);
+  const cover = extractFirstImage(note.content);
 
   return (
     <button
       onClick={() => onOpen(note)}
-      className="group text-left rounded-2xl bg-gray-900/40 border border-white/10 backdrop-blur-md p-6 shadow-xl hover:border-[#5fae4b]/50 hover:bg-gray-900/60 hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 flex flex-col h-full"
+      className="group text-left rounded-2xl bg-gray-900/40 border border-white/10 backdrop-blur-md shadow-xl hover:border-[#5fae4b]/50 hover:bg-gray-900/60 hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 flex flex-col h-full overflow-hidden"
     >
+      {cover && (
+        <div className="aspect-video w-full bg-black/20 overflow-hidden">
+          <img
+            src={cover}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        </div>
+      )}
+      <div className="p-6 flex flex-col flex-1">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="text-xs uppercase tracking-wider text-[#7bc966] font-semibold">
@@ -88,6 +102,7 @@ function FieldNoteCard({ note, onOpen, isNew }) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </span>
+      </div>
       </div>
     </button>
   );

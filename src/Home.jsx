@@ -3,6 +3,7 @@ import { BookOpenIcon, DocumentTextIcon, NewspaperIcon } from "@heroicons/react/
 import { Link } from "react-router-dom";
 import { listFieldNotes } from "./api/fieldNotes";
 import GlobalSearch from "./components/GlobalSearch.jsx";
+import { extractFirstImage } from "./utils/extractFirstImage";
 
 const externalTools = [
   { name: "Slack", icon: "/logos/slack-logo.png", url: "https://switch-commerce.slack.com/" },
@@ -86,6 +87,20 @@ export default function Home() {
                 </div>
                 {latestFieldNote ? (
                   <>
+                    {(() => {
+                      const cover = extractFirstImage(latestFieldNote.content);
+                      return cover ? (
+                        <div className="mb-4 -mx-2 rounded-lg overflow-hidden aspect-video bg-black/20">
+                          <img
+                            src={cover}
+                            alt=""
+                            loading="lazy"
+                            decoding="async"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ) : null;
+                    })()}
                     <div className="text-xs text-white/70 mb-2 uppercase tracking-wide">Latest</div>
                     <div className="text-white/80 text-sm mb-2">
                       {new Date(latestFieldNote.date + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
