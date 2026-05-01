@@ -1,10 +1,14 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import Fuse from "fuse.js";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { listProducts } from "../api/products";
 import { listFieldNotes } from "../api/fieldNotes";
+
+// Defer Fuse and search-index loading until first interaction so they don't
+// land in the home-page critical bundle.
+let fusePromise = null;
+const loadFuse = () => (fusePromise ||= import("fuse.js").then((m) => m.default));
 
 const CATEGORIES = {
   product: {
@@ -94,15 +98,18 @@ export default function GlobalSearch() {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([]);
+  const [FuseCtor, setFuseCtor] = useState(null);
+  const loadedRef = useRef(false);
   const containerRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Load everything searchable once on mount
-  useEffect(() => {
-    let cancelled = false;
+  // Lazy-load Fuse + search index on first focus / interaction.
+  const ensureLoaded = () => {
+    if (loadedRef.current) return;
+    loadedRef.current = true;
+    loadFuse().then(setFuseCtor).catch(() => {});
     Promise.all([listProducts().catch(() => []), listFieldNotes().catch(() => [])]).then(
       ([products, notes]) => {
-        if (cancelled) return;
         const indexed = [
           ...products.map((p) => ({
             type: "product",
@@ -125,21 +132,22 @@ export default function GlobalSearch() {
         setItems(indexed);
       }
     );
-    return () => { cancelled = true; };
-  }, []);
+  };
 
   const fuse = useMemo(
     () =>
-      new Fuse(items, {
-        threshold: 0.35,
-        ignoreLocation: true,
-        keys: [
-          { name: "title", weight: 3 },
-          { name: "subtitle", weight: 2 },
-          { name: "body", weight: 1 },
-        ],
-      }),
-    [items]
+      FuseCtor && items.length
+        ? new FuseCtor(items, {
+            threshold: 0.35,
+            ignoreLocation: true,
+            keys: [
+              { name: "title", weight: 3 },
+              { name: "subtitle", weight: 2 },
+              { name: "body", weight: 1 },
+            ],
+          })
+        : null,
+    [FuseCtor, items]
   );
 
   // Quick links shown when the input is focused but empty
@@ -156,7 +164,7 @@ export default function GlobalSearch() {
 
   const results = useMemo(() => {
     const q = query.trim();
-    if (!q) return [];
+    if (!q || !fuse) return [];
     return fuse.search(q).slice(0, 12).map((r) => r.item);
   }, [fuse, query]);
 
@@ -213,8 +221,9 @@ export default function GlobalSearch() {
           ref={inputRef}
           type="text"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => setOpen(true)}
+          onChange={(e) => { ensureLoaded(); setQuery(e.target.value); }}
+          onFocus={() => { ensureLoaded(); setOpen(true); }}
+          onMouseEnter={ensureLoaded}
           onKeyDown={onKeyDown}
           placeholder="Search the portal — products, field notes, resources…"
           className="w-full pl-12 pr-10 py-3.5 rounded-2xl bg-gray-900/70 border border-white/15 focus:border-[#0951fa]/60 focus:outline-none focus:ring-2 focus:ring-[#0951fa]/30 backdrop-blur-md text-white placeholder-gray-300 text-base transition-all"

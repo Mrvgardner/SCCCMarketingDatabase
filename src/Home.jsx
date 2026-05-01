@@ -10,7 +10,7 @@ const externalTools = [
   { name: "Assembly", icon: "/logos/assembly-logo.png", url: "https://app.joinassembly.com/" },
   { name: "BambooHR", icon: "/logos/bamboohr-logo.png", url: "https://switch.bamboohr.com/home/" },
   { name: "Jira", icon: "/logos/jira-logo.png", url: "https://switchcommerce.atlassian.net/jira/your-work" },
-  { name: "Confluence", icon: "/logos/confluence-logo.jpg", url: "https://switchcommerce.atlassian.net/wiki/home" },
+  { name: "Confluence", icon: "/logos/confluence-logo.webp", url: "https://switchcommerce.atlassian.net/wiki/home" },
 ];
 
 const FloatingTile = ({ delay = 0, className = "", children }) => (

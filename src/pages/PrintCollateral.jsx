@@ -15,19 +15,19 @@ export default function PrintCollateralPage() {
           name: "Switch Commerce & Clear Choice Brochure - 2026",
           description: "Combined company brochure featuring both Switch Commerce and Clear Choice",
           url: "/brochures/SwitchCommerceClearChoiceBrochure.pdf",
-          thumbnail: "/brochures/thumbnails/switch-clearchoice-thumb.jpg?v=1"
+          thumbnail: "/brochures/thumbnails/switch-clearchoice-thumb.webp?v=1"
         },
         {
           name: "Switch Commerce Brochure - 2025",
           description: "Switch Commerce payment processing solutions and services",
           url: "/brochures/switch-brochure.pdf",
-          thumbnail: "/brochures/thumbnails/switch-thumb.jpg?v=1"
+          thumbnail: "/brochures/thumbnails/switch-thumb.webp?v=1"
         },
         {
           name: "Clear Choice Brochure - 2025",
           description: "Clear Choice merchant services and payment solutions",
           url: "/brochures/clearchoice-brochure.pdf",
-          thumbnail: "/brochures/thumbnails/clearchoice-thumb.jpg?v=1"
+          thumbnail: "/brochures/thumbnails/clearchoice-thumb.webp?v=1"
         }
       ]
     },
@@ -38,13 +38,13 @@ export default function PrintCollateralPage() {
           name: "Watchdog One-Page - 2026",
           description: "Clear Choice WatchDog monitoring and security services",
           url: "/pdfs/CC-WatchDogOnline.pdf",
-          thumbnail: "/pdfs/thumbnails/watchdog-thumb.jpg"
+          thumbnail: "/pdfs/thumbnails/watchdog-thumb.webp"
         },
         {
           name: "Cash Recycler One-Page - 2026",
           description: "ATEC Cash Recycler solutions for efficient cash management",
           url: "/pdfs/Cash_Reccler.pdf",
-          thumbnail: "/pdfs/thumbnails/atec-thumb.jpg"
+          thumbnail: "/pdfs/thumbnails/atec-thumb.webp"
         }
       ]
     }
@@ -96,6 +96,9 @@ export default function PrintCollateralPage() {
                           alt={`${item.name} cover`}
                           className="w-full h-full object-cover"
                           loading="lazy"
+                          decoding="async"
+                          width="96"
+                          height="128"
                           onError={(e) => {
                             e.target.onerror = null;
                             e.target.src = 'data:image/svg+xml,%3Csvg width="96" height="128" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="96" height="128" fill="%23e5e7eb"/%3E%3Ctext x="50%25" y="50%25" font-family="Arial" font-size="48" fill="%239ca3af" text-anchor="middle" dy=".3em"%3E📄%3C/text%3E%3C/svg%3E';

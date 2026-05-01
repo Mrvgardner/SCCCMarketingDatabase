@@ -13,7 +13,11 @@ export default function Login() {
           <img
             src="/logos/switch/Logo Main/SC Logo Main - White.png"
             alt="Switch Commerce"
-            className="mx-auto h-12 mb-6"
+            width="240"
+            height="48"
+            decoding="async"
+            fetchpriority="high"
+            className="mx-auto h-12 mb-6 w-auto"
           />
           <h1 className="font-switch-bold text-3xl text-white tracking-wide">Team Portal</h1>
           <p className="mt-2 text-gray-400">Sign in to access marketing resources</p>

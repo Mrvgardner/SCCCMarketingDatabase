@@ -14,6 +14,7 @@ export default function LogoDisplay({ logos }) {
               alt={logo.name}
               className={`${logo.maxWidth || 'max-w-xs'} ${logo.maxHeight || 'max-h-32'}`}
               loading="lazy"
+              decoding="async"
             />
           </div>
           

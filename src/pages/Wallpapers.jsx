@@ -5,8 +5,8 @@ const wallpapers = [
   {
     id: 'desktop',
     name: 'Desktop Wallpaper',
-    defaultImg: '/wallpapers/images/MartixBeautyShots-Macbook.png',
-    hoverImg: '/wallpapers/images/MartixBeautyShots-Desktop.png',
+    defaultImg: '/wallpapers/images/MartixBeautyShots-Macbook.webp',
+    hoverImg: '/wallpapers/images/MartixBeautyShots-Desktop.webp',
     downloadUrl: '/wallpapers/images/SC-Matrix-Desktop.jpg',
     description: 'Optimized for widescreen monitors and laptops.',
     buttonText: 'Download Desktop Wallpaper',
@@ -14,8 +14,8 @@ const wallpapers = [
   {
     id: 'tablet',
     name: 'Tablet Wallpaper',
-    defaultImg: '/wallpapers/images/MartixBeautyShots-ipad2.png',
-    hoverImg: '/wallpapers/images/MartixBeautyShots-ipad1.png',
+    defaultImg: '/wallpapers/images/MartixBeautyShots-ipad2.webp',
+    hoverImg: '/wallpapers/images/MartixBeautyShots-ipad1.webp',
     downloadUrl: '/wallpapers/images/SC-Matrix-Tablet.jpg',
     description: 'Crisp resolution tailored for tablet devices.',
     buttonText: 'Download Tablet Wallpaper',
@@ -23,8 +23,8 @@ const wallpapers = [
   {
     id: 'phone',
     name: 'Phone Wallpaper',
-    defaultImg: '/wallpapers/images/MartixBeautyShots-iPhone1.png',
-    hoverImg: '/wallpapers/images/MartixBeautyShots-iPhone2.png',
+    defaultImg: '/wallpapers/images/MartixBeautyShots-iPhone1.webp',
+    hoverImg: '/wallpapers/images/MartixBeautyShots-iPhone2.webp',
     downloadUrl: '/wallpapers/images/SC-Matrix-Phone.jpg',
     description: 'Perfectly sized for smartphone screens.',
     buttonText: 'Download Phone Wallpaper',

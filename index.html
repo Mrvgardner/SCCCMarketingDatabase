@@ -9,10 +9,19 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png?v=2" />
     <meta name="theme-color" content="#0f172a" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preload" href="/fonts/SWITCHCOMMERCEBOLD.otf" as="font" type="font/otf" crossorigin />
-    <link rel="preload" href="/fonts/SWITCHCOMMERCEREG.otf" as="font" type="font/otf" crossorigin />
+
+    <!-- Preconnect to third-party origins used after first paint -->
+    <link rel="preconnect" href="https://identity.netlify.com" crossorigin />
+    <link rel="dns-prefetch" href="https://identity.netlify.com" />
+
+    <!-- Brand fonts: preload WOFF2 so first paint isn't blocked on font network -->
+    <link rel="preload" href="/fonts/SWITCHCOMMERCEBOLD.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/SWITCHCOMMERCEREG.woff2" as="font" type="font/woff2" crossorigin />
+
     <title>Team Switch Commerce</title>
-    <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+    <!-- Netlify Identity: defer so it doesn't block parsing or first paint -->
+    <script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   </head>
   <body>
     <div id="root"></div>

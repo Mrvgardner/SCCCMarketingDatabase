@@ -31,6 +31,7 @@ export default function EnhancedLogoDisplay({ logos }) {
                   alt={logosInCategory[0].name}
                   className="max-h-48 max-w-full"
                   loading="lazy"
+                  decoding="async"
                 />
               </div>
               
@@ -91,6 +92,7 @@ export default function EnhancedLogoDisplay({ logos }) {
                         alt={logo.name}
                         className="max-h-full max-w-full"
                         loading="lazy"
+                        decoding="async"
                       />
                     </div>
                     <div className="p-2">

@@ -1,7 +1,8 @@
-# Allow all CORS for PDF files
+# Allow all CORS for PDF files + long cache (bust by rename)
 /brochures/*
   Access-Control-Allow-Origin: *
   Content-Type: application/pdf
+  Cache-Control: public, max-age=31536000, immutable
 
 # Long-lived caching for static asset folders
 # (Content rarely changes; bust by renaming the file if needed.)
@@ -11,6 +12,7 @@
   Cache-Control: public, max-age=31536000, immutable
 /fonts/*
   Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
 /signatures/*
   Cache-Control: public, max-age=31536000, immutable
 /pdfs/*
@@ -22,9 +24,29 @@
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
-# General headers
+# PDF.js worker is large; long-cache (filename rarely changes)
+/pdf.worker.min.js
+  Cache-Control: public, max-age=31536000, immutable
+/pdf.worker.js
+  Cache-Control: public, max-age=31536000, immutable
+
+# Favicons: cache for a week
+/favicon-16x16.png
+  Cache-Control: public, max-age=604800
+/favicon-32x32.png
+  Cache-Control: public, max-age=604800
+/favicon.png
+  Cache-Control: public, max-age=604800
+
+# General security headers
 /*
   X-Frame-Options: SAMEORIGIN
   X-XSS-Protection: 1; mode=block
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
+
+# index.html / SPA shell: must revalidate so users get new asset hashes
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+/
+  Cache-Control: public, max-age=0, must-revalidate

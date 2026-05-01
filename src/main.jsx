@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useState } from 'react'
+import React, { lazy, memo, Suspense, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom'
 import { Menu } from '@headlessui/react'
@@ -9,23 +9,49 @@ import SiteFooter from './components/SiteFooter.jsx';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import './index.css'
 
-const SwitchCommerceBranding = lazy(() => import('./pages/SwitchCommerceBranding.jsx'));
-const ClearChoiceBranding = lazy(() => import('./pages/ClearChoiceBranding.jsx'));
-const ClearChoice = lazy(() => import('./ClearChoice.jsx'));
-const SwitchCommerce = lazy(() => import('./SwitchCommerce.jsx'));
-const ProductsPage = lazy(() => import('./pages/products'));
-const EmailSignature = lazy(() => import('./pages/EmailSignature.jsx'));
-const Wallpapers = lazy(() => import('./pages/Wallpapers.jsx'));
-const MarketingRequest = lazy(() => import('./pages/MarketingRequest.jsx'));
-const PrintCollateral = lazy(() => import('./pages/PrintCollateral.jsx'));
-const FieldNotes = lazy(() => import('./pages/FieldNotes.jsx'));
-const Birthdays = lazy(() => import('./pages/Birthdays.jsx'));
-const Anniversaries = lazy(() => import('./pages/Anniversaries.jsx'));
-const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard.jsx'));
-const ProductsAdmin = lazy(() => import('./pages/admin/ProductsAdmin.jsx'));
-const ProductForm = lazy(() => import('./pages/admin/ProductForm.jsx'));
-const FieldNotesAdmin = lazy(() => import('./pages/admin/FieldNotesAdmin.jsx'));
-const FieldNoteForm = lazy(() => import('./pages/admin/FieldNoteForm.jsx'));
+// Route chunks. Each `imp` is a stable reference to a dynamic import so we can
+// call it from hover handlers to prefetch the JS for a route the user is about
+// to navigate to. The dedupe is automatic — Vite resolves a single Promise.
+const routes = {
+  switchCommerceBranding: () => import('./pages/SwitchCommerceBranding.jsx'),
+  clearChoiceBranding:    () => import('./pages/ClearChoiceBranding.jsx'),
+  clearChoice:            () => import('./ClearChoice.jsx'),
+  switchCommerce:         () => import('./SwitchCommerce.jsx'),
+  productsPage:           () => import('./pages/products'),
+  emailSignature:         () => import('./pages/EmailSignature.jsx'),
+  wallpapers:             () => import('./pages/Wallpapers.jsx'),
+  marketingRequest:       () => import('./pages/MarketingRequest.jsx'),
+  printCollateral:        () => import('./pages/PrintCollateral.jsx'),
+  fieldNotes:             () => import('./pages/FieldNotes.jsx'),
+  birthdays:              () => import('./pages/Birthdays.jsx'),
+  anniversaries:          () => import('./pages/Anniversaries.jsx'),
+  adminDashboard:         () => import('./pages/admin/AdminDashboard.jsx'),
+  productsAdmin:          () => import('./pages/admin/ProductsAdmin.jsx'),
+  productForm:            () => import('./pages/admin/ProductForm.jsx'),
+  fieldNotesAdmin:        () => import('./pages/admin/FieldNotesAdmin.jsx'),
+  fieldNoteForm:          () => import('./pages/admin/FieldNoteForm.jsx'),
+};
+
+const SwitchCommerceBranding = lazy(routes.switchCommerceBranding);
+const ClearChoiceBranding    = lazy(routes.clearChoiceBranding);
+const ClearChoice            = lazy(routes.clearChoice);
+const SwitchCommerce         = lazy(routes.switchCommerce);
+const ProductsPage           = lazy(routes.productsPage);
+const EmailSignature         = lazy(routes.emailSignature);
+const Wallpapers             = lazy(routes.wallpapers);
+const MarketingRequest       = lazy(routes.marketingRequest);
+const PrintCollateral        = lazy(routes.printCollateral);
+const FieldNotes             = lazy(routes.fieldNotes);
+const Birthdays              = lazy(routes.birthdays);
+const Anniversaries          = lazy(routes.anniversaries);
+const AdminDashboard         = lazy(routes.adminDashboard);
+const ProductsAdmin          = lazy(routes.productsAdmin);
+const ProductForm            = lazy(routes.productForm);
+const FieldNotesAdmin        = lazy(routes.fieldNotesAdmin);
+const FieldNoteForm          = lazy(routes.fieldNoteForm);
+
+// Idempotent fire-and-forget; ignore the resolved module.
+const prefetch = (imp) => { try { imp(); } catch {} };
 
 function RouteFallback() {
   return (
@@ -76,7 +102,7 @@ function AdminRoute({ children }) {
   return children;
 }
 
-function TopNav({ user, logout, isAdmin }) {
+const TopNav = memo(function TopNav({ user, logout, isAdmin }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   React.useEffect(() => { setMobileOpen(false); }, [location.pathname]);
@@ -92,16 +118,36 @@ function TopNav({ user, logout, isAdmin }) {
           className="inline-flex items-center justify-center p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-colors flex-shrink-0"
           aria-label="Home"
         >
-          <img src="/logos/switch/Logo Icon/SC Logo - White.png" alt="Home" className="h-8 w-8 object-contain" />
+          <img
+            src="/logos/switch/Logo Icon/SC Logo - White.png"
+            alt="Home"
+            width="32"
+            height="32"
+            decoding="async"
+            fetchpriority="high"
+            className="h-8 w-8 object-contain"
+          />
         </Link>
 
         {/* Desktop links */}
         <div className="hidden md:flex flex-1 items-center justify-center gap-2 lg:gap-4">
-          <Link to="/products" className={primaryLinkClass}>Knowledge Base</Link>
-          <Link to="/field-notes" className={primaryLinkClass}>Field Notes</Link>
-          <Link to="/marketing-request" className={primaryLinkClass}>Marketing Request</Link>
+          <Link to="/products" className={primaryLinkClass}
+            onMouseEnter={() => prefetch(routes.productsPage)}
+            onFocus={() => prefetch(routes.productsPage)}>Knowledge Base</Link>
+          <Link to="/field-notes" className={primaryLinkClass}
+            onMouseEnter={() => prefetch(routes.fieldNotes)}
+            onFocus={() => prefetch(routes.fieldNotes)}>Field Notes</Link>
+          <Link to="/marketing-request" className={primaryLinkClass}
+            onMouseEnter={() => prefetch(routes.marketingRequest)}
+            onFocus={() => prefetch(routes.marketingRequest)}>Marketing Request</Link>
           <Menu as="div" className="relative">
-            <Menu.Button className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors">
+            <Menu.Button
+              onMouseEnter={() => {
+                prefetch(routes.printCollateral);
+                prefetch(routes.emailSignature);
+                prefetch(routes.wallpapers);
+              }}
+              className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors">
               Other
               <ChevronDownIcon className="h-4 w-4 ml-1" />
             </Menu.Button>
@@ -118,7 +164,10 @@ function TopNav({ user, logout, isAdmin }) {
             </Menu.Items>
           </Menu>
           {isAdmin && (
-            <Link to="/admin" className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#0951fa]/20 border border-[#0951fa]/40 text-[#0a7cff] hover:bg-[#0951fa]/30 transition-colors text-xs font-semibold">
+            <Link to="/admin"
+              onMouseEnter={() => prefetch(routes.adminDashboard)}
+              onFocus={() => prefetch(routes.adminDashboard)}
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#0951fa]/20 border border-[#0951fa]/40 text-[#0a7cff] hover:bg-[#0951fa]/30 transition-colors text-xs font-semibold">
               Admin
             </Link>
           )}
@@ -181,7 +230,7 @@ function TopNav({ user, logout, isAdmin }) {
       )}
     </nav>
   );
-}
+});
 
 function AppShell() {
   const { user, logout, isAdmin } = useAuth();

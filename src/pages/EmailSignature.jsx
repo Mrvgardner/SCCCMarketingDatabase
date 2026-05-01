@@ -48,6 +48,8 @@ export default function EmailSignature() {
                       : `/signatures/images/${id}.jpg`
                   }
                   alt={`${id === 'Renee-Mesecher' ? 'Reneé Mesecher' : id.replace(/-/g, ' ')} signature preview`}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full block"
                 />
               </div>
