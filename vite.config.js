@@ -17,25 +17,19 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
       },
-      output: {
-        // Conservative split: only carve out chunks that are big AND only used
-        // by lazy routes. Splitting React/router/etc. into separate chunks
-        // creates circular imports between the resulting chunks (vendor needs
-        // react, react chunk needs vendor) which can produce runtime
-        // `Cannot read properties of undefined` errors at top-level eval.
-        manualChunks(id) {
-          if (!id.includes('node_modules')) return;
-          // tiptap + prosemirror: ~340 KB, only loaded on admin form pages.
-          if (id.includes('@tiptap') || id.includes('prosemirror')) return 'tiptap';
-          // dompurify: ~24 KB, only used by RichText render path.
-          if (id.includes('dompurify')) return 'dompurify';
-          // fuse.js: ~16 KB, lazy-loaded on first search interaction.
-          if (id.includes('fuse.js')) return 'fuse';
-          // Everything else (react, react-dom, react-router, headlessui,
-          // heroicons, framer-motion, etc.) goes into the default vendor
-          // chunk so Vite can resolve init order without us creating cycles.
-        },
-      },
+      // No `manualChunks` here — every prior attempt at custom chunking
+      // produced a runtime regression:
+      //   • Per-package split (react / router / vendor / tiptap / motion) →
+      //     circular imports between named chunks, React undefined at
+      //     top-level eval, white screen.
+      //   • Single tiptap chunk + undefined for the rest → Vite merged
+      //     React into the tiptap chunk so it loaded eagerly (527 KB).
+      //   • Single tiptap chunk + everything-else → "vendor" chunk had
+      //     CommonJS init-order issues.
+      // Vite's default per-route splitting via React.lazy() already gives
+      // us everything we need: each lazy route is its own chunk, the entry
+      // bundle pulls in only what's eagerly imported, and Rollup figures
+      // out the init order without us.
     },
     commonjsOptions: {
       include: [/node_modules/],
