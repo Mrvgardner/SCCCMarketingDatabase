@@ -311,15 +311,21 @@ function token(event) {
 export async function handler(event /*, context */) {
   if (event.httpMethod === "OPTIONS") return corsResponse();
 
-  // We dispatch by `path` query param (set by the netlify.toml redirect).
-  const path = event.queryStringParameters?.path || "";
+  // Dispatch by the original request path (preserved by Netlify rewrites).
+  // We accept either the friendly URL the user hit (e.g.
+  // /.well-known/oauth-protected-resource) or a ?path= query param fallback
+  // for direct invocation against /.netlify/functions/oauth.
+  const path = event.path || "";
+  const queryPath = event.queryStringParameters?.path || "";
 
-  if (path === "metadata-resource" && event.httpMethod === "GET") return metadataProtectedResource(event);
-  if (path === "metadata-as" && event.httpMethod === "GET") return metadataAuthorizationServer(event);
-  if (path === "register" && event.httpMethod === "POST") return register(event);
-  if (path === "authorize" && event.httpMethod === "GET") return authorizeForm(event);
-  if (path === "consent" && event.httpMethod === "POST") return consent(event);
-  if (path === "token" && event.httpMethod === "POST") return token(event);
+  const is = (p, qp) => path === p || path.endsWith(p) || queryPath === qp;
 
-  return jsonResponse(404, { error: "not_found", path, method: event.httpMethod });
+  if (is("/.well-known/oauth-protected-resource", "metadata-resource") && event.httpMethod === "GET") return metadataProtectedResource(event);
+  if (is("/.well-known/oauth-authorization-server", "metadata-as") && event.httpMethod === "GET") return metadataAuthorizationServer(event);
+  if (is("/oauth/register", "register") && event.httpMethod === "POST") return register(event);
+  if (is("/oauth/authorize", "authorize") && event.httpMethod === "GET") return authorizeForm(event);
+  if (is("/oauth/consent", "consent") && event.httpMethod === "POST") return consent(event);
+  if (is("/oauth/token", "token") && event.httpMethod === "POST") return token(event);
+
+  return jsonResponse(404, { error: "not_found", path, queryPath, method: event.httpMethod });
 }
