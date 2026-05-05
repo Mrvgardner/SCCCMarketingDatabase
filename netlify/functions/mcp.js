@@ -296,7 +296,24 @@ export async function handler(event, context) {
     });
   }
   if (!bearer || !timingSafeEqualStr(bearer, expected)) {
-    return jsonResponse(401, { error: "Unauthorized — invalid or missing bearer token" });
+    // Per MCP authorization spec / RFC 9728, advertise the resource metadata
+    // URL so Claude.ai can discover the OAuth server and start the flow.
+    const host =
+      event.headers?.["x-forwarded-host"] ||
+      event.headers?.host ||
+      "switchcommerce.team";
+    const proto =
+      event.headers?.["x-forwarded-proto"] || (host.includes("localhost") ? "http" : "https");
+    const metaUrl = `${proto}://${host}/.well-known/oauth-protected-resource`;
+    return {
+      statusCode: 401,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "WWW-Authenticate": `Bearer resource_metadata="${metaUrl}"`,
+      },
+      body: JSON.stringify({ error: "Unauthorized — invalid or missing bearer token" }),
+    };
   }
 
   // Parse JSON-RPC body. Spec allows a single message or a batch (array).
