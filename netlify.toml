@@ -6,6 +6,14 @@
 [functions]
   node_bundler = "esbuild"
 
+# MCP endpoint for Claude Cowork / Claude Code connectors. Lives at /mcp so
+# the connector URL is short and easy to paste.
+[[redirects]]
+  from = "/mcp"
+  to = "/.netlify/functions/mcp"
+  status = 200
+  force = true
+
 # Handle SPA routing — functions first so /.netlify/functions/* isn't rewritten
 [[redirects]]
   from = "/*"

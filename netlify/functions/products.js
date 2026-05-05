@@ -1,6 +1,14 @@
 import { connectLambda, getStore } from "@netlify/blobs";
-import { randomUUID } from "node:crypto";
+import { randomUUID, timingSafeEqual } from "node:crypto";
 import seedData from "./products-seed.json";
+
+// Constant-time string compare. Returns false if lengths differ (so we never
+// leak length via timing differences against a known token).
+function timingSafeEqualStr(a, b) {
+  if (typeof a !== "string" || typeof b !== "string") return false;
+  if (a.length !== b.length) return false;
+  return timingSafeEqual(Buffer.from(a), Buffer.from(b));
+}
 
 const STORE_NAME = "knowledge-base";
 const KEY = "products.json";
@@ -57,6 +65,26 @@ export async function handler(event, context) {
   const roles = user?.app_metadata?.roles || [];
   const isAdmin = roles.includes("admin");
   const method = event.httpMethod;
+
+  // Read-only service-token path. Used by the MCP server function (and by any
+  // long-lived agent) to query the knowledge base without going through
+  // Netlify Identity. Token lives in the AGENT_SERVICE_TOKEN env var; rotate
+  // by setting a new value in Netlify and updating the agent connector.
+  const authHeader = event.headers?.authorization || event.headers?.Authorization || "";
+  const bearer = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+  const expected = process.env.AGENT_SERVICE_TOKEN || "";
+  const hasServiceToken = expected && bearer && timingSafeEqualStr(bearer, expected);
+
+  if (hasServiceToken) {
+    if (method !== "GET") return json(405, { error: "Service token is read-only" });
+    const store = getStore(STORE_NAME);
+    let products = await store.get(KEY, { type: "json" });
+    if (!products) {
+      products = (await loadSeed()).map(ensureId);
+      await store.setJSON(KEY, products);
+    }
+    return json(200, products);
+  }
 
   if (!user) {
     return json(401, { error: "Unauthorized" });
