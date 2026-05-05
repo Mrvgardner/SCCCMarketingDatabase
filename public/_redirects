@@ -1,1 +1,18 @@
+# Function routes — must come before the SPA catch-all so they aren't
+# rewritten to /index.html. Netlify processes _redirects rules top-to-bottom,
+# and processes _redirects entirely before netlify.toml redirects, so
+# specific routes MUST live here, above the catch-all.
+
+# MCP endpoint
+/mcp                                       /.netlify/functions/mcp                              200!
+
+# OAuth 2.1 metadata + endpoints (for Claude.ai custom connector)
+/.well-known/oauth-protected-resource      /.netlify/functions/oauth?path=metadata-resource     200!
+/.well-known/oauth-authorization-server    /.netlify/functions/oauth?path=metadata-as           200!
+/oauth/register                            /.netlify/functions/oauth?path=register              200!
+/oauth/authorize                           /.netlify/functions/oauth?path=authorize             200!
+/oauth/consent                             /.netlify/functions/oauth?path=consent               200!
+/oauth/token                               /.netlify/functions/oauth?path=token                 200!
+
+# SPA fallback — must be last
 /*    /index.html   200
