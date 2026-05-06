@@ -107,7 +107,13 @@ export default function GlobalSearch() {
   const ensureLoaded = () => {
     if (loadedRef.current) return;
     loadedRef.current = true;
-    loadFuse().then(setFuseCtor).catch(() => {});
+    // Pass the constructor through `() => Ctor` because React treats a bare
+    // function passed to setState as a state-updater callback. Calling
+    // `Fuse(prev)` without `new` throws "Class constructor X cannot be
+    // invoked without 'new'", which surfaced as a white-screen crash on
+    // first render even when search wasn't used (the home page mounts
+    // GlobalSearch and ensureLoaded fires on input mouse-enter).
+    loadFuse().then((Ctor) => setFuseCtor(() => Ctor)).catch(() => {});
     Promise.all([listProducts().catch(() => []), listFieldNotes().catch(() => [])]).then(
       ([products, notes]) => {
         const indexed = [

@@ -31,9 +31,14 @@ export default defineConfig({
       // bundle pulls in only what's eagerly imported, and Rollup figures
       // out the init order without us.
     },
-    commonjsOptions: {
-      include: [/node_modules/],
-    },
+    // Do NOT force CommonJS processing on all node_modules. The
+    // `include: [/node_modules/]` setting we used to have wrapped every
+    // dep in Rollup's CJS interop, which produces a `_interopDefault`
+    // path that calls ES classes without `new` — manifests as
+    // `TypeError: Class constructor X cannot be invoked without 'new'`
+    // in React's internal hook machinery on the home page.
+    // Vite's CJS plugin auto-detects which files are actually CommonJS,
+    // so leave its defaults alone.
   },
   esbuild: {
     legalComments: 'none',
