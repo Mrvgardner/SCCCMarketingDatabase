@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { BookOpenIcon, DocumentTextIcon, NewspaperIcon } from "@heroicons/react/24/solid";
+import { BookOpenIcon, CalendarDaysIcon, DocumentTextIcon, NewspaperIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 import { listFieldNotes } from "./api/fieldNotes";
 import GlobalSearch from "./components/GlobalSearch.jsx";
@@ -225,6 +225,19 @@ export default function Home() {
 
         {/* External tools row */}
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3 max-w-4xl mx-auto">
+          <FloatingTile delay={0.48}>
+            <Link
+              to="/events"
+              className="group inline-flex items-center gap-2 pl-2 pr-4 py-1.5 rounded-full bg-gray-900/40 border border-white/10 hover:border-[#0951fa]/45 hover:bg-gray-900/60 backdrop-blur-md shadow-md hover:shadow-lg transition-all"
+            >
+              <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[#0951fa] shadow-sm">
+                <CalendarDaysIcon className="h-4 w-4 text-white" />
+              </span>
+              <span className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">
+                Trade Shows
+              </span>
+            </Link>
+          </FloatingTile>
           {externalTools.map((tool, i) => (
             <FloatingTile key={tool.name} delay={0.5 + i * 0.05}>
               <a

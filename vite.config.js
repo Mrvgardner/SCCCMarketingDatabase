@@ -1,9 +1,61 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { VitePWA } from 'vite-plugin-pwa'
 import { resolve } from 'path'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    VitePWA({
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.js',
+      injectRegister: false,
+      registerType: 'autoUpdate',
+      manifest: {
+        id: '/events',
+        name: 'Switch Commerce Trade Show Hub',
+        short_name: 'Trade Shows',
+        description: 'Internal Switch Commerce trade show schedules, team details, maps, expenses, and updates.',
+        start_url: '/events',
+        scope: '/',
+        display: 'standalone',
+        background_color: '#030712',
+        theme_color: '#0951fa',
+        orientation: 'portrait-primary',
+        icons: [
+          { src: '/pwa-192x192.png', sizes: '192x192', type: 'image/png' },
+          { src: '/pwa-512x512.png', sizes: '512x512', type: 'image/png' },
+          { src: '/pwa-maskable-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
+      },
+      injectManifest: {
+        // Precache the app shell ONLY (~500 KB). The service worker registers
+        // site-wide, so anything listed here is downloaded by every user on
+        // every page — a blanket 'assets/**/*.{js,css}' plus the venue maps
+        // meant someone who only opens Wallpapers still pulled a 1.5 MB trade
+        // show map and the 382 KB rich-text editor. Route chunks and images are
+        // cached on demand instead; see the runtime routes in src/sw.js.
+        // Note `index-*.css` not `index-*` — the `index-*.js` files are lazy
+        // route chunks and must not land in the precache.
+        globPatterns: [
+          'index.html',
+          'manifest.webmanifest',
+          'assets/main-*.js',
+          'assets/index-*.css',
+          'favicon*.png',
+          'apple-touch-icon.png',
+          'pwa-*.png',
+          'fonts/*.woff2',
+        ],
+      },
+      devOptions: {
+        enabled: true,
+        type: 'module',
+        navigateFallback: 'index.html',
+      },
+    }),
+  ],
   server: {
     port: 3000
   },
@@ -43,6 +95,6 @@ export default defineConfig({
   esbuild: {
     legalComments: 'none',
   },
-  // Use relative paths for local file access
-  base: './'
+  // Root-relative assets keep direct loads of nested SPA routes working.
+  base: '/'
 })

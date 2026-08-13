@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { BookOpenIcon, NewspaperIcon, ArrowLeftIcon } from "@heroicons/react/24/solid";
+import { BookOpenIcon, NewspaperIcon, ArrowLeftIcon, CalendarDaysIcon } from "@heroicons/react/24/solid";
 
 const CARDS = [
   {
@@ -17,6 +17,14 @@ const CARDS = [
     icon: NewspaperIcon,
     tone: "from-[#5fae4b]/60 via-[#5fae4b]/10 border-[#5fae4b]/25 hover:border-[#5fae4b]/50",
     shadow: "shadow-[#5fae4b]/10",
+  },
+  {
+    to: "/admin/events",
+    title: "Trade Shows",
+    description: "Update event essentials, schedules, dress codes, and team alerts.",
+    icon: CalendarDaysIcon,
+    tone: "from-[#ff4f00]/55 via-[#ff4f00]/10 border-[#ff4f00]/25 hover:border-[#ff4f00]/50",
+    shadow: "shadow-[#ff4f00]/10",
   },
 ];
 

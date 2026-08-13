@@ -23,6 +23,67 @@
   animation-delay: 0.5s;
 }
 
+@keyframes event-route-flow {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+
+@keyframes event-route-pulse {
+  0%, 100% {
+    opacity: 0.25;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.55);
+  }
+}
+
+.event-route-shadow,
+.event-route-dots {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: miter;
+}
+
+.event-route-shadow {
+  stroke: rgba(10, 18, 30, 0.72);
+}
+
+.event-route-dots {
+  animation: event-route-flow 3.2s linear infinite;
+  stroke: #ff4f00;
+  stroke-dasharray: 1 4;
+}
+
+.event-route-start {
+  fill: #0951fa;
+  stroke: #ffffff;
+  stroke-width: 7;
+}
+
+.event-route-destination,
+.event-route-destination-pulse {
+  fill: #ff4f00;
+  stroke: #ffffff;
+  stroke-width: 7;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.event-route-destination-pulse {
+  animation: event-route-pulse 1.8s ease-in-out infinite;
+  stroke-width: 4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .event-route-dots,
+  .event-route-destination-pulse {
+    animation: none;
+  }
+}
+
 @layer components {
   .animate-float {
     animation: float 3s ease-in-out infinite;

@@ -7,7 +7,10 @@ import Home from './Home'
 import Login from './pages/Login.jsx';
 import SiteFooter from './components/SiteFooter.jsx';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { registerSW } from 'virtual:pwa-register';
 import './index.css'
+
+registerSW({ immediate: true });
 
 // Route chunks. Each `imp` is a stable reference to a dynamic import so we can
 // call it from hover handlers to prefetch the JS for a route the user is about
@@ -23,6 +26,7 @@ const routes = {
   marketingRequest:       () => import('./pages/MarketingRequest.jsx'),
   printCollateral:        () => import('./pages/PrintCollateral.jsx'),
   fieldNotes:             () => import('./pages/FieldNotes.jsx'),
+  events:                 () => import('./pages/Events.jsx'),
   birthdays:              () => import('./pages/Birthdays.jsx'),
   anniversaries:          () => import('./pages/Anniversaries.jsx'),
   adminDashboard:         () => import('./pages/admin/AdminDashboard.jsx'),
@@ -30,6 +34,8 @@ const routes = {
   productForm:            () => import('./pages/admin/ProductForm.jsx'),
   fieldNotesAdmin:        () => import('./pages/admin/FieldNotesAdmin.jsx'),
   fieldNoteForm:          () => import('./pages/admin/FieldNoteForm.jsx'),
+  tradeShowsAdmin:        () => import('./pages/admin/TradeShowsAdmin.jsx'),
+  tradeShowEditor:        () => import('./pages/admin/TradeShowEditor.jsx'),
 };
 
 const SwitchCommerceBranding = lazy(routes.switchCommerceBranding);
@@ -42,6 +48,7 @@ const Wallpapers             = lazy(routes.wallpapers);
 const MarketingRequest       = lazy(routes.marketingRequest);
 const PrintCollateral        = lazy(routes.printCollateral);
 const FieldNotes             = lazy(routes.fieldNotes);
+const Events                 = lazy(routes.events);
 const Birthdays              = lazy(routes.birthdays);
 const Anniversaries          = lazy(routes.anniversaries);
 const AdminDashboard         = lazy(routes.adminDashboard);
@@ -49,6 +56,8 @@ const ProductsAdmin          = lazy(routes.productsAdmin);
 const ProductForm            = lazy(routes.productForm);
 const FieldNotesAdmin        = lazy(routes.fieldNotesAdmin);
 const FieldNoteForm          = lazy(routes.fieldNoteForm);
+const TradeShowsAdmin        = lazy(routes.tradeShowsAdmin);
+const TradeShowEditor        = lazy(routes.tradeShowEditor);
 
 // Idempotent fire-and-forget; ignore the resolved module.
 const prefetch = (imp) => { try { imp(); } catch {} };
@@ -137,6 +146,25 @@ const TopNav = memo(function TopNav({ user, logout, isAdmin }) {
           <Link to="/field-notes" className={primaryLinkClass}
             onMouseEnter={() => prefetch(routes.fieldNotes)}
             onFocus={() => prefetch(routes.fieldNotes)}>Field Notes</Link>
+          <Menu as="div" className="relative">
+            <Menu.Button
+              onMouseEnter={() => {
+                prefetch(routes.switchCommerceBranding);
+                prefetch(routes.clearChoiceBranding);
+              }}
+              className="inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors">
+              Brand Kits
+              <ChevronDownIcon className="h-4 w-4 ml-1" />
+            </Menu.Button>
+            <Menu.Items className="absolute right-0 mt-2 w-64 origin-top-right rounded-lg bg-gray-800 border border-white/10 shadow-2xl z-20 py-1 focus:outline-none">
+              <Menu.Item>{({ active }) => (
+                <Link to="/switch-commerce/branding" className={`block px-4 py-2 text-sm ${active ? 'bg-white/10 text-white' : 'text-gray-200'}`}>Switch Commerce Brand Kit</Link>
+              )}</Menu.Item>
+              <Menu.Item>{({ active }) => (
+                <Link to="/clear-choice/branding" className={`block px-4 py-2 text-sm ${active ? 'bg-white/10 text-white' : 'text-gray-200'}`}>ClearChoice Brand Kit</Link>
+              )}</Menu.Item>
+            </Menu.Items>
+          </Menu>
           <Link to="/marketing-request" className={primaryLinkClass}
             onMouseEnter={() => prefetch(routes.marketingRequest)}
             onFocus={() => prefetch(routes.marketingRequest)}>Marketing Request</Link>
@@ -160,6 +188,9 @@ const TopNav = memo(function TopNav({ user, logout, isAdmin }) {
               )}</Menu.Item>
               <Menu.Item>{({ active }) => (
                 <Link to="/wallpapers" className={`block px-4 py-2 text-sm ${active ? 'bg-white/10 text-white' : 'text-gray-200'}`}>Wallpapers</Link>
+              )}</Menu.Item>
+              <Menu.Item>{({ active }) => (
+                <Link to="/events" className={`block px-4 py-2 text-sm ${active ? 'bg-white/10 text-white' : 'text-gray-200'}`}>Trade Shows</Link>
               )}</Menu.Item>
             </Menu.Items>
           </Menu>
@@ -213,10 +244,16 @@ const TopNav = memo(function TopNav({ user, logout, isAdmin }) {
           <Link to="/field-notes" className={mobileLinkClass}>Field Notes</Link>
           <Link to="/marketing-request" className={mobileLinkClass}>Marketing Request</Link>
           <div className="pt-2 mt-2 border-t border-white/10">
-            <div className="px-3 pt-1 pb-2 text-[11px] uppercase tracking-wider text-gray-500">Downloads</div>
+            <div className="px-3 pt-1 pb-2 text-[11px] uppercase tracking-wider text-gray-500">Brand Kits</div>
+            <Link to="/switch-commerce/branding" className={mobileLinkClass}>Switch Commerce Brand Kit</Link>
+            <Link to="/clear-choice/branding" className={mobileLinkClass}>ClearChoice Brand Kit</Link>
+          </div>
+          <div className="pt-2 mt-2 border-t border-white/10">
+            <div className="px-3 pt-1 pb-2 text-[11px] uppercase tracking-wider text-gray-500">Other</div>
             <Link to="/print-collateral" className={mobileLinkClass}>Brochures & One-Pagers</Link>
             <Link to="/email-signature" className={mobileLinkClass}>Email Signatures</Link>
             <Link to="/wallpapers" className={mobileLinkClass}>Wallpapers</Link>
+            <Link to="/events" className={mobileLinkClass}>Trade Shows</Link>
           </div>
           <div className="pt-3 mt-3 border-t border-white/10 flex items-center justify-between">
             <div className="text-xs text-gray-400 truncate pr-3">
@@ -253,6 +290,8 @@ function AppShell() {
         <Route path="/print-collateral" element={<ProtectedRoute><PrintCollateral /></ProtectedRoute>} />
         <Route path="/field-notes" element={<ProtectedRoute><FieldNotes /></ProtectedRoute>} />
         <Route path="/field-notes/:id" element={<ProtectedRoute><FieldNotes /></ProtectedRoute>} />
+        <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>} />
+        <Route path="/events/:eventId" element={<ProtectedRoute><Events /></ProtectedRoute>} />
         <Route path="/birthdays" element={<ProtectedRoute><Birthdays /></ProtectedRoute>} />
         <Route path="/anniversaries" element={<ProtectedRoute><Anniversaries /></ProtectedRoute>} />
         <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
@@ -262,6 +301,8 @@ function AppShell() {
         <Route path="/admin/field-notes" element={<AdminRoute><FieldNotesAdmin /></AdminRoute>} />
         <Route path="/admin/field-notes/new" element={<AdminRoute><FieldNoteForm /></AdminRoute>} />
         <Route path="/admin/field-notes/:id/edit" element={<AdminRoute><FieldNoteForm /></AdminRoute>} />
+        <Route path="/admin/events" element={<AdminRoute><TradeShowsAdmin /></AdminRoute>} />
+        <Route path="/admin/events/:eventId" element={<AdminRoute><TradeShowEditor /></AdminRoute>} />
       </Routes>
       </Suspense>
     </>

@@ -1,0 +1,127 @@
+import { getStore } from '@netlify/blobs';
+import { getUser } from '@netlify/identity';
+import webpush from 'web-push';
+
+const STORE_NAME = 'trade-show-push-subscriptions';
+
+function json(body, status = 200) {
+  return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
+}
+
+function clean(value, maxLength) {
+  return String(value || '').trim().slice(0, maxLength);
+}
+
+function eventKey(eventId) {
+  return `events/${eventId}/subscriptions.json`;
+}
+
+function configuredKeys() {
+  const publicKey = clean(process.env.VAPID_PUBLIC_KEY, 200);
+  const privateKey = clean(process.env.VAPID_PRIVATE_KEY, 200);
+  const rawSubject = clean(process.env.VAPID_SUBJECT, 240);
+  if (!publicKey || !privateKey || !rawSubject) return null;
+
+  // web-push validates the *format* of these and throws, so normalize and check
+  // here rather than letting setVapidDetails blow up mid-request. A bare email
+  // is the most likely first value to be set, so accept it and add the scheme.
+  const subject = /^(mailto:|https?:\/\/)/i.test(rawSubject) ? rawSubject : `mailto:${rawSubject}`;
+  const validSubject = /^mailto:[^@\s]+@[^@\s]+$/i.test(subject) || /^https?:\/\/\S+$/i.test(subject);
+  if (!validSubject) {
+    console.error('VAPID_SUBJECT must be a mailto: address or an https: URL');
+    return null;
+  }
+  return { publicKey, privateKey, subject };
+}
+
+export default async (request) => {
+  const user = await getUser();
+  if (!user) return json({ error: 'Unauthorized' }, 401);
+
+  const keys = configuredKeys();
+  if (!keys) return json({ error: 'Push notifications need VAPID server keys.' }, 503);
+  if (request.method === 'GET') return json({ publicKey: keys.publicKey });
+  if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
+
+  let payload;
+  try {
+    payload = await request.json();
+  } catch {
+    return json({ error: 'Invalid JSON body' }, 400);
+  }
+
+  const eventId = clean(payload?.eventId, 80);
+  if (!eventId || !/^[a-z0-9-]+$/i.test(eventId)) return json({ error: 'Invalid event id' }, 400);
+
+  const store = getStore({ name: STORE_NAME, consistency: 'strong' });
+  const key = eventKey(eventId);
+  const subscriptions = (await store.get(key, { type: 'json' })) || [];
+
+  if (payload.action === 'subscribe') {
+    const subscription = payload.subscription;
+    if (!subscription?.endpoint || !subscription?.keys?.p256dh || !subscription?.keys?.auth) {
+      return json({ error: 'Invalid push subscription' }, 400);
+    }
+    const record = {
+      subscription,
+      email: clean(user.email, 160),
+      createdAt: new Date().toISOString(),
+    };
+    const next = [...subscriptions.filter((item) => item.subscription?.endpoint !== subscription.endpoint), record];
+    await store.setJSON(key, next);
+    return json({ subscribed: true });
+  }
+
+  if (payload.action === 'unsubscribe') {
+    const endpoint = clean(payload.endpoint, 2048);
+    // Match the owner too. Filtering on endpoint alone let any signed-in user
+    // silently kill someone else's notifications if they learned the URL.
+    const ownerEmail = clean(user.email, 160);
+    const next = subscriptions.filter(
+      (item) => !(item.subscription?.endpoint === endpoint && item.email === ownerEmail),
+    );
+    await store.setJSON(key, next);
+    return json({ subscribed: false });
+  }
+
+  if (payload.action !== 'send') return json({ error: 'Invalid action' }, 400);
+  const roles = user.roles || user.appMetadata?.roles || user.app_metadata?.roles || [];
+  if (!roles.some((role) => role.toLowerCase() === 'admin')) return json({ error: 'Admin role required' }, 403);
+
+  const url = clean(payload.url, 240);
+  if (!url.startsWith(`/events/${eventId}`)) return json({ error: 'Invalid notification URL' }, 400);
+  const notification = JSON.stringify({
+    title: clean(payload.title, 120),
+    body: clean(payload.body, 280),
+    urgent: payload.urgent === true,
+    url,
+    tag: clean(payload.tag, 120),
+  });
+
+  try {
+    webpush.setVapidDetails(keys.subject, keys.publicKey, keys.privateKey);
+  } catch (error) {
+    // Malformed key material still reaches here (wrong length, bad base64).
+    // Surface it as a clear 503 instead of an opaque 500 on the send button.
+    console.error('Invalid VAPID configuration', error.message);
+    return json({ error: 'Push notifications are misconfigured on the server.' }, 503);
+  }
+
+  const expired = new Set();
+  const results = await Promise.allSettled(subscriptions.map(async (record) => {
+    try {
+      await webpush.sendNotification(record.subscription, notification);
+    } catch (error) {
+      if (error.statusCode === 404 || error.statusCode === 410) expired.add(record.subscription.endpoint);
+      throw error;
+    }
+  }));
+  if (expired.size) {
+    await store.setJSON(key, subscriptions.filter((item) => !expired.has(item.subscription?.endpoint)));
+  }
+
+  return json({
+    delivered: results.filter((result) => result.status === 'fulfilled').length,
+    failed: results.filter((result) => result.status === 'rejected').length,
+  });
+};
