@@ -715,6 +715,18 @@ const emptyTravelForm = {
   notes: "",
 };
 
+// Mirrors travelerForEmail in netlify/functions/trade-shows.js. The server
+// derives the traveler from the caller's own email and ignores any name in the
+// payload, so the form shows who the entry will be filed under rather than
+// letting someone pick — picking a colleague silently saved under yourself.
+function travelerNameForUser(travelingTeam, teamContacts, user) {
+  const email = (user?.email || "").trim().toLowerCase();
+  if (!email) return "";
+  return travelingTeam.find(
+    (name) => (teamContacts?.[name]?.email || "").trim().toLowerCase() === email,
+  ) || "";
+}
+
 function travelFormFor(existingTravel) {
   if (!existingTravel) return emptyTravelForm;
   return {
@@ -920,6 +932,7 @@ function TravelSection({ event, user }) {
   const travelEntries = event.travel || [];
   const teamContacts = event.teamContacts || {};
   const existingTravel = travelEntries.find((item) => item.email === user?.email);
+  const myName = travelerNameForUser(travelingTeam, teamContacts, user);
   const [isEditing, setIsEditing] = useState(false);
   const [form, setForm] = useState(emptyTravelForm);
   const [saving, setSaving] = useState(false);
@@ -927,8 +940,9 @@ function TravelSection({ event, user }) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    setForm(travelFormFor(existingTravel));
-  }, [event.id, existingTravel]);
+    // person always tracks the signed-in user; the server overrides it anyway.
+    setForm({ ...travelFormFor(existingTravel), person: myName || existingTravel?.person || "" });
+  }, [event.id, existingTravel, myName]);
 
   const updateField = (key, value) => setForm((current) => ({ ...current, [key]: value }));
   const hasDetails = [
@@ -984,7 +998,7 @@ function TravelSection({ event, user }) {
             setError("");
           }}
           aria-expanded={isEditing}
-          disabled={!travelingTeam.length}
+          disabled={!travelingTeam.length || !myName}
           className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-md bg-[#0951fa] px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#0951fa] disabled:cursor-not-allowed disabled:opacity-50"
         >
           <PencilSquareIcon className="h-5 w-5" />
@@ -994,17 +1008,27 @@ function TravelSection({ event, user }) {
 
       {!travelingTeam.length && <p className="mb-4 text-sm text-[#f59e0b]">An event manager needs to add the traveling team before flight information can be submitted.</p>}
 
+      {/* Say this up front rather than letting them fill the form and take a
+          403 from the server, which derives the traveler from the caller. */}
+      {travelingTeam.length > 0 && !myName && (
+        <p className="mb-4 text-sm text-[#f59e0b]">
+          Flight information is matched to your sign-in email, and yours is not on this event's traveling team. Ask an event manager to add you.
+        </p>
+      )}
+
       {isEditing && (
         <form onSubmit={saveTravel} className="mb-5 border-y border-white/10 py-4">
           <p className="mb-4 text-sm text-gray-300">Sharing is optional. Dates use a calendar picker, and all times should be entered in the local time shown on the flight itinerary.</p>
           <div className="space-y-5">
-            <label className="block max-w-md text-sm font-semibold text-gray-300">
+            <div className="block max-w-md text-sm font-semibold text-gray-300">
               Your name
-              <select value={form.person || ""} onChange={(e) => updateField("person", e.target.value)} className={inputClass} required>
-                <option value="">Select your name</option>
-                {travelingTeam.map((name) => <option key={name} value={name}>{name}</option>)}
-              </select>
-            </label>
+              <p className="mt-1 flex min-h-[44px] items-center rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-base font-semibold text-white">
+                {myName}
+              </p>
+              <p className="mt-1.5 text-xs font-normal text-gray-400">
+                Taken from your sign-in. Flights always save under your own name.
+              </p>
+            </div>
             <FlightLegFields
               title="Arrival flight"
               description="The flight bringing you to Las Vegas."
