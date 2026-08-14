@@ -7,6 +7,7 @@ import Home from './Home'
 import Login from './pages/Login.jsx';
 import SiteFooter from './components/SiteFooter.jsx';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import ScrollToTop from './components/ScrollToTop.jsx';
 import { registerSW } from 'virtual:pwa-register';
 import './index.css'
 
@@ -271,10 +272,18 @@ const TopNav = memo(function TopNav({ user, logout, isAdmin }) {
 
 function AppShell() {
   const { user, logout, isAdmin } = useAuth();
+  const { pathname } = useLocation();
+
+  // The trade show hub is the PWA's start_url and is meant to read as its own
+  // app, so the marketing-site nav is hidden inside it. Every /events view
+  // offers its own way back: EventAppMenu on a detail page, a header link on
+  // the index. /admin/events keeps the nav — admins move between sections.
+  const inTradeShowApp = pathname === '/events' || pathname.startsWith('/events/');
 
   return (
     <>
-      {user && <TopNav user={user} logout={logout} isAdmin={isAdmin} />}
+      {user && !inTradeShowApp && <TopNav user={user} logout={logout} isAdmin={isAdmin} />}
+      <ScrollToTop />
       <Suspense fallback={<RouteFallback />}>
       <Routes>
         <Route path="/login" element={<Login />} />

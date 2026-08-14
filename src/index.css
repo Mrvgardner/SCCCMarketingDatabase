@@ -93,8 +93,24 @@
 @layer base {
   html {
     @apply bg-white dark:bg-gray-900;
+    /* Nothing on this site is meant to scroll sideways. Any element that
+       overruns the viewport — a wide form row, a long unbroken string, a
+       min-width table — used to drag the page with it and expose the html
+       background as a white strip past the right edge. Clamp it here rather
+       than chasing each offender. Safe to do globally: no `position: sticky`
+       elements exist that an overflow container would break. */
+    overflow-x: hidden;
   }
   body {
     @apply text-gray-900 dark:text-white;
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+  /* Long URLs, emails and flight codes in form fields and cards should wrap
+     rather than force the layout wider than the screen. */
+  input,
+  textarea,
+  select {
+    max-width: 100%;
   }
 }
