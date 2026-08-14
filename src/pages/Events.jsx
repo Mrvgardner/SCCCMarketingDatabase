@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
   ArrowLeftIcon,
@@ -246,6 +246,8 @@ function EventsIndex({ events }) {
 
 function EventAppMenu({ event, isAdmin }) {
   const [isOpen, setIsOpen] = useState(false);
+  const headerButtonRef = useRef(null);
+  const [headerButtonVisible, setHeaderButtonVisible] = useState(true);
   const menuItems = [
     { id: "today", label: "Today", detail: "Next up and latest changes", icon: ClockIcon },
     ...eventMenuItems.filter((item) => item.id !== "archive"),
@@ -261,9 +263,36 @@ function EventAppMenu({ event, isAdmin }) {
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [isOpen]);
 
+  // The FAB stands in for the header button once that scrolls away, so track
+  // whether the header button is still on screen.
+  //
+  // A scroll listener rather than IntersectionObserver on purpose: IO does not
+  // deliver callbacks while document.visibilityState is "hidden", which is the
+  // state an installed PWA is in whenever it is resumed from the background —
+  // the FAB would come back in whatever state it was left. A passive listener
+  // reading one element's rect costs nothing at this scale and always runs.
+  useEffect(() => {
+    const measure = () => {
+      const target = headerButtonRef.current;
+      if (!target) return;
+      const rect = target.getBoundingClientRect();
+      setHeaderButtonVisible(rect.bottom > 0 && rect.top < window.innerHeight);
+    };
+    measure();
+    window.addEventListener("scroll", measure, { passive: true });
+    window.addEventListener("resize", measure);
+    return () => {
+      window.removeEventListener("scroll", measure);
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
+
+  const showFab = !headerButtonVisible;
+
   return (
     <div className="relative shrink-0">
       <button
+        ref={headerButtonRef}
         type="button"
         onClick={() => setIsOpen((current) => !current)}
         aria-label={isOpen ? "Close event menu" : "Open event menu"}
@@ -276,18 +305,28 @@ function EventAppMenu({ event, isAdmin }) {
         <span className="hidden sm:inline">Event menu</span>
       </button>
 
-      {/* Thumb-reachable trigger for the same menu. Mobile only: on a desktop
-          pointer the header button is already easy to hit, and a floating
-          control would just sit on top of content solving nothing. z-50 keeps
-          it above the backdrop and panel so it doubles as the close button.
-          The safe-area inset keeps it clear of the iPhone home indicator. */}
+      {/* Thumb-reachable stand-in for the header button, shown only once that
+          button has scrolled out of view — two controls for the same menu on
+          screen at once is just clutter. Mobile only: on a desktop pointer the
+          header button is an easy target and a floating control would sit on
+          top of content solving nothing. z-50 keeps it above the backdrop and
+          panel so it doubles as the close button, and the safe-area inset
+          keeps it clear of the iPhone home indicator.
+
+          Kept mounted rather than conditionally rendered so it can fade
+          instead of popping; pointer-events and tabIndex are dropped while
+          it is invisible so it cannot be tapped or tabbed to. */}
       <button
         type="button"
         onClick={() => setIsOpen((current) => !current)}
         aria-label={isOpen ? "Close event menu" : "Open event menu"}
         aria-expanded={isOpen}
         aria-controls="event-app-menu"
-        className="fixed right-4 bottom-[calc(1.5rem+env(safe-area-inset-bottom))] z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#0951fa] text-white shadow-xl shadow-black/50 transition-transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-gray-900 sm:hidden"
+        aria-hidden={!showFab}
+        tabIndex={showFab ? 0 : -1}
+        className={`fixed right-4 bottom-[calc(1.5rem+env(safe-area-inset-bottom))] z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#0951fa] text-white shadow-xl shadow-black/50 transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-gray-900 motion-reduce:transition-none sm:hidden ${
+          showFab ? "scale-100 opacity-100" : "pointer-events-none scale-90 opacity-0"
+        }`}
       >
         {isOpen ? <XMarkIcon className="h-7 w-7" /> : <Bars3Icon className="h-7 w-7" />}
       </button>
