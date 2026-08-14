@@ -98,8 +98,10 @@ function mergeSeedConfiguration(events) {
             venueMapUrl: seed.venueMapUrl,
             hotelMapUrl: seed.hotelMapUrl,
             travelingTeam: clone(seed.travelingTeam || []),
-            teamContacts: clone(seed.teamContacts || {}),
-            travel: clone(seed.travel || []),
+            // Mirrors the server merge in netlify/functions/trade-shows.js —
+            // keep the two in step. `travel`/`teamContacts` are team-entered and
+            // must not be reset from seed on a details bump; the teamRevision
+            // branch below owns them and merges rather than overwrites.
             resources: clone(seed.resources || []),
           }
         : {}),

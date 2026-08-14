@@ -126,8 +126,11 @@ function mergeSeedConfiguration(events) {
             venueMapUrl: seed.venueMapUrl,
             hotelMapUrl: seed.hotelMapUrl,
             travelingTeam: clone(seed.travelingTeam || []),
-            teamContacts: clone(seed.teamContacts || {}),
-            travel: clone(seed.travel || []),
+            // Deliberately NOT `travel` or `teamContacts`. Those hold what the
+            // team entered themselves, and resetting them from seed here meant
+            // an admin fixing a venue typo and bumping detailsRevision silently
+            // erased everyone's saved flights. Travel is owned by the
+            // teamRevision branch below, which merges rather than overwrites.
             resources: clone(seed.resources || []),
           }
         : {}),
