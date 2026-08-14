@@ -276,10 +276,33 @@ function EventAppMenu({ event, isAdmin }) {
         <span className="hidden sm:inline">Event menu</span>
       </button>
 
+      {/* Thumb-reachable trigger for the same menu. Mobile only: on a desktop
+          pointer the header button is already easy to hit, and a floating
+          control would just sit on top of content solving nothing. z-50 keeps
+          it above the backdrop and panel so it doubles as the close button.
+          The safe-area inset keeps it clear of the iPhone home indicator. */}
+      <button
+        type="button"
+        onClick={() => setIsOpen((current) => !current)}
+        aria-label={isOpen ? "Close event menu" : "Open event menu"}
+        aria-expanded={isOpen}
+        aria-controls="event-app-menu"
+        className="fixed right-4 bottom-[calc(1.5rem+env(safe-area-inset-bottom))] z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#0951fa] text-white shadow-xl shadow-black/50 transition-transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-gray-900 sm:hidden"
+      >
+        {isOpen ? <XMarkIcon className="h-7 w-7" /> : <Bars3Icon className="h-7 w-7" />}
+      </button>
+
       {isOpen && (
         <>
           <button type="button" aria-label="Close event menu" onClick={() => setIsOpen(false)} className="fixed inset-0 z-30 cursor-default bg-black/30" />
-          <nav id="event-app-menu" aria-label="Event sections" className="absolute right-0 z-40 mt-2 w-[min(340px,calc(100vw-2rem))] overflow-hidden rounded-md border border-white/15 bg-[#111827] p-2 shadow-2xl shadow-black/50">
+          {/* Mobile opens as a sheet above the FAB — tapping bottom-right and
+              having the panel appear at the top of the screen reads as a bug.
+              Desktop keeps the dropdown anchored under the header button. */}
+          <nav
+            id="event-app-menu"
+            aria-label="Event sections"
+            className="fixed inset-x-4 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-40 max-h-[80vh] overflow-y-auto overscroll-contain rounded-md border border-white/15 bg-[#111827] p-2 shadow-2xl shadow-black/50 sm:absolute sm:inset-x-auto sm:right-0 sm:bottom-auto sm:mt-2 sm:max-h-none sm:w-[min(340px,calc(100vw-2rem))] sm:overflow-hidden"
+          >
             <div className="px-3 pb-2 pt-1 text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">{event.shortName} event menu</div>
             {menuItems.map((item) => {
               const Icon = item.icon;
@@ -1140,7 +1163,9 @@ function EventDetail({ event, isAdmin, user }) {
 
   return (
     <main className="flex-1 bg-gradient-to-b from-gray-950 via-gray-900 to-gray-800 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      {/* Extra bottom padding on mobile so the floating menu button never
+          covers the last section. Removed at sm, where the FAB is hidden. */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 pb-28 sm:py-8 sm:pb-8">
         <header className="relative z-20 mb-5 border-b border-white/10 pb-5">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
