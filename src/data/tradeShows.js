@@ -10,6 +10,9 @@ export const tradeShows = [
     dates: "October 7-9, 2026",
     expoDates: "Expo: October 7-9, 2026",
     city: "Las Vegas, NV",
+    // IANA zone for this show. Reminder times are local to the event,
+    // and the cron that sends them runs in UTC.
+    timezone: "America/Los_Angeles",
     airportCode: "LAS",
     venue: "Las Vegas Convention Center",
     booth: "Booth C5981",
@@ -175,6 +178,9 @@ export const tradeShows = [
     teamRevision: 1,
     scheduleRevision: 4,
     city: "Las Vegas, NV",
+    // IANA zone for this show. Reminder times are local to the event,
+    // and the cron that sends them runs in UTC.
+    timezone: "America/Los_Angeles",
     airportCode: "LAS",
     venue: "Paris Las Vegas",
     booth: "Booth 312",

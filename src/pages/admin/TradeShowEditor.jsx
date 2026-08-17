@@ -373,6 +373,12 @@ export default function TradeShowEditor() {
               <Field label="Event name" value={event.name} onChange={(value) => updateTopLevel("name", value)} />
               <Field label="Dates" value={event.dates} onChange={(value) => updateTopLevel("dates", value)} placeholder="October 13-15, 2026" />
               <Field label="City" value={event.city} onChange={(value) => updateTopLevel("city", value)} />
+              <Field
+                label="Time zone"
+                value={event.timezone || ""}
+                onChange={(value) => updateTopLevel("timezone", value)}
+                placeholder="America/Los_Angeles"
+              />
               <Field label="Venue" value={event.venue} onChange={(value) => updateTopLevel("venue", value)} />
               <Field label="Booth" value={event.booth} onChange={(value) => updateTopLevel("booth", value)} />
               <Field label="Booth link" type="url" value={event.boothUrl || ""} onChange={(value) => updateTopLevel("boothUrl", value)} placeholder="https://..." />

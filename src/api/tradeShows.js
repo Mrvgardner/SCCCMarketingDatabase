@@ -90,6 +90,7 @@ function mergeSeedConfiguration(events) {
             detailsRevision: seed.detailsRevision,
             dates: seed.dates,
             city: seed.city,
+            timezone: seed.timezone,
             venue: seed.venue,
             booth: seed.booth,
             boothUrl: seed.boothUrl,
