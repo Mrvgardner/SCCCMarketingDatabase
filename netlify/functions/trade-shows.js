@@ -75,7 +75,10 @@ function travelerForEmail(email, travelingTeam) {
   }) || "";
 }
 
-function mergeSeedConfiguration(events) {
+// Exported so the scheduled reminder function reads events through exactly the
+// same merge users see. Without it, reminders run against the raw stored blob
+// and miss any schedule change that came from seed data.
+export function mergeSeedConfiguration(events) {
   return events.map((event) => {
     const seed = seedTradeShows.find((item) => item.id === event.id);
     if (!seed) return event;

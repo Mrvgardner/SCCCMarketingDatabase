@@ -3,6 +3,7 @@ import webpush from 'web-push';
 import { tradeShows as seedTradeShows } from '../../src/data/tradeShows.js';
 import { configuredVapid, SUBSCRIPTION_STORE, subscriptionKey } from '../lib/push.js';
 import { dueReminders } from '../lib/reminder-schedule.mjs';
+import { mergeSeedConfiguration } from './trade-shows.js';
 
 const EVENT_STORE = 'knowledge-base';
 const EVENT_KEY = 'trade-shows.json';
@@ -31,7 +32,11 @@ export default async () => {
   }
 
   const eventStore = getStore({ name: EVENT_STORE, consistency: 'strong' });
-  const events = (await eventStore.get(EVENT_KEY, { type: 'json' })) || seedTradeShows;
+  const stored = await eventStore.get(EVENT_KEY, { type: 'json' });
+  // Read through the same merge the app does. Reading the blob raw meant a
+  // schedule change made in seed data never reached reminders until an admin
+  // happened to save that event.
+  const events = stored ? mergeSeedConfiguration(stored) : seedTradeShows;
 
   const now = new Date();
   const due = dueReminders(events, now, GRACE_MINUTES * 60_000);
