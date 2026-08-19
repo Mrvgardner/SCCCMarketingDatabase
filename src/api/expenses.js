@@ -1,4 +1,12 @@
 import { expenseCategories, suggestExpenseCategory } from "../data/expenseCategories";
+import {
+  queueReceipt,
+  queuedAsReceipt,
+  isOfflineError,
+  flushReceiptQueue,
+  listQueuedReceipts,
+  removeQueuedReceipt,
+} from "./receiptQueue";
 
 const DB_NAME = "scc-trade-show-expenses";
 const STORE_NAME = "receipts";
@@ -199,13 +207,20 @@ const useDev = import.meta.env.DEV;
 export async function listReceipts(eventId, user) {
   eventId = resolveEventId(eventId);
   if (useDev) return devList(eventId, user);
-  return (await request("GET", `?eventId=${encodeURIComponent(eventId)}`)).json();
+  const queued = (await listQueuedReceipts(eventId)).map(queuedAsReceipt);
+  try {
+    const remote = await (await request("GET", `?eventId=${encodeURIComponent(eventId)}`)).json();
+    return [...queued, ...remote];
+  } catch (error) {
+    // Offline: the queued ones are all we have, and showing them beats an error.
+    if (isOfflineError(error)) return queued;
+    throw error;
+  }
 }
 
-export async function createReceipt(eventId, file, user) {
-  eventId = resolveEventId(eventId);
-  const preparedFile = await normalizeReceiptImage(file);
-  if (useDev) return devCreate(eventId, preparedFile, user);
+// The actual network upload, separated so the offline queue can replay it
+// later without going back through the queueing branch.
+async function uploadReceiptNow(eventId, preparedFile, user) {
   const data = new FormData();
   data.append("eventId", eventId);
   data.append("receipt", preparedFile, preparedFile.name);
@@ -215,12 +230,44 @@ export async function createReceipt(eventId, file, user) {
   return updateReceipt({ ...created, ...localAnalysis, confirmed: false }, user);
 }
 
+export async function createReceipt(eventId, file, user) {
+  eventId = resolveEventId(eventId);
+  const preparedFile = await normalizeReceiptImage(file);
+  if (useDev) return devCreate(eventId, preparedFile, user);
+  try {
+    return await uploadReceiptNow(eventId, preparedFile, user);
+  } catch (error) {
+    // Only park it for a network failure. A rejection from the function — bad
+    // file, expired session — will never succeed on retry and must surface.
+    if (!isOfflineError(error)) throw error;
+    return queuedAsReceipt(await queueReceipt(eventId, preparedFile));
+  }
+}
+
+// Send anything parked by an earlier offline upload. Safe to call often.
+export async function flushReceipts(eventId, user) {
+  if (useDev) return { uploaded: [], remaining: 0 };
+  return flushReceiptQueue(
+    resolveEventId(eventId),
+    (queuedEventId, file) => uploadReceiptNow(queuedEventId, file, user),
+  );
+}
+
+export async function pendingReceiptCount(eventId) {
+  if (useDev) return 0;
+  return (await listQueuedReceipts(resolveEventId(eventId))).length;
+}
+
 export async function updateReceipt(receipt, user) {
+  if (String(receipt?.id).startsWith("queued-")) {
+    throw new Error("This receipt has not uploaded yet. It can be edited once it sends.");
+  }
   if (useDev) return devUpdate(receipt, user);
   return (await request("PUT", "", JSON.stringify(receipt))).json();
 }
 
 export async function deleteReceipt(receiptId, eventId, user) {
+  if (String(receiptId).startsWith("queued-")) return removeQueuedReceipt(receiptId);
   eventId = resolveEventId(eventId);
   if (useDev) return devDelete(receiptId, user);
   await request("DELETE", `?eventId=${encodeURIComponent(eventId)}&receiptId=${encodeURIComponent(receiptId)}`);

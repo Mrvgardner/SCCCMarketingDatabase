@@ -16,6 +16,7 @@ import {
   listReceipts,
   reanalyzeReceipt,
   updateReceipt,
+  flushReceipts,
 } from "../api/expenses";
 import { downloadExpensePackage } from "../utils/expenseExports";
 
@@ -107,6 +108,7 @@ export default function EventExpenses({ event, user }) {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
+  const [pendingCount, setPendingCount] = useState(0);
   const [error, setError] = useState("");
 
   const employeeName = event.travel?.find((traveler) => traveler.email === user?.email)?.person
@@ -124,6 +126,31 @@ export default function EventExpenses({ event, user }) {
   }, [event.id, user?.email]);
 
   useEffect(() => {
+    let cancelled = false;
+    const send = async () => {
+      try {
+        const { uploaded, remaining } = await flushReceipts(event.id, user);
+        if (cancelled || !uploaded.length) {
+          if (!cancelled && remaining >= 0) setPendingCount(remaining);
+          return;
+        }
+        // Swap each placeholder for the receipt the server actually stored.
+        setReceipts((current) => {
+          const byPlaceholder = new Map(uploaded.map((item) => [item.placeholderId, item.receipt]));
+          return current.map((receipt) => byPlaceholder.get(receipt.id) || receipt);
+        });
+        setPendingCount(remaining);
+        setMessage(`${uploaded.length} queued receipt${uploaded.length === 1 ? "" : "s"} uploaded.`);
+      } catch {
+        // Still offline. The queue keeps them; nothing to report.
+      }
+    };
+    send();
+    window.addEventListener("online", send);
+    return () => { cancelled = true; window.removeEventListener("online", send); };
+  }, [event.id, user?.email]);
+
+  useEffect(() => {
     imageUrlsRef.current = imageUrls;
   }, [imageUrls]);
 
@@ -135,6 +162,7 @@ export default function EventExpenses({ event, user }) {
     let cancelled = false;
     Promise.all(receipts.map(async (receipt) => {
       if (imageUrls[receipt.id]) return [receipt.id, imageUrls[receipt.id]];
+      if (receipt.pendingUpload) return [receipt.id, ""];
       const blob = await getReceiptImage(receipt.id, event.id, user);
       const url = URL.createObjectURL(blob);
       return [receipt.id, url];
@@ -154,7 +182,12 @@ export default function EventExpenses({ event, user }) {
     try {
       const receipt = await createReceipt(event.id, file, user);
       setReceipts((current) => [receipt, ...current]);
-      setMessage("Receipt added. Open it and confirm the extracted details.");
+      if (receipt.pendingUpload) {
+        setPendingCount((current) => current + 1);
+        setMessage("No connection — the photo is saved and will upload automatically.");
+      } else {
+        setMessage("Receipt added. Open it and confirm the extracted details.");
+      }
     } catch (addError) {
       setError(addError.message || "Could not add the receipt.");
       setMessage("");
@@ -250,6 +283,11 @@ export default function EventExpenses({ event, user }) {
         <input ref={fileInput} type="file" accept="image/*" capture="environment" onChange={(event) => addReceipt(event.target.files?.[0])} className="sr-only" />
       </div>
 
+      {pendingCount > 0 && (
+        <p role="status" className="mt-4 rounded-md border border-[#f59e0b]/40 bg-[#f59e0b]/10 px-3 py-2 text-sm text-[#f59e0b]">
+          {pendingCount} receipt{pendingCount === 1 ? "" : "s"} waiting to upload. They send automatically once you have a connection — keep this page open when you get signal.
+        </p>
+      )}
       {message && <p role="status" className="mt-4 text-sm font-semibold text-[#10b981]">{message}</p>}
       {error && <p role="alert" className="mt-4 text-sm font-semibold text-[#ef4444]">{error}</p>}
 
