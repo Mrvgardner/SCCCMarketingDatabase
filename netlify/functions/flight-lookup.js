@@ -1,5 +1,5 @@
 import { getStore } from "@netlify/blobs";
-import { getUser } from "@netlify/identity";
+import { authenticate } from "../lib/auth.mjs";
 
 const RAPID_API_HOST = "aerodatabox.p.rapidapi.com";
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
@@ -55,7 +55,7 @@ function normalizeFlight(flight, index) {
 
 export default async (request) => {
   if (request.method === "OPTIONS" && process.env.CONTEXT === "dev") return json({}, 204);
-  const user = await getUser();
+  const user = await authenticate(request);
   if (!user && process.env.CONTEXT !== "dev") return json({ error: "Unauthorized" }, 401);
   if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
 

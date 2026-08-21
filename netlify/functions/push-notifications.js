@@ -1,5 +1,5 @@
 import { getStore } from '@netlify/blobs';
-import { getUser } from '@netlify/identity';
+import { authenticate } from "../lib/auth.mjs";
 import webpush from 'web-push';
 import { configuredVapid } from '../lib/push.js';
 
@@ -22,7 +22,7 @@ function eventKey(eventId) {
 const configuredKeys = configuredVapid;
 
 export default async (request) => {
-  const user = await getUser();
+  const user = await authenticate(request);
   if (!user) return json({ error: 'Unauthorized' }, 401);
 
   const keys = configuredKeys();

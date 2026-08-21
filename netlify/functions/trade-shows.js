@@ -1,5 +1,5 @@
 import { getStore } from "@netlify/blobs";
-import { getUser } from "@netlify/identity";
+import { authenticate } from "../lib/auth.mjs";
 import { tradeShows as seedTradeShows } from "../../src/data/tradeShows.js";
 
 const STORE_NAME = "knowledge-base";
@@ -174,7 +174,7 @@ function cleanFlightLeg(leg) {
 }
 
 export default async (request) => {
-  const user = await getUser();
+  const user = await authenticate(request);
   if (!user) return json({ error: "Unauthorized" }, 401);
 
   const roles = user.roles || user.appMetadata?.roles || user.app_metadata?.roles || [];

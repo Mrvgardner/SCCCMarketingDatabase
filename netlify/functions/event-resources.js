@@ -1,5 +1,5 @@
 import { getStore } from "@netlify/blobs";
-import { getUser } from "@netlify/identity";
+import { authenticate } from "../lib/auth.mjs";
 
 const STORE_NAME = "trade-show-resource-files";
 const MAX_BYTES = 5 * 1024 * 1024;
@@ -41,7 +41,7 @@ function fileKey(eventId, fileId) {
 }
 
 export default async (request) => {
-  const user = await getUser();
+  const user = await authenticate(request);
   if (!user) return json({ error: "Unauthorized" }, 401);
 
   const roles = user.roles || user.appMetadata?.roles || user.app_metadata?.roles || [];
