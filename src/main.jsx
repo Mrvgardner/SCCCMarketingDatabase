@@ -285,6 +285,34 @@ const TopNav = memo(function TopNav({ user, logout, isAdmin }) {
   );
 });
 
+// The iOS app is a trade show tool, not the marketing site in a box. It
+// carries only the event routes — no knowledge base, brand kits, wallpapers,
+// signatures or field notes. That is both what the team wants on a phone at a
+// booth and what keeps the app from reading as a repackaged website.
+//
+// Everything outside this route set is unreachable in the shell. The other
+// pages are lazy-loaded, so their chunks are never fetched either.
+function NativeAppShell() {
+  return (
+    <>
+      <ScrollToTop />
+      <Suspense fallback={<RouteFallback />}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>} />
+          <Route path="/events/:eventId" element={<ProtectedRoute><Events /></ProtectedRoute>} />
+          <Route path="/admin/events" element={<AdminRoute><TradeShowsAdmin /></AdminRoute>} />
+          <Route path="/admin/events/:eventId" element={<AdminRoute><TradeShowEditor /></AdminRoute>} />
+          {/* Anything else — including the launch path "/" — lands on the hub.
+              Without this a stray path renders nothing at all, which is the
+              blank screen that cost so long to diagnose. */}
+          <Route path="*" element={<Navigate to="/events" replace />} />
+        </Routes>
+      </Suspense>
+    </>
+  );
+}
+
 function AppShell() {
   const { user, logout, isAdmin } = useAuth();
   const { pathname } = useLocation();
@@ -337,7 +365,7 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <AppShell />
+        {isNativeApp() ? <NativeAppShell /> : <AppShell />}
       </AuthProvider>
     </BrowserRouter>
   );

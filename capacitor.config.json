@@ -3,7 +3,8 @@
   "appName": "Switch Trade Shows",
   "webDir": "dist",
   "ios": {
-    "contentInset": "always"
+    "contentInset": "always",
+    "backgroundColor": "#030712"
   },
   "server": {
     "iosScheme": "https",

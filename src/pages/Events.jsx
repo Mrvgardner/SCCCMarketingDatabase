@@ -32,6 +32,7 @@ import { formatPhoneNumber, phoneLinkValue } from "../utils/phone";
 import EventExpenses from "../components/EventExpenses";
 import PwaControls from "../components/PwaControls";
 import { downloadEventResourceFile } from "../api/eventResources";
+import { isNativeApp } from "../api/apiBase";
 
 const levelStyles = {
   Urgent: "border-[#ef4444]/50 bg-[#ef4444]/15 text-white",
@@ -162,14 +163,15 @@ function EventsIndex({ events }) {
     <main className="flex-1 bg-gradient-to-b from-gray-950 via-gray-900 to-gray-800 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
         {/* The site nav is hidden inside the trade show app, and this page has
-            no event menu, so it carries its own way back to the main site. */}
-        <Link
+            no event menu, so it carries its own way back to the main site.
+            Omitted in the iOS app, which has no other pages. */}
+        {!isNativeApp() && <Link
           to="/"
           className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-gray-400 transition-colors hover:text-white focus:outline-none focus:ring-2 focus:ring-[#0951fa] rounded"
         >
           <ArrowLeftIcon className="h-4 w-4" />
           Back to switchcommerce.team
-        </Link>
+        </Link>}
         <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#ff4f00]">Event operations</p>
@@ -374,15 +376,16 @@ function EventAppMenu({ event, isAdmin }) {
               <PwaControls eventId={event.id} />
             </div>
             {/* The site nav is hidden inside the trade show app, so this is the
-                only way back out to the rest of switchcommerce.team. */}
-            <Link
+                only way back out to the rest of switchcommerce.team. In the iOS
+                app there is no rest of the site, so it is omitted entirely. */}
+            {!isNativeApp() && <Link
               to="/"
               onClick={() => setIsOpen(false)}
               className="flex min-h-[52px] items-center gap-3 border-t border-white/10 px-3 pt-3 text-sm font-semibold text-gray-300 transition-colors hover:text-white focus:outline-none focus:ring-2 focus:ring-[#0951fa]"
             >
               <ArrowLeftIcon className="h-5 w-5 shrink-0 text-[#00ace8]" />
               Back to switchcommerce.team
-            </Link>
+            </Link>}
           </nav>
         </>
       )}
