@@ -8,10 +8,25 @@ import Login from './pages/Login.jsx';
 import SiteFooter from './components/SiteFooter.jsx';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ScrollToTop from './components/ScrollToTop.jsx';
-import { registerSW } from 'virtual:pwa-register';
+import { bootstrapNative } from './native/bootstrap';
+import { isNativeApp } from './api/apiBase';
 import './index.css'
 
-registerSW({ immediate: true });
+// Service workers do not exist on the capacitor:// origin, and calling
+// registerSW there throws during module evaluation — which kills the whole
+// bundle before React mounts and leaves a blank screen with no visible error.
+// The native shell gets its offline behaviour from the platform instead, so
+// this is web-only by design. Dynamic import so the native bundle never even
+// evaluates the module.
+if (!isNativeApp() && "serviceWorker" in navigator) {
+  import("virtual:pwa-register")
+    .then(({ registerSW }) => registerSW({ immediate: true }))
+    .catch((error) => console.error("Service worker registration failed", error));
+}
+
+// No-op on the web; closes the native splash screen and tints the status bar
+// when running inside the iOS shell.
+bootstrapNative();
 
 // Route chunks. Each `imp` is a stable reference to a dynamic import so we can
 // call it from hover handlers to prefetch the JS for a route the user is about

@@ -3,8 +3,7 @@
   "appName": "Switch Trade Shows",
   "webDir": "dist",
   "ios": {
-    "contentInset": "always",
-    "limitsNavigationsToAppBoundDomains": true
+    "contentInset": "always"
   },
   "server": {
     "iosScheme": "https",
@@ -20,7 +19,11 @@
       "backgroundColor": "#030712"
     },
     "PushNotifications": {
-      "presentationOptions": ["badge", "sound", "alert"]
+      "presentationOptions": [
+        "badge",
+        "sound",
+        "alert"
+      ]
     }
   }
 }

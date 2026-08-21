@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { isNativeApp, apiOrigin } from "../api/apiBase";
 
 const AuthContext = createContext();
 
@@ -42,7 +43,12 @@ export function AuthProvider({ children }) {
     identity.on("init", onInit);
     identity.on("login", onLogin);
     identity.on("logout", onLogout);
-    identity.init();
+    // The widget infers its API endpoint from window.location.origin. Inside
+    // the native shell that origin is capacitor://localhost, which is not a
+    // Netlify site — init() then never fires its "init" event, loading stays
+    // true forever, and every protected route renders null. A blank screen
+    // with no error. Point it at the real site explicitly.
+    identity.init(isNativeApp() ? { APIUrl: `${apiOrigin}/.netlify/identity` } : undefined);
 
     return () => {
       identity.off("init", onInit);
