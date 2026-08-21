@@ -1,5 +1,6 @@
 import { getStore } from "@netlify/blobs";
 import { authenticate } from "../lib/auth.mjs";
+import { withCors } from "../lib/http.mjs";
 import { tradeShows as seedTradeShows } from "../../src/data/tradeShows.js";
 
 const STORE_NAME = "knowledge-base";
@@ -173,7 +174,7 @@ function cleanFlightLeg(leg) {
   };
 }
 
-export default async (request) => {
+export default withCors(async (request) => {
   const user = await authenticate(request);
   if (!user) return json({ error: "Unauthorized" }, 401);
 
@@ -259,4 +260,4 @@ export default async (request) => {
   events[index] = enrichTeamContacts(event);
   await store.setJSON(KEY, events);
   return json(events[index]);
-};
+});

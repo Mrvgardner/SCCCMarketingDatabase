@@ -1,6 +1,7 @@
+import { apiUrl } from "./apiBase";
 const DB_NAME = "scc-trade-show-resources";
 const STORE_NAME = "files";
-const ENDPOINT = "/.netlify/functions/event-resources";
+const ENDPOINT = apiUrl("/.netlify/functions/event-resources");
 export const RESOURCE_FILE_ACCEPT = ".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.csv,.txt,.png,.jpg,.jpeg,.gif,.webp";
 export const RESOURCE_MAX_BYTES = 5 * 1024 * 1024;
 

@@ -1,5 +1,6 @@
 import { getStore } from '@netlify/blobs';
 import { authenticate } from "../lib/auth.mjs";
+import { withCors } from "../lib/http.mjs";
 import webpush from 'web-push';
 import { configuredVapid } from '../lib/push.js';
 
@@ -21,7 +22,7 @@ function eventKey(eventId) {
 // VAPID differently. See netlify/lib/push.js.
 const configuredKeys = configuredVapid;
 
-export default async (request) => {
+export default withCors(async (request) => {
   const user = await authenticate(request);
   if (!user) return json({ error: 'Unauthorized' }, 401);
 
@@ -111,4 +112,4 @@ export default async (request) => {
     delivered: results.filter((result) => result.status === 'fulfilled').length,
     failed: results.filter((result) => result.status === 'rejected').length,
   });
-};
+});

@@ -1,6 +1,7 @@
+import { apiUrl } from "./apiBase";
 // Image upload helper — same dev/prod split as other API clients.
 
-const ENDPOINT = "/.netlify/functions/images";
+const ENDPOINT = apiUrl("/.netlify/functions/images");
 const DEV_KEY = "scc:dev-images";
 
 function fileToBase64(file) {

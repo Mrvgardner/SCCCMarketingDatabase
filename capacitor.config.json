@@ -1,0 +1,26 @@
+{
+  "appId": "team.switchcommerce.tradeshows",
+  "appName": "Switch Trade Shows",
+  "webDir": "dist",
+  "ios": {
+    "contentInset": "always",
+    "limitsNavigationsToAppBoundDomains": true
+  },
+  "server": {
+    "iosScheme": "https",
+    "allowNavigation": [
+      "switchcommerce.team",
+      "*.switchcommerce.team",
+      "*.netlify.app"
+    ]
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": false,
+      "backgroundColor": "#030712"
+    },
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    }
+  }
+}

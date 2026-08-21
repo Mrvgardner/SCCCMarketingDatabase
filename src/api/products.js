@@ -1,3 +1,4 @@
+import { apiUrl } from "./apiBase";
 // API client for the knowledge base.
 // In production, talks to /.netlify/functions/products.
 // In dev, uses localStorage seeded from the bundled static data so the
@@ -6,7 +7,7 @@
 import { products as seedProducts } from "../data/products-tagged";
 
 const DEV_KEY = "scc:knowledge-base";
-const ENDPOINT = "/.netlify/functions/products";
+const ENDPOINT = apiUrl("/.netlify/functions/products");
 
 function genId() {
   if (typeof crypto !== "undefined" && crypto.randomUUID) return crypto.randomUUID();
