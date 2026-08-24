@@ -114,3 +114,23 @@
     max-width: 100%;
   }
 }
+
+/* iOS Safari zooms the page in whenever a focused form field is smaller than
+   16px, and that zoom is what lets the page be panned sideways past its own
+   edges while you are filling something in. It is not a layout overflow — the
+   overflow-x guard above cannot help, and desktop browsers never reproduce it
+   because they do not auto-zoom.
+   16px is the exact threshold, so raise fields to it on touch screens and keep
+   the denser 14px everywhere a pointer is used. Placed outside @layer so it
+   wins over Tailwind's text-sm utility on the inputs themselves. */
+@media (pointer: coarse) {
+  /* Only fields that can actually take focus can trigger the zoom, so the
+     exclusions below are the real rule rather than a specificity trick — though
+     they also give these selectors the weight to beat Tailwind's text-sm on the
+     elements themselves. */
+  input:not([type="checkbox"]):not([type="radio"]):not(:disabled),
+  select:not(:disabled),
+  textarea:not(:disabled) {
+    font-size: 16px;
+  }
+}
