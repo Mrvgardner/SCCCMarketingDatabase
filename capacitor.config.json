@@ -1,6 +1,6 @@
 {
   "appId": "team.switchcommerce.tradeshows",
-  "appName": "Switch Trade Shows",
+  "appName": "Trade Shows",
   "webDir": "dist",
   "ios": {
     "contentInset": "always",
