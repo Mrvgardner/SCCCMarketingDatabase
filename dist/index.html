@@ -24,8 +24,18 @@
     <title>Team Switch Commerce</title>
 
     <!-- Netlify Identity: defer so it doesn't block parsing or first paint -->
+    <!-- Inside the iOS shell the origin is capacitor://localhost, so the
+         identity widget decides it is on a local dev server and prompts for
+         the site URL instead of signing anyone in. It reads that answer from
+         localStorage when the script loads, which is before any React code
+         runs — so it has to be seeded here, ahead of the widget itself. -->
+    <script>
+      if (window.location.protocol === "capacitor:") {
+        try { window.localStorage.setItem("netlifySiteURL", "https://switchcommerce.team"); } catch (e) {}
+      }
+    </script>
     <script defer src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    <script type="module" crossorigin src="/assets/main-9a399ec2.js"></script>
+    <script type="module" crossorigin src="/assets/main-420bad57.js"></script>
     <link rel="stylesheet" href="/assets/index-4382aaca.css">
   <link rel="manifest" href="/manifest.webmanifest"></head>
   <body>

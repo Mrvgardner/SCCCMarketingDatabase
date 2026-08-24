@@ -1,1 +1,0 @@
-import{ao as o}from"./main-9a399ec2.js";var a;(function(t){t.Dark="DARK",t.Light="LIGHT",t.Default="DEFAULT"})(a||(a={}));var r;(function(t){t.None="NONE",t.Slide="SLIDE",t.Fade="FADE"})(r||(r={}));const s=r,u=a,e=o("StatusBar");export{r as Animation,e as StatusBar,s as StatusBarAnimation,u as StatusBarStyle,a as Style};

@@ -7,12 +7,7 @@
     "backgroundColor": "#030712"
   },
   "server": {
-    "iosScheme": "https",
-    "allowNavigation": [
-      "switchcommerce.team",
-      "*.switchcommerce.team",
-      "*.netlify.app"
-    ]
+    "iosScheme": "https"
   },
   "plugins": {
     "SplashScreen": {

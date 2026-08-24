@@ -43,11 +43,23 @@ export function AuthProvider({ children }) {
     identity.on("init", onInit);
     identity.on("login", onLogin);
     identity.on("logout", onLogout);
-    // The widget infers its API endpoint from window.location.origin. Inside
-    // the native shell that origin is capacitor://localhost, which is not a
-    // Netlify site — init() then never fires its "init" event, loading stays
-    // true forever, and every protected route renders null. A blank screen
-    // with no error. Point it at the real site explicitly.
+    // The widget works out its API endpoint from window.location. Inside the
+    // native shell that is capacitor://localhost, so the widget decides it is
+    // running against a local dev server and puts up its "let us know the URL
+    // of your Netlify site" prompt — which then sends the user out to the full
+    // marketing site in an in-app browser, instead of signing them in.
+    //
+    // APIUrl alone does not prevent that: the host check happens first. The
+    // widget remembers the answer to that prompt in localStorage under
+    // netlifySiteURL, so answering it up front is what actually suppresses it.
+    if (isNativeApp()) {
+      try {
+        window.localStorage.setItem("netlifySiteURL", apiOrigin);
+      } catch {
+        // Private mode or a full quota — init below still gets APIUrl, and the
+        // worst case is the prompt we are trying to avoid.
+      }
+    }
     identity.init(isNativeApp() ? { APIUrl: `${apiOrigin}/.netlify/identity` } : undefined);
 
     return () => {
