@@ -9,7 +9,7 @@ import SiteFooter from './components/SiteFooter.jsx';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ScrollToTop from './components/ScrollToTop.jsx';
 import { registerSW } from 'virtual:pwa-register';
-import { forwardTokenToAppIfPending } from './native/appAuthBridge';
+import { forwardTokenToAppIfPending, startAppAuthFromRoot } from './native/appAuthBridge';
 import './index.css'
 
 // If the iOS app started this sign-in, the token has just landed in the
@@ -18,6 +18,11 @@ import './index.css'
 // sessionStorage marker set by /app-auth is present, so a normal web Google
 // sign-in (which returns its token in the same fragment) is untouched.
 forwardTokenToAppIfPending();
+
+// The iOS app opens the site at /?appauth=1 to begin a sign-in. Starting here
+// rather than at /app-auth means Netlify sees the same Referer as the web
+// sign-in that has always worked. No-op for every ordinary visit.
+startAppAuthFromRoot();
 
 registerSW({ immediate: true });
 
