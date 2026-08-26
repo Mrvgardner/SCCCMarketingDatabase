@@ -10,6 +10,13 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ScrollToTop from './components/ScrollToTop.jsx';
 import { bootstrapNative } from './native/bootstrap';
 import { isNativeApp } from './api/apiBase';
+import { tradeShows as seedTradeShows } from './data/tradeShows';
+
+// The app opens straight into the current show rather than a list of one.
+// Read from the seed because this has to resolve synchronously at route time;
+// the screens themselves then load live data over the top.
+const firstUpcomingEventId =
+  (seedTradeShows.find((event) => event.status !== 'past') || seedTradeShows[0])?.id || '';
 import './index.css'
 
 // Service workers do not exist on the capacitor:// origin, and calling
@@ -333,10 +340,10 @@ function NativeAppShell() {
           <Route path="/events/:eventId" element={<ProtectedRoute><Events /></ProtectedRoute>} />
           <Route path="/admin/events" element={<AdminRoute><TradeShowsAdmin /></AdminRoute>} />
           <Route path="/admin/events/:eventId" element={<AdminRoute><TradeShowEditor /></AdminRoute>} />
-          {/* Anything else — including the launch path "/" — lands on the hub.
-              Without this a stray path renders nothing at all, which is the
-              blank screen that cost so long to diagnose. */}
-          <Route path="*" element={<Navigate to="/events" replace />} />
+          {/* Anything else — including the launch path "/" — lands on the
+              current show. Without this a stray path renders nothing at all,
+              which is the blank screen that cost so long to diagnose. */}
+          <Route path="*" element={<Navigate to={`/trip/${firstUpcomingEventId}/today`} replace />} />
         </Routes>
       </Suspense>
     </>
