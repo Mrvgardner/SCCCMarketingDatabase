@@ -9,7 +9,7 @@ import SiteFooter from './components/SiteFooter.jsx';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ScrollToTop from './components/ScrollToTop.jsx';
 import { registerSW } from 'virtual:pwa-register';
-import { forwardTokenToAppIfPending, startAppAuthFromRoot } from './native/appAuthBridge';
+import { forwardTokenToAppIfPending, startAppAuthFromRoot, deepLinkFromIdentitySession } from './native/appAuthBridge';
 import './index.css'
 
 // If the iOS app started this sign-in, the token has just landed in the
@@ -23,6 +23,17 @@ forwardTokenToAppIfPending();
 // rather than at /app-auth means Netlify sees the same Referer as the web
 // sign-in that has always worked. No-op for every ordinary visit.
 startAppAuthFromRoot();
+
+// The identity widget consumes the token from the fragment before this module
+// runs, so a returning app sign-in looks like an ordinary signed-in page load.
+// If the app started it, send the user to /app-auth to collect the handoff.
+if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/app-auth')) {
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      if (deepLinkFromIdentitySession()) window.location.replace('/app-auth');
+    }, 400);
+  });
+}
 
 registerSW({ immediate: true });
 
