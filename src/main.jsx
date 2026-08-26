@@ -35,6 +35,17 @@ if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/app-
   });
 }
 
+// The identity widget consumes the token from the fragment before this module
+// runs, so a returning app sign-in looks like an ordinary signed-in page load.
+// If the app started it, send the user to /app-auth to collect the handoff.
+if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/app-auth')) {
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      if (deepLinkFromIdentitySession()) window.location.replace('/app-auth');
+    }, 400);
+  });
+}
+
 registerSW({ immediate: true });
 
 // Route chunks. Each `imp` is a stable reference to a dynamic import so we can

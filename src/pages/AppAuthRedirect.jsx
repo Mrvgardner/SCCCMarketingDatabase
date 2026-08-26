@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   pendingAppDeepLink,
-  deepLinkFromIdentitySession,
   appAuthDiagnostics,
   resetAppAuthGuard,
 } from "../native/appAuthBridge";
@@ -19,10 +18,7 @@ export default function AppAuthRedirect() {
   const [diagnostics, setDiagnostics] = useState(null);
 
   useEffect(() => {
-    // The identity widget may already hold the session — it runs before this
-    // module and takes the token out of the fragment. Ask it first; the URL is
-    // only a fallback for the case where it has not initialised yet.
-    const link = deepLinkFromIdentitySession() || pendingAppDeepLink();
+    const link = pendingAppDeepLink();
     if (link) {
       setDeepLink(link);
       // Deliberately NOT attempted automatically. SFSafariViewController
@@ -40,18 +36,6 @@ export default function AppAuthRedirect() {
     // Bouncing rather than starting also means an app already installed on a
     // phone keeps working without being rebuilt — it opens this page, and the
     // page routes it correctly.
-    // The widget initialises asynchronously. If a sign-in is in flight, wait
-    // for it to settle rather than declaring failure or starting another.
-    const identity = window.netlifyIdentity;
-    if (identity?.on) {
-      const onReady = () => {
-        const fromSession = deepLinkFromIdentitySession();
-        if (fromSession) setDeepLink(fromSession);
-      };
-      identity.on("init", onReady);
-      identity.on("login", onReady);
-    }
-
     const diagnostics = appAuthDiagnostics();
     if (diagnostics.secondsSinceAttempt !== null && diagnostics.secondsSinceAttempt < 20) {
       // A sign-in was only just tried; bouncing again would spin.
