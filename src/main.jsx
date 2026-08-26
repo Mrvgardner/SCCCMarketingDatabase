@@ -9,7 +9,15 @@ import SiteFooter from './components/SiteFooter.jsx';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ScrollToTop from './components/ScrollToTop.jsx';
 import { registerSW } from 'virtual:pwa-register';
+import { forwardTokenToAppIfPending } from './native/appAuthBridge';
 import './index.css'
+
+// If the iOS app started this sign-in, the token has just landed in the
+// fragment — hand it to the app and stop. Runs before anything renders, and is
+// a deliberate no-op for every ordinary web visit: it only acts when the
+// sessionStorage marker set by /app-auth is present, so a normal web Google
+// sign-in (which returns its token in the same fragment) is untouched.
+forwardTokenToAppIfPending();
 
 registerSW({ immediate: true });
 
@@ -27,6 +35,7 @@ const routes = {
   marketingRequest:       () => import('./pages/MarketingRequest.jsx'),
   printCollateral:        () => import('./pages/PrintCollateral.jsx'),
   fieldNotes:             () => import('./pages/FieldNotes.jsx'),
+  appAuthRedirect:        () => import('./pages/AppAuthRedirect.jsx'),
   events:                 () => import('./pages/Events.jsx'),
   birthdays:              () => import('./pages/Birthdays.jsx'),
   anniversaries:          () => import('./pages/Anniversaries.jsx'),
@@ -49,6 +58,7 @@ const Wallpapers             = lazy(routes.wallpapers);
 const MarketingRequest       = lazy(routes.marketingRequest);
 const PrintCollateral        = lazy(routes.printCollateral);
 const FieldNotes             = lazy(routes.fieldNotes);
+const AppAuthRedirect        = lazy(routes.appAuthRedirect);
 const Events                 = lazy(routes.events);
 const Birthdays              = lazy(routes.birthdays);
 const Anniversaries          = lazy(routes.anniversaries);
@@ -287,6 +297,7 @@ function AppShell() {
       <Suspense fallback={<RouteFallback />}>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/app-auth" element={<AppAuthRedirect />} />
         <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
         <Route path="/clear-choice" element={<ProtectedRoute><ClearChoice /></ProtectedRoute>} />
         <Route path="/switch-commerce" element={<ProtectedRoute><SwitchCommerce /></ProtectedRoute>} />
