@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  beginAppAuthRedirect,
   pendingAppDeepLink,
   appAuthDiagnostics,
   resetAppAuthGuard,
@@ -29,12 +28,22 @@ export default function AppAuthRedirect() {
       // only one made.
       return;
     }
-    // No token yet: start the sign-in, unless we only just tried, in which case
-    // something downstream is failing and looping would only hammer Google.
-    if (!beginAppAuthRedirect()) {
-      setDiagnostics(appAuthDiagnostics());
+    // No token yet. Do NOT start the sign-in from this page: Netlify records
+    // the Referer and decides from it where to return the token, and starting
+    // here produced an instant bounce with nothing. Hand off to the site root,
+    // which sends the same Referer as the web sign-in that works.
+    //
+    // Bouncing rather than starting also means an app already installed on a
+    // phone keeps working without being rebuilt — it opens this page, and the
+    // page routes it correctly.
+    const diagnostics = appAuthDiagnostics();
+    if (diagnostics.secondsSinceAttempt !== null && diagnostics.secondsSinceAttempt < 20) {
+      // A sign-in was only just tried; bouncing again would spin.
+      setDiagnostics(diagnostics);
       setStalled(true);
+      return;
     }
+    window.location.replace("/?appauth=1");
   }, []);
 
   return (
