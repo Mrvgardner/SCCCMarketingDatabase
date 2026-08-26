@@ -42,15 +42,48 @@ export function beginAppAuthRedirect() {
 // to hand over. Deliberately does NOT navigate and does NOT clear the marker:
 // the caller may need to offer it as a tappable link, and clearing it on a
 // failed automatic attempt is what made the page start a whole new sign-in.
+const DEEP_LINK_KEY = "sc:app-auth-deeplink";
+
+// The deep link this page should hand to the app, or null if there is nothing
+// to hand over.
+//
+// It persists the link the moment it sees one, and will return a persisted link
+// even after the fragment is gone. That is not belt-and-braces: attempting the
+// handoff automatically caused Safari to refuse the navigation AND clear the
+// fragment, so the token vanished before the user could tap anything. Observed
+// directly — the stalled screen reported an empty fragment two seconds after a
+// sign-in that had plainly succeeded.
 export function pendingAppDeepLink() {
   const hash = window.location.hash || "";
-  if (!hash.includes("access_token=")) return null;
+
+  if (hash.includes("access_token=")) {
+    let isAppFlow = false;
+    try {
+      isAppFlow = Boolean(window.sessionStorage.getItem(APP_FLOW_KEY));
+    } catch {
+      return null;
+    }
+    if (!isAppFlow) return null;
+    const link = `${APP_AUTH_SCHEME}${hash}`;
+    try {
+      window.sessionStorage.setItem(DEEP_LINK_KEY, link);
+    } catch { /* the in-memory return below still works this once */ }
+    return link;
+  }
+
+  // No fragment — but a link captured moments ago is still good.
   try {
-    if (!window.sessionStorage.getItem(APP_FLOW_KEY)) return null;
+    return window.sessionStorage.getItem(DEEP_LINK_KEY);
   } catch {
     return null;
   }
-  return `${APP_AUTH_SCHEME}${hash}`;
+}
+
+// Called once the app has actually been handed the token.
+export function clearPendingAppDeepLink() {
+  try {
+    window.sessionStorage.removeItem(DEEP_LINK_KEY);
+  } catch { /* nothing to clear */ }
 }
 
 // Step 2, in Safari: the token has come back in the fragment. If this context
@@ -73,9 +106,13 @@ export function forwardTokenToAppIfPending() {
   // refused to perform left the next page load looking like a brand new
   // sign-in — which is exactly how this turned into an endless loop.
 
-  // Custom scheme rather than a Universal Link: a scheme is just an Info.plist
-  // entry and needs no paid Apple account or apple-app-site-association file.
-  window.location.replace(`${APP_AUTH_SCHEME}${hash}`);
+  // Do not jump to the scheme from here. Safari refuses a script-initiated
+  // app-scheme navigation and clears the fragment as it does, losing the token.
+  // Persist the link and hand over to /app-auth, which offers it as a tap.
+  try {
+    window.sessionStorage.setItem(DEEP_LINK_KEY, `${APP_AUTH_SCHEME}${hash}`);
+  } catch { /* the page below will simply show its stalled state */ }
+  window.location.replace("/app-auth");
   return true;
 }
 
@@ -104,6 +141,7 @@ export function resetAppAuthGuard() {
   try {
     window.sessionStorage.removeItem(ATTEMPT_KEY);
     window.sessionStorage.removeItem(APP_FLOW_KEY);
+    window.sessionStorage.removeItem(DEEP_LINK_KEY);
   } catch { /* nothing to clear */ }
 }
 

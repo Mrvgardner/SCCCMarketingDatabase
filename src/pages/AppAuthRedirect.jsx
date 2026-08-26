@@ -22,11 +22,11 @@ export default function AppAuthRedirect() {
     const link = pendingAppDeepLink();
     if (link) {
       setDeepLink(link);
-      // Try to hand off without bothering the user. SFSafariViewController
-      // often refuses a script-initiated jump to an app scheme — it wants a
-      // real tap — so the button below is the reliable path, not a fallback
-      // for exotic cases.
-      window.location.replace(link);
+      // Deliberately NOT attempted automatically. SFSafariViewController
+      // refuses a script-initiated jump to an app scheme, and in refusing it
+      // also clears the fragment — which destroyed the token before the user
+      // could tap anything. The tap is the only reliable handoff, so it is the
+      // only one made.
       return;
     }
     // No token yet: start the sign-in, unless we only just tried, in which case
