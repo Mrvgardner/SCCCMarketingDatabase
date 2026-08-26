@@ -79,6 +79,34 @@ export function forwardTokenToAppIfPending() {
   return true;
 }
 
+// What this page can see about the sign-in, for showing on the stalled screen.
+// The flow spans Safari, Google and Netlify, and none of those are reachable
+// from a terminal — so when it stops short, the page itself has to say why.
+export function appAuthDiagnostics() {
+  const hash = (typeof window !== "undefined" && window.location.hash) || "";
+  let marker = null;
+  let attempt = null;
+  try {
+    marker = window.sessionStorage.getItem(APP_FLOW_KEY);
+    attempt = window.sessionStorage.getItem(ATTEMPT_KEY);
+  } catch { /* private mode */ }
+  return {
+    hasToken: hash.includes("access_token="),
+    hasError: hash.includes("error"),
+    fragment: hash ? hash.slice(0, 80) : "(empty)",
+    markerPresent: Boolean(marker),
+    secondsSinceAttempt: attempt ? Math.round((Date.now() - Number(attempt)) / 1000) : null,
+  };
+}
+
+// Clears the guard so the user can retry immediately after a stall.
+export function resetAppAuthGuard() {
+  try {
+    window.sessionStorage.removeItem(ATTEMPT_KEY);
+    window.sessionStorage.removeItem(APP_FLOW_KEY);
+  } catch { /* nothing to clear */ }
+}
+
 // Step 3, in the app: turn the fragment into the token object the identity
 // widget expects. Exported separately so it can be tested without a browser.
 export function parseAuthFragment(url) {

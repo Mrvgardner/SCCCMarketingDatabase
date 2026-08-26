@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { beginAppAuthRedirect, pendingAppDeepLink } from "../native/appAuthBridge";
+import {
+  beginAppAuthRedirect,
+  pendingAppDeepLink,
+  appAuthDiagnostics,
+  resetAppAuthGuard,
+} from "../native/appAuthBridge";
 
 // Reached only inside Safari, opened by the native app.
 //
@@ -11,6 +16,7 @@ import { beginAppAuthRedirect, pendingAppDeepLink } from "../native/appAuthBridg
 export default function AppAuthRedirect() {
   const [deepLink, setDeepLink] = useState(null);
   const [stalled, setStalled] = useState(false);
+  const [diagnostics, setDiagnostics] = useState(null);
 
   useEffect(() => {
     const link = pendingAppDeepLink();
@@ -25,7 +31,10 @@ export default function AppAuthRedirect() {
     }
     // No token yet: start the sign-in, unless we only just tried, in which case
     // something downstream is failing and looping would only hammer Google.
-    if (!beginAppAuthRedirect()) setStalled(true);
+    if (!beginAppAuthRedirect()) {
+      setDiagnostics(appAuthDiagnostics());
+      setStalled(true);
+    }
   }, []);
 
   return (
@@ -60,9 +69,24 @@ export default function AppAuthRedirect() {
           <>
             <p className="mt-5 text-base font-semibold text-white">Sign-in didn't complete</p>
             <p className="mt-1.5 text-sm leading-relaxed text-[#93a0b4]">
-              Close this window and try again from the app. If it keeps happening, sign in on
-              switchcommerce.team in Safari first.
+              Nothing came back from Google. Tap below to try once more.
             </p>
+            <button
+              type="button"
+              onClick={() => { resetAppAuthGuard(); window.location.replace("/app-auth"); }}
+              className="mt-5 flex min-h-[52px] w-full items-center justify-center rounded-2xl bg-[#0951fa] px-5 text-[15px] font-semibold text-white"
+            >
+              Try again
+            </button>
+            {diagnostics && (
+              <dl className="mt-6 space-y-1 rounded-xl border border-white/10 bg-white/[0.04] p-3 text-left text-[11px] leading-relaxed text-[#75808d]">
+                <div>token in fragment: <span className="text-white">{String(diagnostics.hasToken)}</span></div>
+                <div>error in fragment: <span className="text-white">{String(diagnostics.hasError)}</span></div>
+                <div>fragment: <span className="break-all text-white">{diagnostics.fragment}</span></div>
+                <div>flow marker: <span className="text-white">{String(diagnostics.markerPresent)}</span></div>
+                <div>last attempt: <span className="text-white">{diagnostics.secondsSinceAttempt === null ? "none" : diagnostics.secondsSinceAttempt + "s ago"}</span></div>
+              </dl>
+            )}
           </>
         )}
       </div>
