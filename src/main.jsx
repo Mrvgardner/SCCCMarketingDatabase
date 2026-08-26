@@ -52,6 +52,12 @@ const routes = {
   fieldNoteForm:          () => import('./pages/admin/FieldNoteForm.jsx'),
   tradeShowsAdmin:        () => import('./pages/admin/TradeShowsAdmin.jsx'),
   tradeShowEditor:        () => import('./pages/admin/TradeShowEditor.jsx'),
+  tripLayout:             () => import('./pages/trip/TripLayout.jsx'),
+  tripToday:              () => import('./pages/trip/TripToday.jsx'),
+  tripSchedule:           () => import('./pages/trip/TripSchedule.jsx'),
+  tripMoney:              () => import('./pages/trip/TripMoney.jsx'),
+  tripBooth:              () => import('./pages/trip/TripBooth.jsx'),
+  tripTeam:               () => import('./pages/trip/TripTeam.jsx'),
 };
 
 const SwitchCommerceBranding = lazy(routes.switchCommerceBranding);
@@ -74,6 +80,12 @@ const FieldNotesAdmin        = lazy(routes.fieldNotesAdmin);
 const FieldNoteForm          = lazy(routes.fieldNoteForm);
 const TradeShowsAdmin        = lazy(routes.tradeShowsAdmin);
 const TradeShowEditor        = lazy(routes.tradeShowEditor);
+const TripLayout             = lazy(routes.tripLayout);
+const TripToday              = lazy(routes.tripToday);
+const TripSchedule           = lazy(routes.tripSchedule);
+const TripMoney              = lazy(routes.tripMoney);
+const TripBooth              = lazy(routes.tripBooth);
+const TripTeam               = lazy(routes.tripTeam);
 
 // Idempotent fire-and-forget; ignore the resolved module.
 const prefetch = (imp) => { try { imp(); } catch {} };
@@ -96,6 +108,16 @@ function ProtectedRoute({ children }) {
       <SiteFooter />
     </div>
   );
+}
+
+// Same auth gate as ProtectedRoute but without the site header/footer wrapper.
+// The trip screens are a full-bleed app surface with their own tab bar; the
+// marketing chrome around them would be wrong on every screen.
+function TripRoute({ children }) {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  if (!user) return <Navigate to="/login" replace />;
+  return children;
 }
 
 function AdminRoute({ children }) {
@@ -299,6 +321,14 @@ function NativeAppShell() {
       <Suspense fallback={<RouteFallback />}>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/trip/:eventId" element={<TripRoute><TripLayout /></TripRoute>}>
+            <Route index element={<Navigate to="today" replace />} />
+            <Route path="today" element={<TripToday />} />
+            <Route path="trip" element={<TripSchedule />} />
+            <Route path="money" element={<TripMoney />} />
+            <Route path="booth" element={<TripBooth />} />
+            <Route path="team" element={<TripTeam />} />
+          </Route>
           <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>} />
           <Route path="/events/:eventId" element={<ProtectedRoute><Events /></ProtectedRoute>} />
           <Route path="/admin/events" element={<AdminRoute><TradeShowsAdmin /></AdminRoute>} />
@@ -321,7 +351,8 @@ function AppShell() {
   // app, so the marketing-site nav is hidden inside it. Every /events view
   // offers its own way back: EventAppMenu on a detail page, a header link on
   // the index. /admin/events keeps the nav — admins move between sections.
-  const inTradeShowApp = pathname === '/events' || pathname.startsWith('/events/');
+  const inTradeShowApp = pathname === '/events' || pathname.startsWith('/events/')
+    || pathname.startsWith('/trip/');
 
   return (
     <>
@@ -342,6 +373,14 @@ function AppShell() {
         <Route path="/print-collateral" element={<ProtectedRoute><PrintCollateral /></ProtectedRoute>} />
         <Route path="/field-notes" element={<ProtectedRoute><FieldNotes /></ProtectedRoute>} />
         <Route path="/field-notes/:id" element={<ProtectedRoute><FieldNotes /></ProtectedRoute>} />
+        <Route path="/trip/:eventId" element={<TripRoute><TripLayout /></TripRoute>}>
+          <Route index element={<Navigate to="today" replace />} />
+          <Route path="today" element={<TripToday />} />
+          <Route path="trip" element={<TripSchedule />} />
+          <Route path="money" element={<TripMoney />} />
+          <Route path="booth" element={<TripBooth />} />
+          <Route path="team" element={<TripTeam />} />
+        </Route>
         <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>} />
         <Route path="/events/:eventId" element={<ProtectedRoute><Events /></ProtectedRoute>} />
         <Route path="/birthdays" element={<ProtectedRoute><Birthdays /></ProtectedRoute>} />

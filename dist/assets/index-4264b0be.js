@@ -1,0 +1,1 @@
+import{as as s}from"./main-fa0a11fa.js";var a;(function(t){t.Dark="DARK",t.Light="LIGHT",t.Default="DEFAULT"})(a||(a={}));var r;(function(t){t.None="NONE",t.Slide="SLIDE",t.Fade="FADE"})(r||(r={}));const o=r,u=a,e=s("StatusBar");export{r as Animation,e as StatusBar,o as StatusBarAnimation,u as StatusBarStyle,a as Style};
