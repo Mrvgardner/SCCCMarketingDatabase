@@ -11,7 +11,7 @@ import ScrollToTop from './components/ScrollToTop.jsx';
 import { bootstrapNative } from './native/bootstrap';
 import { isNativeApp } from './api/apiBase';
 import { tradeShows as seedTradeShows } from './data/tradeShows';
-import { forwardTokenToAppIfPending, startAppAuthFromRoot } from './native/appAuthBridge';
+import { forwardTokenToAppIfPending, startAppAuthFromRoot, deepLinkFromIdentitySession } from './native/appAuthBridge';
 
 // The app opens straight into the current show rather than a list of one.
 // Read from the seed because this has to resolve synchronously at route time;
@@ -41,6 +41,17 @@ forwardTokenToAppIfPending();
 // rather than at /app-auth means Netlify sees the same Referer as the web
 // sign-in that has always worked. No-op for every ordinary visit.
 startAppAuthFromRoot();
+
+// The identity widget consumes the token from the fragment before this module
+// runs, so a returning app sign-in looks like an ordinary signed-in page load.
+// If the app started it, send the user to /app-auth to collect the handoff.
+if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/app-auth')) {
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      if (deepLinkFromIdentitySession()) window.location.replace('/app-auth');
+    }, 400);
+  });
+}
 
 // No-op on the web; closes the native splash screen and tints the status bar
 // when running inside the iOS shell.

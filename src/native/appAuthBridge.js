@@ -108,6 +108,45 @@ export function pendingAppDeepLink() {
   }
 }
 
+// Build the deep link from the identity widget's own session.
+//
+// This is the reliable source, not the URL. The widget script is loaded in
+// index.html with defer, so it runs BEFORE our module: it takes the token out
+// of the fragment, creates its session, and clears the hash. Every diagnostic
+// that reported "token in fragment: false" with an empty fragment and no error
+// was seeing the aftermath of that, not a failed sign-in.
+export function deepLinkFromIdentitySession() {
+  let marker = null;
+  try {
+    marker = window.sessionStorage.getItem(APP_FLOW_KEY);
+  } catch {
+    return null;
+  }
+  // Only ever hand a token to the app during a sign-in the app started.
+  if (!marker) return null;
+
+  const user = window.netlifyIdentity?.currentUser?.();
+  const token = user?.token;
+  if (!token?.access_token) return null;
+
+  // expires_at is a millisecond timestamp; the app wants seconds remaining.
+  const secondsLeft = token.expires_at
+    ? Math.max(60, Math.round((Number(token.expires_at) - Date.now()) / 1000))
+    : 3600;
+
+  const params = new URLSearchParams({
+    access_token: token.access_token,
+    refresh_token: token.refresh_token || "",
+    token_type: token.token_type || "bearer",
+    expires_in: String(secondsLeft),
+  });
+  const link = `${APP_AUTH_SCHEME}#${params.toString()}`;
+  try {
+    window.sessionStorage.setItem(DEEP_LINK_KEY, link);
+  } catch { /* the returned value still works this once */ }
+  return link;
+}
+
 // Called once the app has actually been handed the token.
 export function clearPendingAppDeepLink() {
   try {
