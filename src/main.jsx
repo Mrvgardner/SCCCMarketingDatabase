@@ -11,6 +11,7 @@ import ScrollToTop from './components/ScrollToTop.jsx';
 import { bootstrapNative } from './native/bootstrap';
 import { isNativeApp } from './api/apiBase';
 import { tradeShows as seedTradeShows } from './data/tradeShows';
+import { forwardTokenToAppIfPending } from './native/appAuthBridge';
 
 // The app opens straight into the current show rather than a list of one.
 // Read from the seed because this has to resolve synchronously at route time;
@@ -30,6 +31,11 @@ if (!isNativeApp() && "serviceWorker" in navigator) {
     .then(({ registerSW }) => registerSW({ immediate: true }))
     .catch((error) => console.error("Service worker registration failed", error));
 }
+
+// If the native app started this sign-in, the token has just landed in the
+// fragment — forward it to the app and stop. Must run before anything renders,
+// and it is a no-op for every ordinary web visit.
+forwardTokenToAppIfPending();
 
 // No-op on the web; closes the native splash screen and tints the status bar
 // when running inside the iOS shell.
@@ -59,6 +65,7 @@ const routes = {
   fieldNoteForm:          () => import('./pages/admin/FieldNoteForm.jsx'),
   tradeShowsAdmin:        () => import('./pages/admin/TradeShowsAdmin.jsx'),
   tradeShowEditor:        () => import('./pages/admin/TradeShowEditor.jsx'),
+  appAuthRedirect:        () => import('./pages/AppAuthRedirect.jsx'),
   tripLayout:             () => import('./pages/trip/TripLayout.jsx'),
   tripToday:              () => import('./pages/trip/TripToday.jsx'),
   tripSchedule:           () => import('./pages/trip/TripSchedule.jsx'),
@@ -87,6 +94,7 @@ const FieldNotesAdmin        = lazy(routes.fieldNotesAdmin);
 const FieldNoteForm          = lazy(routes.fieldNoteForm);
 const TradeShowsAdmin        = lazy(routes.tradeShowsAdmin);
 const TradeShowEditor        = lazy(routes.tradeShowEditor);
+const AppAuthRedirect        = lazy(routes.appAuthRedirect);
 const TripLayout             = lazy(routes.tripLayout);
 const TripToday              = lazy(routes.tripToday);
 const TripSchedule           = lazy(routes.tripSchedule);
@@ -328,6 +336,7 @@ function NativeAppShell() {
       <Suspense fallback={<RouteFallback />}>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/app-auth" element={<AppAuthRedirect />} />
           <Route path="/trip/:eventId" element={<TripRoute><TripLayout /></TripRoute>}>
             <Route index element={<Navigate to="today" replace />} />
             <Route path="today" element={<TripToday />} />
@@ -368,6 +377,7 @@ function AppShell() {
       <Suspense fallback={<RouteFallback />}>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/app-auth" element={<AppAuthRedirect />} />
         <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
         <Route path="/clear-choice" element={<ProtectedRoute><ClearChoice /></ProtectedRoute>} />
         <Route path="/switch-commerce" element={<ProtectedRoute><SwitchCommerce /></ProtectedRoute>} />

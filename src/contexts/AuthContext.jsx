@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { isNativeApp, apiOrigin } from "../api/apiBase";
+import { startNativeGoogleSignIn, listenForNativeAuthCallback } from "../native/nativeAuth";
 
 const AuthContext = createContext();
 
@@ -40,6 +41,13 @@ export function AuthProvider({ children }) {
     };
     const onLogout = () => setUser(null);
 
+    // No-op on the web.
+    listenForNativeAuthCallback((nativeUser) => {
+      setUser(nativeUser);
+      setLoading(false);
+      setReady(true);
+    });
+
     identity.on("init", onInit);
     identity.on("login", onLogin);
     identity.on("logout", onLogout);
@@ -69,7 +77,13 @@ export function AuthProvider({ children }) {
     };
   }, []);
 
-  const login = () => window.netlifyIdentity?.open("login");
+  // In the shell, Google refuses to run inside the webview, so sign-in goes out
+  // to Safari and comes back over the app's URL scheme. On the web the widget
+  // modal is still exactly right.
+  const login = () => {
+    if (isNativeApp()) return startNativeGoogleSignIn();
+    return window.netlifyIdentity?.open("login");
+  };
   const signup = () => window.netlifyIdentity?.open("signup");
   const logout = () => window.netlifyIdentity?.logout();
 
