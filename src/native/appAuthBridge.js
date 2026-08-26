@@ -18,14 +18,39 @@ export const APP_AUTH_SCHEME = "switchtradeshows://auth";
 // to Netlify. sessionStorage is the right store — it is scoped to this tab and
 // origin, survives the round trip out to Google and back, and evaporates
 // afterwards, so a normal web sign-in in another tab is never affected.
+const ATTEMPT_KEY = "sc:app-auth-attempt";
+// A completed round trip to Google takes a few seconds. Two starts inside this
+// window means something downstream is failing and we are spinning.
+const LOOP_WINDOW_MS = 20000;
+
+// Returns false if it refused to start because a sign-in was only just tried.
 export function beginAppAuthRedirect() {
   try {
+    const lastAttempt = Number(window.sessionStorage.getItem(ATTEMPT_KEY) || 0);
+    if (Date.now() - lastAttempt < LOOP_WINDOW_MS) return false;
+    window.sessionStorage.setItem(ATTEMPT_KEY, String(Date.now()));
     window.sessionStorage.setItem(APP_FLOW_KEY, String(Date.now()));
   } catch {
     // Private mode. The flow still completes in the browser; it just will not
     // hand back to the app, which is a visible failure rather than a silent one.
   }
   window.location.replace("/.netlify/identity/authorize?provider=google");
+  return true;
+}
+
+// The deep link this page should hand to the app, or null if there is nothing
+// to hand over. Deliberately does NOT navigate and does NOT clear the marker:
+// the caller may need to offer it as a tappable link, and clearing it on a
+// failed automatic attempt is what made the page start a whole new sign-in.
+export function pendingAppDeepLink() {
+  const hash = window.location.hash || "";
+  if (!hash.includes("access_token=")) return null;
+  try {
+    if (!window.sessionStorage.getItem(APP_FLOW_KEY)) return null;
+  } catch {
+    return null;
+  }
+  return `${APP_AUTH_SCHEME}${hash}`;
 }
 
 // Step 2, in Safari: the token has come back in the fragment. If this context
@@ -43,9 +68,10 @@ export function forwardTokenToAppIfPending() {
   }
   if (!isAppFlow) return false;
 
-  try {
-    window.sessionStorage.removeItem(APP_FLOW_KEY);
-  } catch { /* nothing to clean up */ }
+  // The marker is deliberately left in place. It lives in sessionStorage and
+  // dies with the tab anyway, and clearing it here meant that a handoff Safari
+  // refused to perform left the next page load looking like a brand new
+  // sign-in — which is exactly how this turned into an endless loop.
 
   // Custom scheme rather than a Universal Link: a scheme is just an Info.plist
   // entry and needs no paid Apple account or apple-app-site-association file.
