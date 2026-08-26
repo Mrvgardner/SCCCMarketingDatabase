@@ -1,32 +1,70 @@
-import { useEffect } from "react";
-import { beginAppAuthRedirect, forwardTokenToAppIfPending } from "../native/appAuthBridge";
+import { useEffect, useState } from "react";
+import { beginAppAuthRedirect, pendingAppDeepLink } from "../native/appAuthBridge";
 
-// Reached only inside Safari, opened by the native app. Marks this browsing
-// context as an app sign-in and hands off to Netlify's Google flow. Rendered
-// content is just what shows for the instant before the redirect.
+// Reached only inside Safari, opened by the native app.
+//
+// Two jobs, and which one depends on whether a token has arrived. Netlify
+// Identity returns the token to the REFERRER — verified in a live flow, the
+// state JWT it hands Google carries
+// "referrer":"https://switchcommerce.team/app-auth" — so this page is both the
+// start of the sign-in and its finish line.
 export default function AppAuthRedirect() {
+  const [deepLink, setDeepLink] = useState(null);
+  const [stalled, setStalled] = useState(false);
+
   useEffect(() => {
-    // The token comes back HERE, not to the site root. Netlify Identity records
-    // the Referer in the state JWT it hands Google — verified in a live flow,
-    // the state carried "referrer":"https://switchcommerce.team/app-auth" — and
-    // returns the token to that address.
-    //
-    // So this page has to check for an arriving token BEFORE starting a new
-    // sign-in. Without that check it greets its own callback by launching
-    // another sign-in, which loops forever and hammers Google's authorize
-    // endpoint until it answers 400 invalid_request.
-    if (forwardTokenToAppIfPending()) return;
-    beginAppAuthRedirect();
+    const link = pendingAppDeepLink();
+    if (link) {
+      setDeepLink(link);
+      // Try to hand off without bothering the user. SFSafariViewController
+      // often refuses a script-initiated jump to an app scheme — it wants a
+      // real tap — so the button below is the reliable path, not a fallback
+      // for exotic cases.
+      window.location.replace(link);
+      return;
+    }
+    // No token yet: start the sign-in, unless we only just tried, in which case
+    // something downstream is failing and looping would only hammer Google.
+    if (!beginAppAuthRedirect()) setStalled(true);
   }, []);
+
   return (
     <main className="grid min-h-screen place-items-center bg-[#05101f] px-6 text-center">
-      <div>
+      <div className="max-w-xs">
         <img
           src="/logos/switch/Logo Icon/SC Logo - White.png"
           alt="Switch Commerce"
           className="mx-auto h-10 w-auto"
         />
-        <p className="mt-4 text-sm text-[#93a0b4]">Taking you to Google to sign in…</p>
+
+        {deepLink && (
+          <>
+            <p className="mt-5 text-base font-semibold text-white">You're signed in</p>
+            <p className="mt-1.5 text-sm leading-relaxed text-[#93a0b4]">
+              Tap below to return to Trade Shows.
+            </p>
+            <a
+              href={deepLink}
+              className="mt-5 flex min-h-[52px] items-center justify-center rounded-2xl bg-[#0951fa] px-5 text-[15px] font-semibold text-white"
+            >
+              Open Trade Shows
+            </a>
+          </>
+        )}
+
+        {!deepLink && !stalled && (
+          <p className="mt-4 text-sm text-[#93a0b4]">Taking you to Google to sign in…</p>
+        )}
+
+        {stalled && (
+          <>
+            <p className="mt-5 text-base font-semibold text-white">Sign-in didn't complete</p>
+            <p className="mt-1.5 text-sm leading-relaxed text-[#93a0b4]">
+              Close this window and try again from the app. If it keeps happening, sign in on
+              switchcommerce.team in Safari first.
+            </p>
+          </>
+        )}
       </div>
     </main>
   );
