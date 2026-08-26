@@ -39,3 +39,7 @@ eng.traineddata
 /ios/App/Pods/
 /ios/App/build/
 /ios/DerivedData/
+
+# Capacitor copies the whole web build in here on every `cap copy`. Generated,
+# large, and it nearly ended up in a commit to main — keep it out of git.
+/ios/App/App/public/

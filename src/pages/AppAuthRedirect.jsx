@@ -1,11 +1,23 @@
 import { useEffect } from "react";
-import { beginAppAuthRedirect } from "../native/appAuthBridge";
+import { beginAppAuthRedirect, forwardTokenToAppIfPending } from "../native/appAuthBridge";
 
 // Reached only inside Safari, opened by the native app. Marks this browsing
 // context as an app sign-in and hands off to Netlify's Google flow. Rendered
 // content is just what shows for the instant before the redirect.
 export default function AppAuthRedirect() {
-  useEffect(() => { beginAppAuthRedirect(); }, []);
+  useEffect(() => {
+    // The token comes back HERE, not to the site root. Netlify Identity records
+    // the Referer in the state JWT it hands Google — verified in a live flow,
+    // the state carried "referrer":"https://switchcommerce.team/app-auth" — and
+    // returns the token to that address.
+    //
+    // So this page has to check for an arriving token BEFORE starting a new
+    // sign-in. Without that check it greets its own callback by launching
+    // another sign-in, which loops forever and hammers Google's authorize
+    // endpoint until it answers 400 invalid_request.
+    if (forwardTokenToAppIfPending()) return;
+    beginAppAuthRedirect();
+  }, []);
   return (
     <main className="grid min-h-screen place-items-center bg-[#05101f] px-6 text-center">
       <div>
