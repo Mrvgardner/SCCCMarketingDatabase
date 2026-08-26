@@ -11,7 +11,7 @@ import ScrollToTop from './components/ScrollToTop.jsx';
 import { bootstrapNative } from './native/bootstrap';
 import { isNativeApp } from './api/apiBase';
 import { tradeShows as seedTradeShows } from './data/tradeShows';
-import { forwardTokenToAppIfPending } from './native/appAuthBridge';
+import { forwardTokenToAppIfPending, startAppAuthFromRoot } from './native/appAuthBridge';
 
 // The app opens straight into the current show rather than a list of one.
 // Read from the seed because this has to resolve synchronously at route time;
@@ -36,6 +36,11 @@ if (!isNativeApp() && "serviceWorker" in navigator) {
 // fragment — forward it to the app and stop. Must run before anything renders,
 // and it is a no-op for every ordinary web visit.
 forwardTokenToAppIfPending();
+
+// The app opens the site at /?appauth=1 to begin a sign-in. Starting here
+// rather than at /app-auth means Netlify sees the same Referer as the web
+// sign-in that has always worked. No-op for every ordinary visit.
+startAppAuthFromRoot();
 
 // No-op on the web; closes the native splash screen and tints the status bar
 // when running inside the iOS shell.

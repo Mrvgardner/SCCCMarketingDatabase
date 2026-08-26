@@ -13,7 +13,8 @@ let listenerAttached = false;
 export async function startNativeGoogleSignIn() {
   const { Browser } = await import("@capacitor/browser");
   await Browser.open({
-    url: `${apiOrigin}/app-auth`,
+    // Start at the root: see APP_AUTH_START_QUERY in appAuthBridge.js.
+    url: `${apiOrigin}/?appauth=1`,
     presentationStyle: "popover",
   });
 }

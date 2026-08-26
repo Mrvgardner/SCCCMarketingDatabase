@@ -23,6 +23,35 @@ const ATTEMPT_KEY = "sc:app-auth-attempt";
 // window means something downstream is failing and we are spinning.
 const LOOP_WINDOW_MS = 20000;
 
+// The query the app opens the site with. Sign-in must START from the site root,
+// not from /app-auth: GoTrue records the Referer in the state JWT it hands
+// Google and decides from it where to return the token, and starting from
+// /app-auth produced an instant bounce back with no token and no error — a
+// round trip measured at one second, which is less than Face ID alone takes.
+// The web sign-in that has always worked starts from the root, so this one does
+// too.
+export const APP_AUTH_START_QUERY = "appauth";
+
+// Call before anything renders. Returns true if it took over the page.
+export function startAppAuthFromRoot() {
+  let params;
+  try {
+    params = new URLSearchParams(window.location.search);
+  } catch {
+    return false;
+  }
+  if (params.get(APP_AUTH_START_QUERY) !== "1") return false;
+
+  // Strip the query first so the Referer we send is exactly the site root —
+  // replaceState changes the document URL without a reload, so the redirect
+  // below carries the clean origin.
+  try {
+    window.history.replaceState(null, "", "/");
+  } catch { /* the query would merely appear in the referrer */ }
+
+  return beginAppAuthRedirect();
+}
+
 // Returns false if it refused to start because a sign-in was only just tried.
 export function beginAppAuthRedirect() {
   try {
