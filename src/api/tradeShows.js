@@ -219,8 +219,15 @@ async function prodRequest(method, body) {
 
   const response = await fetch(ENDPOINT, options);
   if (!response.ok) {
-    const message = await response.text().catch(() => "");
-    throw new Error(`${method} ${ENDPOINT} returned ${response.status} ${message}`);
+    // The server explains refusals in plain language — "use a three-letter
+    // airport code", "too many people are saving at once". Show that, and fall
+    // back to the raw status only when there is nothing to show.
+    const body = await response.text().catch(() => "");
+    let message = "";
+    try {
+      message = JSON.parse(body)?.error || "";
+    } catch { /* not JSON */ }
+    throw new Error(message || `Request failed (${response.status}).`);
   }
   return response.json();
 }

@@ -1,6 +1,7 @@
 import { getStore } from "@netlify/blobs";
 import { authenticate } from "../lib/auth.mjs";
 import { withCors } from "../lib/http.mjs";
+import { clean, validateFlightLeg } from "../lib/travel-input.mjs";
 import { tradeShows as seedTradeShows } from "../../src/data/tradeShows.js";
 
 const STORE_NAME = "knowledge-base";
@@ -160,18 +161,45 @@ export function mergeSeedConfiguration(events) {
   });
 }
 
-function clean(value, maxLength = 240) {
-  return String(value || "").trim().slice(0, maxLength);
+// The store holds every event under one key, so a plain read-modify-write loses
+// whichever save lands second — two people adding flights at the same time, and
+// one of them silently has no flight. Every write is now conditional on the
+// ETag that was read, and a clash re-reads and re-applies rather than
+// overwriting. `apply` runs against freshly loaded events on each attempt, so
+// it must not close over anything read outside the loop.
+const MAX_WRITE_ATTEMPTS = 5;
+
+export async function loadEvents(store) {
+  const stored = await store.getWithMetadata(KEY, { type: "json" });
+  if (stored?.data) {
+    return { events: mergeSeedConfiguration(stored.data).map(enrichTeamContacts), etag: stored.etag };
+  }
+
+  const seeded = clone(seedTradeShows);
+  const written = await store.setJSON(KEY, seeded, { onlyIfNew: true });
+  if (written.modified) return { events: seeded.map(enrichTeamContacts), etag: written.etag };
+
+  // Another invocation seeded it first; use theirs.
+  const fresh = await store.getWithMetadata(KEY, { type: "json" });
+  return { events: mergeSeedConfiguration(fresh?.data || []).map(enrichTeamContacts), etag: fresh?.etag };
 }
 
-function cleanFlightLeg(leg) {
-  return {
-    airline: clean(leg?.airline, 80),
-    flightNumber: clean(leg?.flightNumber, 20),
-    airport: clean(leg?.airport, 3).toUpperCase(),
-    date: clean(leg?.date, 10),
-    time: clean(leg?.time, 5),
-  };
+export async function commit(store, apply) {
+  for (let attempt = 1; attempt <= MAX_WRITE_ATTEMPTS; attempt += 1) {
+    const { events, etag } = await loadEvents(store);
+    const outcome = apply(events);
+    if (outcome.error) return json({ error: outcome.error }, outcome.status || 400);
+
+    const written = etag
+      ? await store.setJSON(KEY, events, { onlyIfMatch: etag })
+      : await store.setJSON(KEY, events, { onlyIfNew: true });
+    if (written.modified) return json(outcome.value);
+  }
+
+  return json(
+    { error: "Too many people are saving at once. Try that again in a moment." },
+    409,
+  );
 }
 
 export default withCors(async (request) => {
@@ -182,16 +210,10 @@ export default withCors(async (request) => {
   const isAdmin = roles.some((role) => role.toLowerCase() === "admin");
   const store = getStore({ name: STORE_NAME, consistency: "strong" });
 
-  let events = await store.get(KEY, { type: "json" });
-  if (!events) {
-    events = clone(seedTradeShows);
-    await store.setJSON(KEY, events);
-  } else {
-    events = mergeSeedConfiguration(events);
+  if (request.method === "GET") {
+    const { events } = await loadEvents(store);
+    return json(events);
   }
-  events = events.map(enrichTeamContacts);
-
-  if (request.method === "GET") return json(events);
 
   if (request.method === "POST") {
     let payload;
@@ -200,47 +222,67 @@ export default withCors(async (request) => {
     } catch {
       return json({ error: "Invalid JSON body" }, 400);
     }
-
-    const eventIndex = events.findIndex((item) => item.id === payload?.eventId);
-    if (eventIndex === -1) return json({ error: "Event not found" }, 404);
+    if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+      return json({ error: "Invalid request body" }, 400);
+    }
 
     const email = clean(user.email, 160);
-    const travelingTeam = events[eventIndex].travelingTeam || [];
-    const person = travelerForEmail(email, travelingTeam);
-    const currentTravel = events[eventIndex].travel || [];
-    const ownedTravel = currentTravel.find((item) => item.email === email);
-
-    if (!payload.travel?.remove && !person) {
-      return json({ error: "Your account is not on the traveling team for this event" }, 403);
+    const eventId = clean(payload.eventId, 80);
+    const travel = payload.travel;
+    if (travel !== undefined && travel !== null && (typeof travel !== "object" || Array.isArray(travel))) {
+      return json({ error: "Invalid travel details" }, 400);
     }
 
-    if (payload.travel?.remove) {
-      const remaining = currentTravel.filter((item) => item.email !== email);
-      events[eventIndex].travel = ownedTravel && travelingTeam.some((name) => name.toLowerCase() === ownedTravel.person.toLowerCase())
-        ? [...remaining, { person: ownedTravel.person, arrival: "TBD", departure: "TBD", carrier: "Optional", notes: "Flight info not added." }]
-        : remaining;
-    } else {
-      // No "already claimed" guard: `person` is now derived from the caller's
-      // own email, so the only entries this can overwrite are their own or a
-      // stale one filed under their name before that binding existed. Blocking
-      // here would lock the rightful owner out of their own row.
-      const entry = {
-        person,
-        email,
-        arrivalFlight: cleanFlightLeg(payload.travel?.arrivalFlight),
-        departureFlight: cleanFlightLeg(payload.travel?.departureFlight),
-        notes: clean(payload.travel?.notes, 400),
-      };
-      events[eventIndex].travel = [
-        ...currentTravel.filter(
-          (item) => item.email !== email && item.person?.toLowerCase() !== person.toLowerCase(),
-        ),
-        entry,
-      ];
+    // Validated once, outside the retry loop: it depends only on the request,
+    // so a second attempt would reach the same verdict.
+    const removing = Boolean(travel?.remove);
+    let arrivalFlight;
+    let departureFlight;
+    let notes;
+    if (!removing) {
+      const arrival = validateFlightLeg(travel?.arrivalFlight, "Arrival flight");
+      if (arrival.error) return json({ error: arrival.error }, 400);
+      const departure = validateFlightLeg(travel?.departureFlight, "Departure flight");
+      if (departure.error) return json({ error: departure.error }, 400);
+      arrivalFlight = arrival.value;
+      departureFlight = departure.value;
+      notes = clean(travel?.notes, 400, { multiline: true });
     }
 
-    await store.setJSON(KEY, events);
-    return json(events[eventIndex].travel);
+    return commit(store, (events) => {
+      const eventIndex = events.findIndex((item) => item.id === eventId);
+      if (eventIndex === -1) return { error: "Event not found", status: 404 };
+
+      const travelingTeam = events[eventIndex].travelingTeam || [];
+      const person = travelerForEmail(email, travelingTeam);
+      const currentTravel = events[eventIndex].travel || [];
+      const ownedTravel = currentTravel.find((item) => item.email === email);
+
+      if (!removing && !person) {
+        return { error: "Your account is not on the traveling team for this event", status: 403 };
+      }
+
+      if (removing) {
+        const remaining = currentTravel.filter((item) => item.email !== email);
+        events[eventIndex].travel = ownedTravel && travelingTeam.some((name) => name.toLowerCase() === ownedTravel.person.toLowerCase())
+          ? [...remaining, { person: ownedTravel.person, arrival: "TBD", departure: "TBD", carrier: "Optional", notes: "Flight info not added." }]
+          : remaining;
+      } else {
+        // No "already claimed" guard: `person` is derived from the caller's own
+        // email, so the only entries this can overwrite are their own or a
+        // stale one filed under their name before that binding existed.
+        // Blocking here would lock the rightful owner out of their own row.
+        const entry = { person, email, arrivalFlight, departureFlight, notes };
+        events[eventIndex].travel = [
+          ...currentTravel.filter(
+            (item) => item.email !== email && item.person?.toLowerCase() !== person.toLowerCase(),
+          ),
+          entry,
+        ];
+      }
+
+      return { value: events[eventIndex].travel };
+    });
   }
 
   if (request.method !== "PUT") return json({ error: "Method not allowed" }, 405);
@@ -253,11 +295,15 @@ export default withCors(async (request) => {
     return json({ error: "Invalid JSON body" }, 400);
   }
 
-  if (!event?.id) return json({ error: "Missing event id" }, 400);
-  const index = events.findIndex((item) => item.id === event.id);
-  if (index === -1) return json({ error: "Event not found" }, 404);
+  if (!event || typeof event !== "object" || Array.isArray(event)) {
+    return json({ error: "Invalid event body" }, 400);
+  }
+  if (typeof event.id !== "string" || !event.id.trim()) return json({ error: "Missing event id" }, 400);
 
-  events[index] = enrichTeamContacts(event);
-  await store.setJSON(KEY, events);
-  return json(events[index]);
+  return commit(store, (events) => {
+    const index = events.findIndex((item) => item.id === event.id);
+    if (index === -1) return { error: "Event not found", status: 404 };
+    events[index] = enrichTeamContacts(event);
+    return { value: events[index] };
+  });
 });
