@@ -84,7 +84,7 @@ export function useTripEvent(eventId) {
     const readiness = [
       { id: "registered", label: `Registered for ${event?.shortName || "the show"}`, done: onRoster },
       { id: "hotel", label: `Room at ${event?.hotel?.name || "the host hotel"}`, done: Boolean(event?.hotel?.name && event.hotel.name !== "Hotel TBD") },
-      { id: "flight", label: `Add your flight into ${event?.airportCode || "LAS"}`, done: hasFlight, action: "Add", to: "trip" },
+      { id: "flight", label: `Add your flight into ${event?.airportCode || "LAS"}`, done: hasFlight, action: "Add", to: "trip#flight" },
       { id: "expenses", label: "Expense capture ready", done: true },
     ];
 

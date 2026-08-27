@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useOutletContext } from "react-router-dom";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import { Card, Eyebrow, ScreenTitle } from "../../components/trip/TripChrome";
+import FlightEntry from "../../components/trip/FlightEntry";
 
 function StatCard({ tone, eyebrow, value, meta, action, onAction }) {
   const alert = tone === "alert";
@@ -38,8 +39,14 @@ function dotColor(item) {
 }
 
 export default function TripSchedule() {
-  const { event, myTravel } = useOutletContext();
+  const { event, myTravel, myName, user } = useOutletContext();
+  const { hash } = useLocation();
   const [day, setDay] = useState(0);
+  // Today's "Add" readiness action links here with #flight so the form is open
+  // on arrival — tapping "Add" and then hunting for the form is the friction
+  // that made this look broken.
+  const [editingFlight, setEditingFlight] = useState(hash === "#flight");
+  const flightRef = useRef(null);
   const days = event.schedule || [];
   const active = days[day] || days[0];
 
@@ -56,6 +63,16 @@ export default function TripSchedule() {
       }),
     [days],
   );
+
+  // Following the same link again while already on this tab only changes the
+  // hash, so the initial state above would not fire a second time.
+  useEffect(() => {
+    if (hash === "#flight") setEditingFlight(true);
+  }, [hash]);
+
+  useEffect(() => {
+    if (editingFlight) flightRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [editingFlight]);
 
   const hasFlight = Boolean(myTravel?.arrivalFlight?.flightNumber);
   const flightValue = hasFlight
@@ -77,10 +94,8 @@ export default function TripSchedule() {
           eyebrow="Flight"
           value={flightValue}
           meta={hasFlight ? [myTravel.arrivalFlight.date, myTravel.arrivalFlight.time].filter(Boolean).join(" · ") : null}
-          action={hasFlight ? null : "Look up flight"}
-          // Flight entry lives on the event hub's Team section, which already
-          // has the lookup wired to netlify/functions/flight-lookup.
-          onAction={() => { window.location.href = `/events/${event.id}#travel`; }}
+          action={editingFlight ? null : hasFlight ? "Edit flight" : "Add your flight"}
+          onAction={() => setEditingFlight(true)}
         />
         <StatCard
           eyebrow="Hotel"
@@ -88,6 +103,37 @@ export default function TripSchedule() {
           meta={event.city}
         />
       </div>
+
+      {editingFlight && (
+        <div ref={flightRef} className="scroll-mt-4">
+          <Card className="p-4">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <Eyebrow>Your flights</Eyebrow>
+                <p className="mt-1 text-[12.5px] leading-[1.5] text-[#75808d]">
+                  Enter the flight number and date and we will fill in the rest.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setEditingFlight(false)}
+                className="-mr-1 -mt-1 min-h-[44px] px-1 text-[13px] font-semibold text-[#93a0b4]"
+              >
+                Close
+              </button>
+            </div>
+            <div className="mt-3">
+              <FlightEntry
+                event={event}
+                user={user}
+                myName={myName}
+                myTravel={myTravel}
+                onDone={() => setEditingFlight(false)}
+              />
+            </div>
+          </Card>
+        </div>
+      )}
 
       {days.length > 1 && (
         <div className="flex gap-1 rounded-xl bg-white/[0.05] p-1" role="tablist" aria-label="Show days">
