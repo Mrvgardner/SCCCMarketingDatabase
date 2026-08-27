@@ -43,3 +43,10 @@ eng.traineddata
 # Capacitor copies the whole web build in here on every `cap copy`. Generated,
 # large, and it nearly ended up in a commit to main — keep it out of git.
 /ios/App/App/public/
+
+# Build output. Netlify runs `npm run build` itself (see netlify.toml), so the
+# committed copy was never deployed — it only made every source change look
+# like a 60-file diff. Everything here is generated: the assets by Vite,
+# index.html from the root template, sw.js + manifest.webmanifest by
+# vite-plugin-pwa, and the rest copied from public/.
+dist/
