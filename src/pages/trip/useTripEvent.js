@@ -79,14 +79,12 @@ export function useTripEvent(eventId) {
     const hasFlight = Boolean(
       myTravel?.arrivalFlight?.flightNumber || (myTravel?.arrival && myTravel.arrival !== "TBD"),
     );
-    const hotelDatesSet = Boolean(event?.hotel?.checkIn && event.hotel.checkIn !== "TBD");
     const onRoster = Boolean(myName);
 
     const readiness = [
       { id: "registered", label: `Registered for ${event?.shortName || "the show"}`, done: onRoster },
       { id: "hotel", label: `Room at ${event?.hotel?.name || "the host hotel"}`, done: Boolean(event?.hotel?.name && event.hotel.name !== "Hotel TBD") },
       { id: "flight", label: `Add your flight into ${event?.airportCode || "LAS"}`, done: hasFlight, action: "Add", to: "trip" },
-      { id: "hotelDates", label: "Confirm check-in / check-out", done: hotelDatesSet, action: "Open", to: "trip" },
       { id: "expenses", label: "Expense capture ready", done: true },
     ];
 
