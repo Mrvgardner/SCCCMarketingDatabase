@@ -3,10 +3,12 @@ import { useOutletContext } from "react-router-dom";
 import { CameraIcon } from "@heroicons/react/24/outline";
 import {
   createReceipt,
+  deleteReceipt,
   expenseCategories,
   flushReceipts,
   getReceiptImage,
   listReceipts,
+  reanalyzeReceipt,
   updateReceipt,
 } from "../../api/expenses";
 import { downloadExpensePackage } from "../../utils/expenseExports";
@@ -22,6 +24,9 @@ export default function TripMoney() {
   const [receipts, setReceipts] = useState([]);
   const [images, setImages] = useState({});
   const [openId, setOpenId] = useState(null);
+  // Deleting a receipt destroys the photo as well as the row, so it takes two
+  // taps rather than one. This holds the id waiting on that second tap.
+  const [confirmingDelete, setConfirmingDelete] = useState(null);
   const [busy, setBusy] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
   const [error, setError] = useState("");
@@ -116,6 +121,39 @@ export default function TripMoney() {
     } finally { setBusy(false); }
   };
 
+  const removeReceipt = async (receipt) => {
+    setBusy(true); setError(""); setMessage("");
+    try {
+      await deleteReceipt(receipt.id, event.id, user);
+      if (images[receipt.id]) URL.revokeObjectURL(images[receipt.id]);
+      setReceipts((current) => current.filter((item) => item.id !== receipt.id));
+      setImages((current) => {
+        const next = { ...current };
+        delete next[receipt.id];
+        return next;
+      });
+      setConfirmingDelete(null);
+      setOpenId(null);
+      setMessage("Receipt deleted.");
+    } catch (deleteError) {
+      setError(deleteError.message || "Could not delete the receipt.");
+    } finally { setBusy(false); }
+  };
+
+  // For when the first read got it wrong — the photo is already stored, so this
+  // re-runs the extraction against it rather than asking for another picture.
+  const readAgain = async (receipt) => {
+    setBusy(true); setError(""); setMessage("Reading the receipt again…");
+    try {
+      const analyzed = await reanalyzeReceipt(receipt.id, event.id, user);
+      setReceipts((current) => current.map((item) => (item.id === analyzed.id ? analyzed : item)));
+      setMessage("Read again. Check the details and confirm.");
+    } catch (analysisError) {
+      setError(analysisError.message || "Could not read the receipt again.");
+      setMessage("");
+    } finally { setBusy(false); }
+  };
+
   const allReady = receipts.length > 0 && totals.review === 0;
 
   const finalize = async () => {
@@ -124,7 +162,9 @@ export default function TripMoney() {
       await downloadExpensePackage({
         event,
         employeeName: myName || user?.user_metadata?.full_name || user?.email,
-        receipts,
+        // Chronological in the report, even though the list above is newest
+        // first — an expense report reads as a trip, not as a feed.
+        receipts: [...receipts].sort((a, b) => String(a.date || "").localeCompare(String(b.date || ""))),
         getImage: (receiptId) => getReceiptImage(receiptId, event.id, user),
       });
       setMessage("Trip report downloaded.");
@@ -192,7 +232,7 @@ export default function TripMoney() {
             >
               <button
                 type="button"
-                onClick={() => setOpenId(open ? null : receipt.id)}
+                onClick={() => { setConfirmingDelete(null); setOpenId(open ? null : receipt.id); }}
                 disabled={receipt.pendingUpload}
                 className="flex w-full items-center gap-3 p-3 text-left disabled:opacity-70"
               >
@@ -252,6 +292,50 @@ export default function TripMoney() {
                   >
                     Confirm receipt
                   </button>
+
+                  {confirmingDelete === receipt.id ? (
+                    <div className="rounded-xl border border-[#ef4444]/40 bg-[#ef4444]/[0.08] p-3">
+                      <p className="text-[12.5px] leading-[1.45] text-white">
+                        Delete this receipt and its photo? This cannot be undone.
+                      </p>
+                      <div className="mt-2.5 flex gap-2">
+                        <button
+                          type="button"
+                          disabled={busy}
+                          onClick={() => removeReceipt(receipt)}
+                          className="min-h-[44px] flex-1 rounded-lg bg-[#ef4444] text-[13px] font-semibold text-white disabled:opacity-60"
+                        >
+                          Delete
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setConfirmingDelete(null)}
+                          className="min-h-[44px] flex-1 rounded-lg border border-white/15 text-[13px] font-semibold text-[#93a0b4]"
+                        >
+                          Keep
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => readAgain(receipt)}
+                        className="min-h-[44px] flex-1 rounded-lg border border-white/15 text-[13px] font-semibold text-[#93a0b4] disabled:opacity-60"
+                      >
+                        Read again
+                      </button>
+                      <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => setConfirmingDelete(receipt.id)}
+                        className="min-h-[44px] flex-1 rounded-lg border border-[#ef4444]/35 text-[13px] font-semibold text-[#ef4444] disabled:opacity-60"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </Card>

@@ -25,8 +25,6 @@ export const tradeShows = [
     hotel: {
       name: "Hotel TBD",
       address: "Add hotel address",
-      checkIn: "TBD",
-      checkOut: "TBD",
       confirmation: "Group block / reservation details TBD",
       notes: "Add parking, shuttle, lobby meeting point, and after-hours instructions when confirmed.",
     },
@@ -209,8 +207,6 @@ export const tradeShows = [
     hotel: {
       name: "Paris Las Vegas",
       address: "3655 S Las Vegas Blvd, Las Vegas, NV 89109",
-      checkIn: "TBD",
-      checkOut: "TBD",
       confirmation: "Conference hotel details TBD",
       notes: "Confirm room block, meeting point, and whether everyone is staying at the conference hotel.",
     },

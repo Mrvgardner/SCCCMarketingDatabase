@@ -383,9 +383,9 @@ function AppShell() {
   const { pathname } = useLocation();
 
   // The trade show hub is the PWA's start_url and is meant to read as its own
-  // app, so the marketing-site nav is hidden inside it. Every /events view
-  // offers its own way back: EventAppMenu on a detail page, a header link on
-  // the index. /admin/events keeps the nav — admins move between sections.
+  // app, so the marketing-site nav is hidden inside it. Each view offers its
+  // own way back: a header link on the /events index, the More tab inside a
+  // trip. /admin/events keeps the nav — admins move between sections.
   const inTradeShowApp = pathname === '/events' || pathname.startsWith('/events/')
     || pathname.startsWith('/trip/');
 
