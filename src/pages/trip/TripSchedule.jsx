@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import { Card, Eyebrow, ScreenTitle } from "../../components/trip/TripChrome";
 
 function StatCard({ tone, eyebrow, value, meta, action, onAction }) {
@@ -109,6 +110,44 @@ export default function TripSchedule() {
             </button>
           ))}
         </div>
+      )}
+
+      {/* The hub carried full hotel and venue detail; the two stat cards above
+          only summarise it, so the rest is kept here rather than dropped. */}
+      {(event.hotel?.address || event.hotel?.confirmation || event.hotel?.notes || event.hotelMapUrl) && (
+        <Card className="p-4">
+          <Eyebrow>Hotel &amp; venue</Eyebrow>
+          <p className="mt-2 text-[14.5px] font-semibold text-white">{event.hotel?.name}</p>
+          {event.hotel?.address && (
+            <p className="mt-0.5 text-[13px] leading-[1.5] text-[#93a0b4]">{event.hotel.address}</p>
+          )}
+          {event.hotel?.confirmation && (
+            <p className="mt-2 text-[12.5px] leading-[1.5] text-[#75808d]">{event.hotel.confirmation}</p>
+          )}
+          {event.hotel?.notes && (
+            <p className="mt-2 text-[12.5px] leading-[1.5] text-[#75808d]">{event.hotel.notes}</p>
+          )}
+          <div className="mt-3 flex flex-wrap gap-2">
+            {event.hotelMapUrl && (
+              <a href={event.hotelMapUrl} target="_blank" rel="noopener noreferrer"
+                 className="inline-flex min-h-[44px] items-center gap-1.5 rounded-xl border border-white/15 px-3 text-[13px] font-semibold text-white">
+                Hotel map <ArrowTopRightOnSquareIcon className="h-4 w-4" />
+              </a>
+            )}
+            {event.venueMapUrl && (
+              <a href={event.venueMapUrl} target="_blank" rel="noopener noreferrer"
+                 className="inline-flex min-h-[44px] items-center gap-1.5 rounded-xl border border-white/15 px-3 text-[13px] font-semibold text-white">
+                Venue map <ArrowTopRightOnSquareIcon className="h-4 w-4" />
+              </a>
+            )}
+            {event.officialUrl && (
+              <a href={event.officialUrl} target="_blank" rel="noopener noreferrer"
+                 className="inline-flex min-h-[44px] items-center gap-1.5 rounded-xl border border-white/15 px-3 text-[13px] font-semibold text-white">
+                Show site <ArrowTopRightOnSquareIcon className="h-4 w-4" />
+              </a>
+            )}
+          </div>
+        </Card>
       )}
 
       {active?.dressCode && (

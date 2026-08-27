@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import {
   ArrowLeftIcon,
   ArrowTopRightOnSquareIcon,
@@ -194,7 +194,7 @@ function EventsIndex({ events }) {
             {upcoming.map((event) => (
               <Link
                 key={event.id}
-                to={`/events/${event.id}`}
+                to={`/trip/${event.id}/today`}
                 className="group block rounded-lg border border-white/10 bg-gray-900/55 p-5 shadow-xl shadow-black/10 transition-all hover:-translate-y-0.5 hover:border-[#0951fa]/60 hover:bg-gray-900"
               >
                 <div className="flex items-start justify-between gap-4">
@@ -1358,6 +1358,11 @@ export default function Events() {
   }, []);
 
   if (!eventId) return <EventsIndex events={events} />;
+
+  // The event hub has been replaced by the trip experience. This route is kept
+  // so existing links, bookmarks and push notification URLs still land
+  // somewhere sensible rather than 404ing.
+  return <Navigate to={`/trip/${eventId}/today`} replace />;
 
   if (!event) {
     return (

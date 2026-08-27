@@ -88,6 +88,7 @@ const routes = {
   tripMoney:              () => import('./pages/trip/TripMoney.jsx'),
   tripBooth:              () => import('./pages/trip/TripBooth.jsx'),
   tripTeam:               () => import('./pages/trip/TripTeam.jsx'),
+  tripMore:               () => import('./pages/trip/TripMore.jsx'),
 };
 
 const SwitchCommerceBranding = lazy(routes.switchCommerceBranding);
@@ -117,6 +118,7 @@ const TripSchedule           = lazy(routes.tripSchedule);
 const TripMoney              = lazy(routes.tripMoney);
 const TripBooth              = lazy(routes.tripBooth);
 const TripTeam               = lazy(routes.tripTeam);
+const TripMore               = lazy(routes.tripMore);
 
 // Idempotent fire-and-forget; ignore the resolved module.
 const prefetch = (imp) => { try { imp(); } catch {} };
@@ -360,6 +362,7 @@ function NativeAppShell() {
             <Route path="money" element={<TripMoney />} />
             <Route path="booth" element={<TripBooth />} />
             <Route path="team" element={<TripTeam />} />
+            <Route path="more" element={<TripMore />} />
           </Route>
           <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>} />
           <Route path="/events/:eventId" element={<ProtectedRoute><Events /></ProtectedRoute>} />
@@ -413,6 +416,7 @@ function AppShell() {
           <Route path="money" element={<TripMoney />} />
           <Route path="booth" element={<TripBooth />} />
           <Route path="team" element={<TripTeam />} />
+            <Route path="more" element={<TripMore />} />
         </Route>
         <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>} />
         <Route path="/events/:eventId" element={<ProtectedRoute><Events /></ProtectedRoute>} />

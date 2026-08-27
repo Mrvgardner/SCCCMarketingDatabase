@@ -134,7 +134,7 @@ export default async () => {
         title: change.title,
         body: change.body,
         urgent: change.audience === 'team',
-        url: `/events/${candidate.eventId}#travel`,
+        url: `/trip/${candidate.eventId}/team`,
         tag: `flight-${key}`,
       });
 

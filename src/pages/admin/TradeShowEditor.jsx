@@ -115,7 +115,7 @@ export default function TradeShowEditor() {
   }, [eventId]);
 
   const selectedDay = event?.schedule?.[selectedDayIndex];
-  const attendeeUrl = `/events/${eventId}`;
+  const attendeeUrl = `/trip/${eventId}/today`;
 
   const latestStatus = useMemo(() => {
     const latest = event?.latestUpdates?.[0];

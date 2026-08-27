@@ -8,6 +8,11 @@ const TABS = [
   { id: "money", label: "Money" },
   { id: "booth", label: "Booth" },
   { id: "team", label: "Team" },
+  // A sixth tab beyond the five in the design. The design's five answer the
+  // questions people open their phone for; this carries the rest of the hub's
+  // functionality — updates, resources, archive, device settings — so nothing
+  // was lost when the web app moved onto this design.
+  { id: "more", label: "More" },
 ];
 
 export default function TripTabBar({ eventId }) {
