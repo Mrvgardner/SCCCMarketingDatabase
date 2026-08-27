@@ -1,1 +1,0 @@
-import{ax as e,_ as o}from"./main-603f6019.js";const _=e("Browser",{web:()=>o(()=>import("./web-6374626c.js"),["assets/web-6374626c.js","assets/main-603f6019.js","assets/index-67e8ffc6.css"]).then(r=>new r.BrowserWeb)});export{_ as Browser};

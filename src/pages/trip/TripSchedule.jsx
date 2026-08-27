@@ -85,11 +85,7 @@ export default function TripSchedule() {
         <StatCard
           eyebrow="Hotel"
           value={event.hotel?.name || "Hotel TBD"}
-          meta={
-            event.hotel?.checkIn && event.hotel.checkIn !== "TBD"
-              ? `${event.hotel.checkIn} → ${event.hotel.checkOut}`
-              : "Dates TBD"
-          }
+          meta={event.city}
         />
       </div>
 

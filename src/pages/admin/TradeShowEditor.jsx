@@ -386,8 +386,6 @@ export default function TradeShowEditor() {
               <Field label="Event owner" value={event.owner} onChange={(value) => updateTopLevel("owner", value)} />
               <Field label="Hotel" value={event.hotel.name} onChange={(value) => updateHotel("name", value)} />
               <Field label="Hotel address" value={event.hotel.address} onChange={(value) => updateHotel("address", value)} />
-              <Field label="Check-in" value={event.hotel.checkIn} onChange={(value) => updateHotel("checkIn", value)} />
-              <Field label="Check-out" value={event.hotel.checkOut} onChange={(value) => updateHotel("checkOut", value)} />
             </div>
             <div className="mt-4">
               <TextArea label="Hotel and arrival notes" value={event.hotel.notes} onChange={(value) => updateHotel("notes", value)} />
