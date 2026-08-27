@@ -1,5 +1,6 @@
 import { getStore } from "@netlify/blobs";
-import { getUser } from "@netlify/identity";
+import { authenticate } from "../lib/auth.mjs";
+import { withCors } from "../lib/http.mjs";
 
 const STORE_NAME = "trade-show-resource-files";
 const MAX_BYTES = 5 * 1024 * 1024;
@@ -40,8 +41,8 @@ function fileKey(eventId, fileId) {
   return `events/${eventId}/${fileId}`;
 }
 
-export default async (request) => {
-  const user = await getUser();
+export default withCors(async (request) => {
+  const user = await authenticate(request);
   if (!user) return json({ error: "Unauthorized" }, 401);
 
   const roles = user.roles || user.appMetadata?.roles || user.app_metadata?.roles || [];
@@ -91,4 +92,4 @@ export default async (request) => {
   }
 
   return json({ error: "Method not allowed" }, 405);
-};
+});

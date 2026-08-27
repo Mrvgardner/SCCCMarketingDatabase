@@ -1,5 +1,6 @@
 import { getStore } from "@netlify/blobs";
-import { getUser } from "@netlify/identity";
+import { authenticate } from "../lib/auth.mjs";
+import { withCors } from "../lib/http.mjs";
 import OpenAI from "openai";
 
 const RECEIPT_STORE = "trade-show-receipts";
@@ -157,8 +158,8 @@ Extract the merchant name, transaction date, category, subtotal, tax, tip, final
   }
 }
 
-export default async (request) => {
-  const user = await getUser();
+export default withCors(async (request) => {
+  const user = await authenticate(request);
   if (!user?.email) return json({ error: "Unauthorized" }, 401);
 
   const url = new URL(request.url);
@@ -266,4 +267,4 @@ export default async (request) => {
   }
 
   return json({ error: "Method not allowed" }, 405);
-};
+});

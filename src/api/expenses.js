@@ -1,4 +1,5 @@
 import { expenseCategories, suggestExpenseCategory } from "../data/expenseCategories";
+import { apiUrl } from "./apiBase";
 import {
   queueReceipt,
   queuedAsReceipt,
@@ -10,7 +11,7 @@ import {
 
 const DB_NAME = "scc-trade-show-expenses";
 const STORE_NAME = "receipts";
-const ENDPOINT = "/.netlify/functions/receipts";
+const ENDPOINT = apiUrl("/.netlify/functions/receipts");
 
 function resolveEventId(eventId) {
   if (eventId) return eventId;

@@ -1,5 +1,6 @@
 import { getStore } from '@netlify/blobs';
-import { getUser } from '@netlify/identity';
+import { authenticate } from "../lib/auth.mjs";
+import { withCors } from "../lib/http.mjs";
 import webpush from 'web-push';
 import { configuredVapid } from '../lib/push.js';
 
@@ -21,8 +22,8 @@ function eventKey(eventId) {
 // VAPID differently. See netlify/lib/push.js.
 const configuredKeys = configuredVapid;
 
-export default async (request) => {
-  const user = await getUser();
+export default withCors(async (request) => {
+  const user = await authenticate(request);
   if (!user) return json({ error: 'Unauthorized' }, 401);
 
   const keys = configuredKeys();
@@ -76,7 +77,10 @@ export default async (request) => {
   if (!roles.some((role) => role.toLowerCase() === 'admin')) return json({ error: 'Admin role required' }, 403);
 
   const url = clean(payload.url, 240);
-  if (!url.startsWith(`/events/${eventId}`)) return json({ error: 'Invalid notification URL' }, 400);
+  // Both shapes are valid: /trip/:id is the current experience, /events/:id is
+  // kept for notifications already queued or sent against the old hub.
+  const targetsThisEvent = url.startsWith(`/trip/${eventId}`) || url.startsWith(`/events/${eventId}`);
+  if (!targetsThisEvent) return json({ error: 'Invalid notification URL' }, 400);
   const notification = JSON.stringify({
     title: clean(payload.title, 120),
     body: clean(payload.body, 280),
@@ -111,4 +115,4 @@ export default async (request) => {
     delivered: results.filter((result) => result.status === 'fulfilled').length,
     failed: results.filter((result) => result.status === 'rejected').length,
   });
-};
+});

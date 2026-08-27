@@ -1,9 +1,10 @@
+import { apiUrl } from "./apiBase";
 // Field Notes API client — same dev/prod split as products.js.
 
 import { fieldNotes as seedNotes } from "../data/field-notes";
 
 const DEV_KEY = "scc:field-notes";
-const ENDPOINT = "/.netlify/functions/field-notes";
+const ENDPOINT = apiUrl("/.netlify/functions/field-notes");
 const ALLOWED_REACTIONS = new Set(["👍", "✅", "🔥"]);
 
 function genId() {

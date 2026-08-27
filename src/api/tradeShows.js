@@ -1,10 +1,11 @@
 import { tradeShows as seedTradeShows } from "../data/tradeShows";
+import { apiUrl } from "./apiBase";
 
 const DEV_KEY = "scc:trade-shows";
-const ENDPOINT = "/.netlify/functions/trade-shows";
+const ENDPOINT = apiUrl("/.netlify/functions/trade-shows");
 const FLIGHT_LOOKUP_ENDPOINT = import.meta.env.DEV
   ? "http://127.0.0.1:3001/.netlify/functions/flight-lookup"
-  : "/.netlify/functions/flight-lookup";
+  : apiUrl("/.netlify/functions/flight-lookup");
 
 // Vite replaces this condition at build time; Rollup removes the directory from production assets.
 const DEV_TRAVELER_CONTACTS = import.meta.env.DEV ? {

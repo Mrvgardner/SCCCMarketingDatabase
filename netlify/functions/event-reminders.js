@@ -59,7 +59,7 @@ export default async () => {
         title: reminder.title,
         body: reminder.body,
         urgent: reminder.leadMinutes <= 10,
-        url: `/events/${reminder.eventId}#schedule`,
+        url: `/trip/${reminder.eventId}/trip`,
         tag: `all-hands-${reminder.key}`,
       });
 

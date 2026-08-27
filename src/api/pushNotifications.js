@@ -1,4 +1,6 @@
-const ENDPOINT = '/.netlify/functions/push-notifications';
+import { apiUrl } from "./apiBase";
+
+const ENDPOINT = apiUrl("/.netlify/functions/push-notifications");
 const EVENT_IDS_KEY = 'scc:push-event-ids';
 
 function subscribedEventIds() {

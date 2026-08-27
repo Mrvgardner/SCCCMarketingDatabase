@@ -1,4 +1,5 @@
 import { useAuth } from "../contexts/AuthContext";
+import { isNativeApp } from "../api/apiBase";
 import { Navigate } from "react-router-dom";
 
 export default function Login() {
@@ -19,8 +20,14 @@ export default function Login() {
             fetchpriority="high"
             className="mx-auto h-12 mb-6 w-auto"
           />
-          <h1 className="font-switch-bold text-3xl text-white tracking-wide">Team Portal</h1>
-          <p className="mt-2 text-gray-400">Sign in to access marketing resources</p>
+          <h1 className="font-switch-bold text-3xl text-white tracking-wide">
+            {isNativeApp() ? "Trade Shows" : "Team Portal"}
+          </h1>
+          <p className="mt-2 text-gray-400">
+            {isNativeApp()
+              ? "Sign in for schedules, travel, and expenses"
+              : "Sign in to access marketing resources"}
+          </p>
         </div>
 
         <div className="space-y-4">
