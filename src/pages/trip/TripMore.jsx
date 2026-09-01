@@ -12,6 +12,7 @@ import PwaControls from "../../components/PwaControls";
 import { downloadEventResourceFile } from "../../api/eventResources";
 import { isNativeApp } from "../../api/apiBase";
 import { Card, Eyebrow, ScreenTitle } from "../../components/trip/TripChrome";
+import EmergencyContact from "../../components/trip/EmergencyContact";
 
 // Everything the five primary screens deliberately do not carry. The design
 // specifies five tabs answering the questions people open their phone for; this
@@ -63,7 +64,7 @@ function ResourceAction({ eventId, resource }) {
 }
 
 export default function TripMore() {
-  const { event, isAdmin } = useOutletContext();
+  const { event, isAdmin, user } = useOutletContext();
   const updates = useMemo(() => event.latestUpdates || [], [event]);
   const readStateKey = `scc:event-updates-read:${event.id}`;
   const [readIds, setReadIds] = useState([]);
@@ -179,6 +180,8 @@ export default function TripMore() {
           </Card>
         </section>
       )}
+
+      <EmergencyContact user={user} />
 
       <section>
         <Eyebrow>This device</Eyebrow>
