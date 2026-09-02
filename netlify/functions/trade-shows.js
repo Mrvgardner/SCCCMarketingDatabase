@@ -2,6 +2,7 @@ import { getStore } from "@netlify/blobs";
 import { authenticate } from "../lib/auth.mjs";
 import { withCors } from "../lib/http.mjs";
 import { clean, validateFlightLeg } from "../lib/travel-input.mjs";
+import { validateBriefing } from "../lib/briefing.mjs";
 import { tradeShows as seedTradeShows } from "../../src/data/tradeShows.js";
 
 const STORE_NAME = "knowledge-base";
@@ -282,6 +283,34 @@ export default withCors(async (request) => {
       }
 
       return { value: events[eventIndex].travel };
+    });
+  }
+
+  // The Booth screen's pinned list. Its own method rather than a full-event PUT:
+  // it touches one array, so two admins editing different parts of an event
+  // cannot overwrite each other's work.
+  if (request.method === "PATCH") {
+    if (!isAdmin) return json({ error: "Admin role required" }, 403);
+
+    let payload;
+    try {
+      payload = await request.json();
+    } catch {
+      return json({ error: "Invalid JSON body" }, 400);
+    }
+    if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+      return json({ error: "Invalid request body" }, 400);
+    }
+
+    const eventId = clean(payload.eventId, 80);
+    const checked = validateBriefing(payload.briefing);
+    if (checked.error) return json({ error: checked.error }, 400);
+
+    return commit(store, (events) => {
+      const index = events.findIndex((item) => item.id === eventId);
+      if (index === -1) return { error: "Event not found", status: 404 };
+      events[index].briefing = checked.value;
+      return { value: events[index].briefing };
     });
   }
 

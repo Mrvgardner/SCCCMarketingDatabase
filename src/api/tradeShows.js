@@ -244,6 +244,24 @@ export async function updateMyTravel(eventId, travel, user) {
   return result;
 }
 
+// The Booth screen's pinned list. Admin-only on the server; the whole array is
+// sent because it is short and reordering is a normal edit.
+export async function updateBriefing(eventId, briefing) {
+  let result;
+  if (useDev) {
+    const events = devRead();
+    const index = events.findIndex((item) => item.id === eventId);
+    if (index === -1) throw new Error("Event not found");
+    events[index].briefing = briefing;
+    devWrite(events);
+    result = briefing;
+  } else {
+    result = await prodRequest("PATCH", { eventId, briefing });
+  }
+  window.dispatchEvent(new CustomEvent("trade-shows:updated", { detail: eventId }));
+  return result;
+}
+
 export async function lookupFlight({ flightNumber, date, direction, eventAirport }) {
   const headers = useDev ? {} : await authHeaders();
   headers["Content-Type"] = "application/json";

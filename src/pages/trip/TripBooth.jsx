@@ -1,20 +1,32 @@
 import { useOutletContext } from "react-router-dom";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import { Eyebrow } from "../../components/trip/TripChrome";
+import BoothSearch from "../../components/trip/BoothSearch";
+import KnowThisCold from "../../components/trip/KnowThisCold";
+import EventResources from "../../components/trip/EventResources";
 
 export default function TripBooth() {
-  const { event } = useOutletContext();
+  const { event, isAdmin, myName, user } = useOutletContext();
   const map = event.floorMap;
+  const briefing = event.briefing || [];
 
+  const pinned = <KnowThisCold event={event} isAdmin={isAdmin} myName={myName} user={user} />;
+
+  // Search sits at the top of this screen on both versions of it: standing at
+  // the booth, an answer is more urgent than a map.
   if (!map) {
     return (
-      <div className="space-y-3">
-        <Eyebrow>{event.venue}</Eyebrow>
-        <h1 className="text-[26px] font-bold leading-[1.15] text-white">No floor map yet</h1>
-        <p className="text-[13.5px] leading-[1.6] text-[#93a0b4]">
-          Marketing adds the venue map once the show publishes it.
-        </p>
-      </div>
+      <BoothSearch event={event} briefing={briefing}>
+        {pinned}
+        <div>
+          <Eyebrow>{event.venue}</Eyebrow>
+          <h1 className="mt-2 text-[22px] font-bold leading-[1.15] text-white">No floor map yet</h1>
+          <p className="mt-1.5 text-[13.5px] leading-[1.6] text-[#93a0b4]">
+            Marketing adds the venue map once the show publishes it.
+          </p>
+        </div>
+        <EventResources event={event} />
+      </BoothSearch>
     );
   }
 
@@ -22,7 +34,9 @@ export default function TripBooth() {
   const routeWidth = map.routeWidth || 13;
 
   return (
-    <div className="space-y-4">
+    <BoothSearch event={event} briefing={briefing}>
+      {pinned}
+
       <div>
         <Eyebrow>{[event.venue, map.level].filter(Boolean).join(" · ")}</Eyebrow>
         <h1 className="mt-2 text-[26px] font-bold leading-[1.15] text-white">{map.title}</h1>
@@ -125,6 +139,8 @@ export default function TripBooth() {
           <ArrowTopRightOnSquareIcon className="h-4 w-4" />
         </a>
       )}
-    </div>
+
+      <EventResources event={event} />
+    </BoothSearch>
   );
 }
