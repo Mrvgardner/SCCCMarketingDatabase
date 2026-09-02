@@ -28,26 +28,7 @@ export const tradeShows = [
       confirmation: "Group block / reservation details TBD",
       notes: "Add parking, shuttle, lobby meeting point, and after-hours instructions when confirmed.",
     },
-    latestUpdates: [
-      {
-        id: "nacs-essentials-2026-08-11",
-        level: "Normal",
-        date: "2026-08-11",
-        author: "Marketing",
-        title: "NACS dates, booth, and team added",
-        body: "The NACS hub now includes the October 7-9 event dates, Switch Commerce booth C5981, and the current traveling team.",
-        smsCopy: "NACS team: the hub now has our October 7-9 dates, booth C5981, and current traveling team. Check the hub as more details are confirmed.",
-      },
-      {
-        id: "nacs-update-1",
-        level: "Important",
-        date: "2026-08-04",
-        author: "Vic",
-        title: "Event hub created",
-        body: "Use this page as the source of truth while NACS details are being finalized.",
-        smsCopy: "NACS team: the event hub is live. Check it for schedule, dress code, hotel, resources, and map updates.",
-      },
-    ],
+    latestUpdates: [],
     schedule: [
       {
         day: "Wednesday, Oct. 7",
@@ -210,35 +191,7 @@ export const tradeShows = [
       confirmation: "Conference hotel details TBD",
       notes: "Confirm room block, meeting point, and whether everyone is staying at the conference hotel.",
     },
-    latestUpdates: [
-      {
-        id: "nac-schedule-refresh-2026-08-10",
-        level: "Normal",
-        date: "2026-08-10",
-        author: "Marketing",
-        title: "Show-floor schedule refreshed",
-        body: "The NAC schedule now reflects the current exhibitor and Expo Hall schedule. Times are still subject to change, so check this page for the latest details.",
-        smsCopy: "NAC team: the hub schedule has been refreshed with the current exhibitor and Expo Hall times. It is still subject to change, so please check the hub for updates.",
-      },
-      {
-        id: "nac-update-2",
-        level: "Normal",
-        date: "2026-08-06",
-        author: "Vic",
-        title: "Tentative NAC schedule added",
-        body: "Team arrival times, event hours, and daily attire are now posted. All details remain subject to change.",
-        smsCopy: "NAC team: tentative event hours, required booth arrival times, and daily attire are now in the event hub. Details may change.",
-      },
-      {
-        id: "nac-update-1",
-        level: "Normal",
-        date: "2026-08-04",
-        author: "Vic",
-        title: "NAC workspace added",
-        body: "This page is ready for confirmed NAC schedule, travel, and resource details.",
-        smsCopy: "NAC team: the event hub is ready for schedule, hotel, dress code, resource, and map updates.",
-      },
-    ],
+    latestUpdates: [],
     schedule: [
       {
         day: "Tuesday, October 13",
