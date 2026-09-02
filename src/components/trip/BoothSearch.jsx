@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
-import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { MagnifyingGlassIcon, SparklesIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { listProducts } from "../../api/products";
+import { askProductSearch } from "../../api/productSearch";
 
 // Answering a question at the booth.
 //
@@ -46,6 +47,10 @@ export default function BoothSearch({ event, briefing = [], children }) {
   const [query, setQuery] = useState("");
   const [products, setProducts] = useState([]);
   const [openId, setOpenId] = useState(null);
+  // Interpreted search: what the keyword pass cannot reach.
+  const [asked, setAsked] = useState(null);
+  const [asking, setAsking] = useState(false);
+  const [askError, setAskError] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -85,7 +90,74 @@ export default function BoothSearch({ event, briefing = [], children }) {
     : [];
 
   const searching = terms.length > 0;
-  const nothing = searching && !showHits.length && !productHits.length;
+  const noKeywordHits = searching && !showHits.length && !productHits.length;
+
+  const ask = useCallback(async (text) => {
+    setAsking(true);
+    setAskError("");
+    try {
+      setAsked({ query: text, ...(await askProductSearch(text)) });
+    } catch (error) {
+      setAskError(error.message || "Could not run that search.");
+    } finally {
+      setAsking(false);
+    }
+  }, []);
+
+  // Asking costs money, so it is not fired on every keystroke. It runs by
+  // itself only when the free pass found nothing at all — the case where the
+  // alternative is an empty screen — and after typing has stopped. Anything
+  // else is a deliberate tap.
+  useEffect(() => {
+    const text = query.trim();
+    setAskError("");
+    if (!noKeywordHits || text.length < 4) {
+      setAsked(null);
+      return undefined;
+    }
+    const timer = setTimeout(() => ask(text), 700);
+    return () => clearTimeout(timer);
+  }, [query, noKeywordHits, ask]);
+
+  const interpreted = asked && asked.query === query.trim() ? asked : null;
+  const nothing = noKeywordHits && !asking && interpreted && !interpreted.matches.length;
+
+  // One card shape for both passes. An interpreted hit carries the extra line
+  // saying why it came back, since it did not match on any word that was typed.
+  const renderProduct = (product, reason) => {
+    const open = openId === product.id;
+    const isSwitch = /switch/i.test(product.company || "");
+    return (
+      <button
+        key={product.id}
+        type="button"
+        onClick={() => setOpenId(open ? null : product.id)}
+        aria-expanded={open}
+        className="block w-full rounded-xl border border-white/10 bg-white/[0.045] p-3 text-left"
+      >
+        <span className="flex items-center gap-2">
+          <span className="min-w-0 flex-1 text-[13.5px] font-semibold leading-[1.3] text-white">
+            {product.title}
+          </span>
+          <Badge tone={isSwitch ? "switch" : "choice"}>{isSwitch ? "Switch" : "Clear Choice"}</Badge>
+        </span>
+        {reason ? (
+          <span className="mt-1.5 block text-[12.5px] leading-[1.4] text-[#cbd5e3]">{reason}</span>
+        ) : (
+          product.problem && (
+            <span className="mt-1.5 block text-[12.5px] leading-[1.4] text-[#93a0b4]">{product.problem}</span>
+          )
+        )}
+        {open && (
+          <span className="mt-2.5 block border-t border-white/[0.07] pt-2.5 text-[12.5px] leading-[1.5] text-[#cbd5e3]">
+            {/* The plan is what you say next; the CTA is how you close it. */}
+            {product.plan || product.description || "No talking points written yet."}
+            {product.cta && <span className="mt-1.5 block font-semibold text-white">{product.cta}</span>}
+          </span>
+        )}
+      </button>
+    );
+  };
 
   return (
     <div>
@@ -145,45 +217,42 @@ export default function BoothSearch({ event, briefing = [], children }) {
         <>
           <p className="mt-4 font-switch-reg text-[10px] uppercase tracking-[0.15em] text-[#75808d]">Products</p>
           <div className="mt-2 space-y-2">
-            {productHits.map((product) => {
-              const open = openId === product.id;
-              return (
-                <button
-                  key={product.id}
-                  type="button"
-                  onClick={() => setOpenId(open ? null : product.id)}
-                  aria-expanded={open}
-                  className="block w-full rounded-xl border border-white/10 bg-white/[0.045] p-3 text-left"
-                >
-                  <span className="flex items-center gap-2">
-                    <span className="min-w-0 flex-1 text-[13.5px] font-semibold leading-[1.3] text-white">
-                      {product.title}
-                    </span>
-                    <Badge tone={/switch/i.test(product.company || "") ? "switch" : "choice"}>
-                      {/switch/i.test(product.company || "") ? "Switch" : "Clear Choice"}
-                    </Badge>
-                  </span>
-                  {product.problem && (
-                    <span className="mt-1.5 block text-[12.5px] leading-[1.4] text-[#93a0b4]">{product.problem}</span>
-                  )}
-                  {open && (
-                    <span className="mt-2.5 block border-t border-white/[0.07] pt-2.5 text-[12.5px] leading-[1.5] text-[#cbd5e3]">
-                      {/* The plan is what you say next; the CTA is how you close it. */}
-                      {product.plan || product.description || "No talking points written yet."}
-                      {product.cta && <span className="mt-1.5 block font-semibold text-white">{product.cta}</span>}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
+            {productHits.map((product) => renderProduct(product))}
+          </div>
+          <button
+            type="button"
+            disabled={asking}
+            onClick={() => ask(query.trim())}
+            className="mt-2.5 inline-flex min-h-[36px] items-center gap-1.5 text-[12.5px] font-semibold text-[#93a0b4] disabled:opacity-60"
+          >
+            <SparklesIcon className="h-4 w-4 text-[#0951fa]" />
+            {asking ? "Reading the question…" : "Not what you meant? Read the question"}
+          </button>
+        </>
+      )}
+
+      {asking && !productHits.length && (
+        <p className="mt-4 text-[13px] text-[#93a0b4]">Reading the question…</p>
+      )}
+
+      {interpreted?.matches?.length > 0 && (
+        <>
+          <p className="mt-4 flex items-center gap-1.5 font-switch-reg text-[10px] uppercase tracking-[0.15em] text-[#0951fa]">
+            <SparklesIcon className="h-3.5 w-3.5" /> Reading the question
+          </p>
+          <div className="mt-2 space-y-2">
+            {interpreted.matches.map(({ product, reason }) => renderProduct(product, reason))}
           </div>
         </>
       )}
 
+      {askError && <p role="alert" className="mt-3 text-[12.5px] text-[#ef4444]">{askError}</p>}
+
       {nothing && (
         <p className="mt-4 text-[13px] leading-[1.5] text-[#75808d]">
-          Nothing for “{query.trim()}”. Try what the customer actually said — “my machines keep going
-          down”, “disputes”, “compliance”.
+          {interpreted?.note
+            ? interpreted.note
+            : `Nothing for “${query.trim()}”. Try what the customer actually said.`}
         </p>
       )}
 
