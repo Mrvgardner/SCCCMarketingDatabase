@@ -157,10 +157,32 @@ export default function BoothSearch({ event, briefing = [], children }) {
           )
         )}
         {open && (
-          <div className="mt-2.5 border-t border-white/[0.07] pt-2.5 text-[12.5px] leading-[1.5] text-[#cbd5e3] [&_ul]:my-1.5 [&_ul]:list-disc [&_ul]:pl-4 [&_li]:mt-1 [&_li_strong]:text-white [&_p]:mt-1.5 first:[&_p]:mt-0 [&_a]:text-[#3d7bff]">
-            {/* The plan is what you say next; the CTA is how you close it. */}
-            <RichText content={product.plan || product.description || "No talking points written yet."} />
-            {product.cta && <p className="mt-2 font-semibold text-white">{product.cta}</p>}
+          <div className="mt-2.5 space-y-3 border-t border-white/[0.07] pt-2.5 text-[12.5px] leading-[1.5] text-[#cbd5e3] [&_ul]:my-1.5 [&_ul]:list-disc [&_ul]:pl-4 [&_li]:mt-1 [&_li_strong]:text-white [&_p]:mt-1.5 first:[&_p]:mt-0 [&_a]:text-[#3d7bff] [&_h4]:text-white [&_h4]:border-white/10">
+            {/* Three layers, in the order a booth conversation actually runs:
+                the line you open with, the substance for when they ask more,
+                and who this is really for. The CTA closes it. */}
+            {product.plan && (
+              <div>
+                <span className="font-switch-reg block text-[10px] uppercase tracking-[0.15em] text-[#75808d]">Say this</span>
+                <div className="mt-1 text-white"><RichText content={product.plan} /></div>
+              </div>
+            )}
+            {product.description && (
+              <div>
+                <span className="font-switch-reg block text-[10px] uppercase tracking-[0.15em] text-[#75808d]">If they ask more</span>
+                <div className="mt-1"><RichText content={product.description} /></div>
+              </div>
+            )}
+            {product.useCases && (
+              <div>
+                <span className="font-switch-reg block text-[10px] uppercase tracking-[0.15em] text-[#75808d]">Who it's for</span>
+                <p className="mt-1">{product.useCases}</p>
+              </div>
+            )}
+            {!product.plan && !product.description && (
+              <p className="text-[#75808d]">No talking points written yet.</p>
+            )}
+            {product.cta && <p className="font-semibold text-white">{product.cta}</p>}
           </div>
         )}
       </button>
