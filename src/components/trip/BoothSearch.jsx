@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { MagnifyingGlassIcon, SparklesIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { listProducts } from "../../api/products";
 import { askProductSearch } from "../../api/productSearch";
+import RichText from "../RichText";
 
 // Answering a question at the booth.
 //
@@ -142,18 +143,25 @@ export default function BoothSearch({ event, briefing = [], children }) {
           <Badge tone={isSwitch ? "switch" : "choice"}>{isSwitch ? "Switch" : "Clear Choice"}</Badge>
         </span>
         {reason ? (
-          <span className="mt-1.5 block text-[12.5px] leading-[1.4] text-[#cbd5e3]">{reason}</span>
+          <p className="mt-1.5 text-[12.5px] leading-[1.4] text-[#cbd5e3]">{reason}</p>
         ) : (
           product.problem && (
-            <span className="mt-1.5 block text-[12.5px] leading-[1.4] text-[#93a0b4]">{product.problem}</span>
+            // problem/plan/description are edited through the site's rich-text
+            // editor and stored as HTML — RichText sanitizes and renders it, so
+            // a bolded phrase or a link comes through as one, not as visible
+            // "<strong>" tags. It also degrades quietly to plain paragraphs for
+            // the products that only ever held plain text.
+            <div className="mt-1.5 text-[12.5px] leading-[1.4] text-[#93a0b4]">
+              <RichText content={product.problem} />
+            </div>
           )
         )}
         {open && (
-          <span className="mt-2.5 block border-t border-white/[0.07] pt-2.5 text-[12.5px] leading-[1.5] text-[#cbd5e3]">
+          <div className="mt-2.5 border-t border-white/[0.07] pt-2.5 text-[12.5px] leading-[1.5] text-[#cbd5e3] [&_ul]:my-1.5 [&_ul]:list-disc [&_ul]:pl-4 [&_li]:mt-1 [&_li_strong]:text-white [&_p]:mt-1.5 first:[&_p]:mt-0 [&_a]:text-[#3d7bff]">
             {/* The plan is what you say next; the CTA is how you close it. */}
-            {product.plan || product.description || "No talking points written yet."}
-            {product.cta && <span className="mt-1.5 block font-semibold text-white">{product.cta}</span>}
-          </span>
+            <RichText content={product.plan || product.description || "No talking points written yet."} />
+            {product.cta && <p className="mt-2 font-semibold text-white">{product.cta}</p>}
+          </div>
         )}
       </button>
     );
