@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MagnifyingGlassIcon, SparklesIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { listProducts } from "../../api/products";
-import { askProductSearch } from "../../api/productSearch";
+import { askProductSearch, logSearch } from "../../api/productSearch";
+import { downloadEventResourceFile } from "../../api/eventResources";
 import RichText from "../RichText";
 
 // Answering a question at the booth.
@@ -68,14 +69,18 @@ export default function BoothSearch({ event, briefing = [], children }) {
     const fromBriefing = briefing.map((item) => ({
       id: `b-${item.id}`,
       title: item.kind === "file" ? item.fileName : item.text,
-      detail: item.kind === "file" ? "Pinned document" : `Know this cold${item.author ? ` · ${item.author}` : ""}`,
+      detail: item.kind === "file" ? "Pinned document · tap to open" : `Know this cold${item.author ? ` · ${item.author}` : ""}`,
       haystack: `${item.text || ""} ${item.fileName || ""} ${item.author || ""}`.toLowerCase(),
+      // A pinned document opens; a pinned note is the answer itself.
+      file: item.kind === "file" ? { fileId: item.fileId, fileName: item.fileName } : null,
     }));
     const fromResources = (event.resources || []).map((resource, index) => ({
       id: `r-${index}`,
       title: resource.title,
       detail: resource.description || resource.type || "Resource",
       haystack: `${resource.title || ""} ${resource.description || ""} ${resource.type || ""}`.toLowerCase(),
+      url: resource.url || null,
+      file: !resource.url && (resource.fileId || resource.fileName) ? resource : null,
     }));
     return [...fromBriefing, ...fromResources];
   }, [briefing, event.resources]);
@@ -97,7 +102,11 @@ export default function BoothSearch({ event, briefing = [], children }) {
     setAsking(true);
     setAskError("");
     try {
-      setAsked({ query: text, ...(await askProductSearch(text)) });
+      const result = await askProductSearch(text);
+      setAsked({ query: text, ...result });
+      // The keyword pass found nothing (or wasn't what they meant); this is the
+      // answer the question actually got, so this is the entry worth keeping.
+      logSearch({ query: text, keywordHits: 0, interpretedHits: result.matches?.length || 0 });
     } catch (error) {
       setAskError(error.message || "Could not run that search.");
     } finally {
@@ -119,6 +128,19 @@ export default function BoothSearch({ event, briefing = [], children }) {
     const timer = setTimeout(() => ask(text), 700);
     return () => clearTimeout(timer);
   }, [query, noKeywordHits, ask]);
+
+  // A search that found something by keyword is logged once it settles. One
+  // that found nothing is logged by the interpreted pass instead, with both
+  // numbers, so a question is never counted twice.
+  useEffect(() => {
+    const text = query.trim();
+    if (!searching || noKeywordHits || text.length < 3) return undefined;
+    const timer = setTimeout(
+      () => logSearch({ query: text, keywordHits: showHits.length + productHits.length, interpretedHits: null }),
+      1500,
+    );
+    return () => clearTimeout(timer);
+  }, [query, searching, noKeywordHits, showHits.length, productHits.length]);
 
   const interpreted = asked && asked.query === query.trim() ? asked : null;
   const nothing = noKeywordHits && !asking && interpreted && !interpreted.matches.length;
@@ -233,12 +255,35 @@ export default function BoothSearch({ event, briefing = [], children }) {
         <>
           <p className="mt-4 font-switch-reg text-[10px] uppercase tracking-[0.15em] text-[#75808d]">This show</p>
           <div className="mt-2 space-y-2">
-            {showHits.map((item) => (
-              <div key={item.id} className="rounded-xl border border-white/10 bg-white/[0.045] p-3">
-                <p className="text-[13.5px] font-semibold leading-[1.3] text-white">{item.title}</p>
-                <p className="mt-1 text-[12px] leading-[1.4] text-[#93a0b4]">{item.detail}</p>
-              </div>
-            ))}
+            {showHits.map((item) => {
+              const inner = (
+                <>
+                  <span className="block text-[13.5px] font-semibold leading-[1.3] text-white">{item.title}</span>
+                  <span className="mt-1 block text-[12px] leading-[1.4] text-[#93a0b4]">{item.detail}</span>
+                </>
+              );
+              const cardClass = "block w-full rounded-xl border border-white/10 bg-white/[0.045] p-3 text-left";
+              if (item.url) {
+                return (
+                  <a key={item.id} href={item.url} target="_blank" rel="noopener noreferrer" className={cardClass}>
+                    {inner}
+                  </a>
+                );
+              }
+              if (item.file) {
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => downloadEventResourceFile(event.id, item.file).catch(() => {})}
+                    className={cardClass}
+                  >
+                    {inner}
+                  </button>
+                );
+              }
+              return <div key={item.id} className={cardClass}>{inner}</div>;
+            })}
           </div>
         </>
       )}

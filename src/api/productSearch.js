@@ -46,3 +46,32 @@ export async function askProductSearch(query) {
   session.set(normalized, result);
   return result;
 }
+
+// What got asked, and whether it found anything. Not who asked — these are
+// product questions, and the point is to learn what the catalogue cannot yet
+// answer, not to watch people. Fire-and-forget: a lost log line is nothing.
+export function logSearch({ query, keywordHits, interpretedHits }) {
+  const q = String(query || "").trim();
+  if (useDev || q.length < 3) return Promise.resolve();
+  return authHeaders()
+    .then((headers) => fetch(ENDPOINT, {
+      method: "POST",
+      headers: { ...headers, "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "log", query: q, keywordHits, interpretedHits }),
+      keepalive: true,
+    }))
+    .catch(() => {});
+}
+
+// Admin: the searches, aggregated. In dev there is nothing to aggregate.
+export async function getSearchInsights() {
+  if (useDev) return { total: 0, queries: [], since: null };
+  const response = await fetch(ENDPOINT, { method: "GET", headers: await authHeaders() });
+  const text = await response.text().catch(() => "");
+  if (!response.ok) {
+    let message = "";
+    try { message = JSON.parse(text)?.error || ""; } catch { /* not JSON */ }
+    throw new Error(message || `Could not load searches (${response.status}).`);
+  }
+  return text ? JSON.parse(text) : { total: 0, queries: [] };
+}

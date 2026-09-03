@@ -96,3 +96,19 @@ export function sendEventPush(eventId, update) {
     tag: `event-${eventId}-${update.id}`,
   });
 }
+
+// A pin to "Know this cold" is an announcement, the same as a posted update —
+// so it reaches the team the same way. The tag is per pin, so a second pin does
+// not collapse into the first one on someone's lock screen.
+export function sendPinPush(eventId, item, author) {
+  const body = item.kind === 'file' ? `Pinned a document: ${item.fileName}` : item.text;
+  return request('POST', {
+    action: 'send',
+    eventId,
+    title: author ? `${author} pinned to Know this cold` : 'Pinned to Know this cold',
+    body,
+    urgent: false,
+    url: `/trip/${eventId}/booth`,
+    tag: `pin-${eventId}-${item.id}`,
+  });
+}

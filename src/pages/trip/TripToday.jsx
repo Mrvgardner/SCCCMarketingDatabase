@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
+import { nextUp, formatCountdown } from "../../utils/schedule";
 import { BellIcon } from "@heroicons/react/24/outline";
 import { Avatar, Card, Eyebrow, ThreeBars } from "../../components/trip/TripChrome";
 
@@ -38,6 +40,19 @@ export default function TripToday() {
   const { event, daysOut, readiness, doneCount, loading } = useOutletContext();
   const eventId = event.id;
   const firstItems = (event.schedule?.[0]?.items || []).slice(0, 2);
+
+  // Before the show, Today shows the first thing on the ground. Once it has
+  // started, that gives way to what is next and how long until it — the
+  // question people actually open their phone for mid-show. The clock ticks
+  // every 30s; the countdown is rounded to the minute, so finer would be noise.
+  const showStarted = daysOut !== null && daysOut <= 0;
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    if (!showStarted) return undefined;
+    const timer = setInterval(() => setNow(new Date()), 30_000);
+    return () => clearInterval(timer);
+  }, [showStarted]);
+  const next = showStarted ? nextUp(event, now) : null;
   const roster = event.travelingTeam || [];
   const progress = readiness.length ? Math.round((doneCount / readiness.length) * 100) : 0;
 
@@ -104,7 +119,33 @@ export default function TripToday() {
         </div>
       </Card>
 
-      {firstItems.length > 0 && (
+      {showStarted && next && (
+        <Card className="p-4">
+          <div className="flex items-baseline justify-between gap-3">
+            <Eyebrow>Next up</Eyebrow>
+            <span className={`font-switch-bold text-[15px] leading-none tabular-nums ${next.allHands ? "text-[#ff4f00]" : "text-white"}`}>
+              {formatCountdown(next.at.getTime() - now.getTime())}
+            </span>
+          </div>
+          <div className="mt-3 flex gap-3">
+            <span
+              aria-hidden="true"
+              className={`w-[3px] shrink-0 rounded-full ${next.allHands ? "bg-[#ff4f00]" : "bg-white/[0.16]"}`}
+            />
+            <div className="min-w-0">
+              <p className="text-[14.5px] font-semibold leading-[1.25] text-white">{next.item.title}</p>
+              <p className="mt-0.5 text-[12.5px] leading-[1.4] text-[#93a0b4]">
+                {[next.item.time, next.item.location].filter(Boolean).join(" · ")}
+              </p>
+              {next.allHands && (
+                <p className="mt-1 text-[12px] font-semibold text-[#ff4f00]">Everyone at the booth.</p>
+              )}
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {!showStarted && firstItems.length > 0 && (
         <Card className="p-4">
           <Eyebrow>First thing on the ground</Eyebrow>
           <div className="mt-3 space-y-3">

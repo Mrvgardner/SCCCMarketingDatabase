@@ -10,6 +10,7 @@ import PwaControls from "../../components/PwaControls";
 import { isNativeApp } from "../../api/apiBase";
 import { Card, Eyebrow, ScreenTitle } from "../../components/trip/TripChrome";
 import EmergencyContact from "../../components/trip/EmergencyContact";
+import SearchInsights from "../../components/trip/SearchInsights";
 
 // Everything the five primary screens deliberately do not carry. The design
 // specifies five tabs answering the questions people open their phone for; this
@@ -110,6 +111,8 @@ export default function TripMore() {
       )}
 
       <EmergencyContact user={user} />
+
+      {isAdmin && <SearchInsights />}
 
       <section>
         <Eyebrow>This device</Eyebrow>

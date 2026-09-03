@@ -31,6 +31,40 @@ const DAILY_LIMIT = Number(process.env.PRODUCT_SEARCH_DAILY_LIMIT || 200);
 
 const MAX_MATCHES = 4;
 
+const LOG_PREFIX = "log/";
+const LOG_DAYS = 120;
+const LOG_READ_CAP = 3000;
+
+// Group every logged search by its normalised text. A query is a "miss" if any
+// time it was asked, neither pass found anything — that is the signal Vic
+// wants after a show.
+async function aggregateLog(store) {
+  const since = new Date(Date.now() - LOG_DAYS * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const { blobs } = await store.list({ prefix: LOG_PREFIX });
+  const recent = blobs
+    .filter((blob) => blob.key.slice(LOG_PREFIX.length, LOG_PREFIX.length + 10) >= since)
+    .slice(-LOG_READ_CAP);
+
+  const entries = (await Promise.all(recent.map((blob) => store.get(blob.key, { type: "json" }).catch(() => null))))
+    .filter(Boolean);
+
+  const groups = new Map();
+  for (const entry of entries) {
+    const norm = String(entry.query || "").toLowerCase().replace(/\s+/g, " ").trim();
+    if (!norm) continue;
+    const group = groups.get(norm) || { query: entry.query, count: 0, misses: 0, lastAt: "" };
+    group.count += 1;
+    const found = (entry.keywordHits || 0) > 0 || (entry.interpretedHits || 0) > 0;
+    if (!found && entry.keywordHits !== null && entry.interpretedHits !== null) group.misses += 1;
+    if (!found && entry.keywordHits === 0 && entry.interpretedHits === null) group.misses += 1;
+    if (entry.at > group.lastAt) { group.lastAt = entry.at; group.query = entry.query; }
+    groups.set(norm, group);
+  }
+
+  const queries = [...groups.values()].sort((a, b) => b.count - a.count || (b.lastAt > a.lastAt ? 1 : -1));
+  return { total: entries.length, since, queries: queries.slice(0, 100) };
+}
+
 const MATCH_SCHEMA = {
   name: "product_matches",
   strict: true,
@@ -92,6 +126,19 @@ async function withinBudget(store, email) {
 export default withCors(async (request) => {
   const user = await authenticate(request);
   if (!user) return json({ error: "Unauthorized" }, 401);
+
+  const roles = user.roles || user.app_metadata?.roles || [];
+  const isAdmin = roles.some((role) => String(role).toLowerCase() === "admin");
+  const cacheStore = getStore({ name: CACHE_STORE, consistency: "strong" });
+
+  // Admin: what has been asked at the booth, aggregated. After a show this is
+  // the list of questions the catalogue could not answer — the content to write
+  // next — so it is worth a screen of its own.
+  if (request.method === "GET") {
+    if (!isAdmin) return json({ error: "Admin role required" }, 403);
+    return json(await aggregateLog(cacheStore));
+  }
+
   if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
   let body;
@@ -99,6 +146,22 @@ export default withCors(async (request) => {
     body = await request.json();
   } catch {
     return json({ error: "Invalid request" }, 400);
+  }
+
+  // Every settled search, hit or miss, keyword or interpreted. One blob per
+  // entry — no shared document, so concurrent searches cannot lose each other.
+  if (body?.action === "log") {
+    const query = clean(body.query, 200);
+    if (query.length < 3) return json({ ok: true });
+    const at = new Date().toISOString();
+    const key = `${LOG_PREFIX}${at.slice(0, 10)}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.json`;
+    await cacheStore.setJSON(key, {
+      at,
+      query,
+      keywordHits: Number.isFinite(Number(body.keywordHits)) ? Number(body.keywordHits) : null,
+      interpretedHits: Number.isFinite(Number(body.interpretedHits)) ? Number(body.interpretedHits) : null,
+    });
+    return json({ ok: true });
   }
 
   const query = clean(body?.query, 200);
@@ -120,7 +183,6 @@ export default withCors(async (request) => {
   const normalized = query.toLowerCase().replace(/\s+/g, " ").trim();
   const cacheKey = `${fingerprint}/${createHash("sha256").update(normalized).digest("hex").slice(0, 32)}.json`;
 
-  const cacheStore = getStore({ name: CACHE_STORE, consistency: "strong" });
   const cached = await cacheStore.get(cacheKey, { type: "json" });
   if (cached) return json({ ...cached, cached: true });
 

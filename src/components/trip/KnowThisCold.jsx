@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { PaperClipIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { updateBriefing } from "../../api/tradeShows";
+import { sendPinPush } from "../../api/pushNotifications";
 import {
   RESOURCE_FILE_ACCEPT,
   RESOURCE_MAX_BYTES,
@@ -34,13 +35,30 @@ export default function KnowThisCold({ event, isAdmin, myName, user }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [confirmingId, setConfirmingId] = useState(null);
+  // Pinning is announcing. Default on, same as the "Send push" box on a posted
+  // update, but it can be turned off for a quiet correction.
+  const [notify, setNotify] = useState(true);
+  const [notice, setNotice] = useState("");
   const fileInput = useRef(null);
 
   const author = myName || user?.user_metadata?.full_name || "";
 
+  // Fire-and-report: the pin is already saved by the time this runs, so a
+  // push failure is a notice, never an error that undoes the pin.
+  const announce = async (item) => {
+    if (!notify) return;
+    try {
+      const delivery = await sendPinPush(event.id, item, author);
+      setNotice(`Pinned. Sent to ${delivery.delivered} device${delivery.delivered === 1 ? "" : "s"}.`);
+    } catch (pushError) {
+      setNotice(`Pinned. Notification didn't go out: ${pushError.message}`);
+    }
+  };
+
   const save = async (next) => {
     setBusy(true);
     setError("");
+    setNotice("");
     try {
       await updateBriefing(event.id, next);
       return true;
@@ -65,6 +83,7 @@ export default function KnowThisCold({ event, isAdmin, myName, user }) {
     if (await save([...briefing, item])) {
       setText("");
       setAdding(false);
+      await announce(item);
     }
   };
 
@@ -90,6 +109,7 @@ export default function KnowThisCold({ event, isAdmin, myName, user }) {
         createdAt: new Date().toISOString(),
       };
       await updateBriefing(event.id, [...briefing, item]);
+      await announce(item);
     } catch (uploadError) {
       setError(uploadError.message || "Could not attach that file.");
     } finally {
@@ -186,11 +206,21 @@ export default function KnowThisCold({ event, isAdmin, myName, user }) {
               Cancel
             </button>
           </div>
-          <p className="mt-1.5 text-[11px] text-[#75808d]">Everyone on the team sees this. {300 - text.length} left.</p>
+          <label className="mt-2 flex min-h-[32px] items-center gap-2 text-[12px] text-[#93a0b4]">
+            <input
+              type="checkbox"
+              checked={notify}
+              onChange={(e) => setNotify(e.target.checked)}
+              className="h-4 w-4 rounded border-white/20 bg-gray-950/55 text-[#f59e0b] focus:ring-[#f59e0b]"
+            />
+            Notify the team
+          </label>
+          <p className="mt-1 text-[11px] text-[#75808d]">Everyone on the team sees this. {300 - text.length} left.</p>
         </form>
       )}
 
       {error && <p role="alert" className="mt-2 text-[12.5px] font-semibold text-[#ef4444]">{error}</p>}
+      {notice && !error && <p role="status" className="mt-2 text-[12.5px] font-semibold text-[#10b981]">{notice}</p>}
 
       {briefing.length > 0 && (
         <div className="mt-2.5 rounded-2xl border border-[#f59e0b]/20 bg-[#f59e0b]/[0.05] px-3.5">

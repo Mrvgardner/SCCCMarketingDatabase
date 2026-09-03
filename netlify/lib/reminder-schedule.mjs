@@ -53,9 +53,11 @@ export function parseStartTime(text) {
 }
 
 // "All hands" is free text an admin types, so match tolerantly: "All hands",
-// "all-hands" and "ALL HANDS" all count.
+// "all-hands" and "ALL HANDS" all count. A "rally" is the same commitment under
+// a different name — the Team tab already treats it as one, and a reminder
+// that fires for three of the four gatherings is worse than none.
 export function isAllHands(item) {
-  return /all[\s-]*hands/i.test(`${item?.owner || ''} ${item?.title || ''}`);
+  return /all[\s-]*hands|\brally\b/i.test(`${item?.owner || ''} ${item?.title || ''}`);
 }
 
 export function ledgerKeyFor(eventId, date, time, leadMinutes) {
