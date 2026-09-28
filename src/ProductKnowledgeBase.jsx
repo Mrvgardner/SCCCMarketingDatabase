@@ -189,7 +189,7 @@ export default function ProductKnowledgeBase() {
           })}
         </div>
         <div className="flex flex-wrap justify-center gap-2">
-          {["ATM", "Hardware", "Kiosk", "Platform", "Service", "Software"].map((type) => (
+          {["ATM", "Company", "Hardware", "Kiosk", "Platform", "Service", "Software"].map((type) => (
             <button
               key={type}
               onClick={() => toggleFilter("type", type)}
@@ -338,21 +338,21 @@ export default function ProductKnowledgeBase() {
                   <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-[#0951fa] to-[#0951fa]/70 bg-clip-text text-transparent">{selected.title}</h2>
                   <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">{selected.company}</p>
                   <div className="text-gray-700 dark:text-gray-300 italic">
-                    <RichText content={selected.description} />
+                    <RichText content={selected.description} tone="light" />
                   </div>
                 </div>
                 <div className="space-y-6">
                   <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
                     <h3 className="font-semibold text-lg mb-2 text-gray-900 dark:text-white">The Challenge</h3>
                     <div className="text-gray-700 dark:text-gray-300">
-                      <RichText content={selected.problem} />
-                      {selected.villain && <RichText content={selected.villain} />}
+                      <RichText content={selected.problem} tone="light" />
+                      {selected.villain && <RichText content={selected.villain} tone="light" />}
                     </div>
                   </div>
                   <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
                     <h3 className="font-semibold text-lg mb-2 text-gray-900 dark:text-white">Solution</h3>
                     <div className="text-gray-700 dark:text-gray-300">
-                      <RichText content={selected.plan} />
+                      <RichText content={selected.plan} tone="light" />
                     </div>
                   </div>
                 </div>

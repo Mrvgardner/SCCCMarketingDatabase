@@ -24,9 +24,13 @@ function matches(haystack, terms) {
 
 // A hit on the name is what someone meant; a hit anywhere else is what they
 // described. Names first.
+// Then the phrase as typed: "bill break" should put the product that offers
+// Bill Break above one that merely mentions "bill pay" and "break" apart.
 function rank(title, haystack, terms) {
   const name = String(title || "").toLowerCase();
-  return terms.some((term) => name.includes(term)) ? 0 : 1;
+  if (terms.some((term) => name.includes(term))) return 0;
+  if (terms.length > 1 && String(haystack || "").includes(terms.join(" "))) return 1;
+  return 2;
 }
 
 function Badge({ tone, children }) {

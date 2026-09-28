@@ -28,7 +28,7 @@ const EMPTY_PRODUCT = {
 };
 
 const COMPANIES = ["Switch Commerce", "Clear Choice"];
-const TYPES = ["ATM", "Hardware", "Kiosk", "Platform", "Service", "Software"];
+const TYPES = ["ATM", "Company", "Hardware", "Kiosk", "Platform", "Service", "Software"];
 
 function TextField({ label, name, value, onChange, placeholder, hint }) {
   return (

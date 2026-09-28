@@ -14,7 +14,15 @@ function looksLikeHTML(str) {
   return typeof str === "string" && /<\/?[a-z][\s\S]*>/i.test(str);
 }
 
-export default function RichText({ content, className = "" }) {
+// `tone` says what the text sits on. Most of the site is dark, so that is the
+// default; the knowledge base pop-up is a white card, where the dark-page
+// styling rendered bold text and headings white on white.
+const TONES = {
+  dark: "prose prose-invert max-w-none prose-a:text-[#0a7cff] prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-headings:text-white",
+  light: "prose max-w-none not-italic prose-a:text-[#0951fa] prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-headings:text-gray-900 prose-li:marker:text-gray-400",
+};
+
+export default function RichText({ content, className = "", tone = "dark" }) {
   if (!content) return null;
 
   if (looksLikeHTML(content)) {
@@ -26,7 +34,7 @@ export default function RichText({ content, className = "" }) {
     });
     return (
       <div
-        className={`prose prose-invert max-w-none prose-a:text-[#0a7cff] prose-a:no-underline hover:prose-a:underline prose-strong:text-white prose-headings:text-white ${className}`}
+        className={`${TONES[tone] || TONES.dark} ${className}`}
         dangerouslySetInnerHTML={{ __html: clean }}
       />
     );
