@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { COLLATERAL_SECTIONS, archivedCollateral, currentCollateral } from '../data/collateral';
 
 export default function PrintCollateralPage() {
   useEffect(() => {
@@ -7,110 +8,19 @@ export default function PrintCollateralPage() {
     document.title = 'Print Collateral - Switch Commerce';
   }, []);
 
-  const collateral = [
-    {
-      category: "Brochures",
-      items: [
-        {
-          name: "MultiFunction Kiosk Brochure - 2026",
-          description: "Eight-page Clear Choice brochure for convenience stores: ATM, Bill Break, Cash Advance, ticket redemption, Cash to Card, and the staff Business Center",
-          url: "/brochures/MultiFunction-Kiosk-Brochure.pdf",
-          thumbnail: "/brochures/thumbnails/MultiFunction-Kiosk-Brochure.webp?v=2"
-        },
-        {
-          name: "Switch Commerce & Clear Choice Brochure - 2026",
-          description: "Combined company brochure featuring both Switch Commerce and Clear Choice",
-          url: "/brochures/SwitchCommerceClearChoiceBrochure.pdf",
-          thumbnail: "/brochures/thumbnails/switch-clearchoice-thumb.webp?v=2"
-        },
-        {
-          name: "Switch Commerce Brochure - 2025",
-          description: "Switch Commerce payment processing solutions and services",
-          url: "/brochures/switch-brochure.pdf",
-          thumbnail: "/brochures/thumbnails/switch-thumb.webp?v=2"
-        },
-        {
-          name: "Clear Choice Brochure - 2025",
-          description: "Clear Choice merchant services and payment solutions",
-          url: "/brochures/clearchoice-brochure.pdf",
-          thumbnail: "/brochures/thumbnails/clearchoice-thumb.webp?v=2"
-        }
-      ]
-    },
-    {
-      category: "Switch Commerce One-Pagers",
-      items: [
-        {
-          name: "Company Overview - Fall 2026",
-          description: "Switch to the best: ATM processing, vault cash, settlement, and the tools behind them",
-          url: "/pdfs/SC-Overview-One-Pager.pdf",
-          thumbnail: "/pdfs/thumbnails/SC-Overview-One-Pager.webp"
-        },
-        {
-          name: "Terminal Management System - Fall 2026",
-          description: "One screen, full portfolio: terminals, cash, money, and people in real time",
-          url: "/pdfs/SC-TMS-One-Pager.pdf",
-          thumbnail: "/pdfs/thumbnails/SC-TMS-One-Pager.webp"
-        },
-        {
-          name: "International Transactions - Fall 2026",
-          description: "Dynamic Currency Conversion: turning cross-border traffic into revenue",
-          url: "/pdfs/SC-International-One-Pager.pdf",
-          thumbnail: "/pdfs/thumbnails/SC-International-One-Pager.webp"
-        }
-      ]
-    },
-    {
-      category: "Clear Choice One-Pagers",
-      items: [
-        {
-          name: "Company Overview - Fall 2026",
-          description: "Payments without limits: ATMs, cash, merchant services, and kiosks",
-          url: "/pdfs/CC-Overview-One-Pager.pdf",
-          thumbnail: "/pdfs/thumbnails/CC-Overview-One-Pager.webp"
-        },
-        {
-          name: "MultiFunction Kiosk - Fall 2026",
-          description: "One kiosk, multiple lines of revenue: the partner program for IADs and ISOs",
-          url: "/pdfs/CC-MultiFunction-Kiosk-One-Pager.pdf",
-          thumbnail: "/pdfs/thumbnails/CC-MultiFunction-Kiosk-One-Pager.webp"
-        },
-        {
-          name: "Watchdog - Fall 2026",
-          description: "Monitoring that never sleeps: 24/7 monitoring, security, and support",
-          url: "/pdfs/CC-Watchdog-One-Pager.pdf",
-          thumbnail: "/pdfs/thumbnails/CC-Watchdog-One-Pager.webp"
-        },
-        {
-          name: "StashPoint Cash Recycler - Fall 2026",
-          description: "We put the bank in your store: the cash recycling kiosk powered by ATEC America",
-          url: "/pdfs/CC-StashPoint-ATEC-One-Pager.pdf",
-          thumbnail: "/pdfs/thumbnails/CC-StashPoint-ATEC-One-Pager.webp"
-        }
-      ]
-    }
-  ];
+  // The list itself lives in src/data/collateral.js, shared with booth search,
+  // so a piece added there appears here and becomes recommendable in one step.
+  const collateral = COLLATERAL_SECTIONS.map((category) => ({
+    category,
+    items: currentCollateral.filter((item) => item.section === category),
+  })).filter((section) => section.items.length > 0);
 
   // Superseded pieces. Kept reachable because people still get asked for "the
   // old one", and because links to them are already out in the world — but
   // behind a toggle, so nobody hands out last year's sheet by accident. To
-  // retire a document, move its entry here and say what replaced it.
-  const archived = [
-    {
-      name: "Watchdog One-Page - 2026",
-      description: "Clear Choice WatchDog monitoring and security services",
-      url: "/pdfs/CC-WatchDogOnline.pdf",
-      thumbnail: "/pdfs/thumbnails/watchdog-thumb.webp",
-      replacedBy: "Watchdog - Fall 2026",
-    },
-    {
-      name: "Cash Recycler One-Page - 2026",
-      description: "ATEC Cash Recycler solutions for efficient cash management",
-      url: "/pdfs/Cash_Reccler.pdf",
-      thumbnail: "/pdfs/thumbnails/atec-thumb.webp",
-      replacedBy: "StashPoint Cash Recycler - Fall 2026",
-    },
-  ];
+  // retire a document, move it to the Archive section in collateral.js and say
+  // what replaced it.
+  const archived = archivedCollateral;
   const [showArchive, setShowArchive] = useState(false);
 
   const fallbackThumb = 'data:image/svg+xml,%3Csvg width="96" height="128" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="96" height="128" fill="%23e5e7eb"/%3E%3Ctext x="50%25" y="50%25" font-family="Arial" font-size="48" fill="%239ca3af" text-anchor="middle" dy=".3em"%3E📄%3C/text%3E%3C/svg%3E';

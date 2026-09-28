@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { MagnifyingGlassIcon, SparklesIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { DocumentTextIcon, MagnifyingGlassIcon, SparklesIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { listProducts } from "../../api/products";
 import { askProductSearch, logSearch } from "../../api/productSearch";
 import { downloadEventResourceFile } from "../../api/eventResources";
 import RichText from "../RichText";
+import { handoutsFor } from "../../data/collateral";
 
 // Answering a question at the booth.
 //
@@ -147,6 +148,15 @@ export default function BoothSearch({ event, briefing = [], children }) {
   }, [query, searching, noKeywordHits, showHits.length, productHits.length]);
 
   const interpreted = asked && asked.query === query.trim() ? asked : null;
+
+  // What to physically hand the customer. Knowing the answer is half of it; the
+  // other half is which sheet to pick up off the table. Driven by the cards the
+  // search found, keyword hits first and the interpreted ones when there were
+  // none, and limited to what is printed for this show.
+  const foundTitles = productHits.length
+    ? productHits.map((product) => product.title)
+    : (interpreted?.matches || []).map((match) => match.product.title);
+  const handouts = searching ? handoutsFor(query, foundTitles, { show: event.shortName }) : [];
   const nothing = noKeywordHits && !asking && interpreted && !interpreted.matches.length;
 
   // One card shape for both passes. An interpreted hit carries the extra line
@@ -288,6 +298,45 @@ export default function BoothSearch({ event, briefing = [], children }) {
               }
               return <div key={item.id} className={cardClass}>{inner}</div>;
             })}
+          </div>
+        </>
+      )}
+
+      {handouts.length > 0 && (
+        <>
+          <p className="mt-4 flex items-center gap-1.5 font-switch-reg text-[10px] uppercase tracking-[0.15em] text-[#10b981]">
+            <DocumentTextIcon className="h-3.5 w-3.5" /> Hand them this
+          </p>
+          <div className="mt-2 space-y-2">
+            {handouts.map(({ item, forCard }) => (
+              <a
+                key={item.id}
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 rounded-xl border border-[#10b981]/25 bg-[#10b981]/[0.06] p-2.5"
+              >
+                {/* The cover, because at the table people find a sheet by what
+                    it looks like, not by what it is called. */}
+                <img
+                  src={item.thumbnail}
+                  alt=""
+                  width="44"
+                  height="58"
+                  loading="lazy"
+                  className="h-[58px] w-[44px] shrink-0 rounded object-cover object-top"
+                />
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[13.5px] font-semibold leading-[1.3] text-white">{item.shortName || item.name}</span>
+                  <span className="mt-0.5 block text-[12px] leading-[1.4] text-[#93a0b4]">
+                    {[item.kind, item.audience ? `for ${item.audience}` : null, forCard && forCard !== item.products?.[0] ? `covers ${forCard}` : null]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </span>
+                </span>
+                <span className="shrink-0 pr-1 text-[12px] font-semibold text-[#10b981]">View</span>
+              </a>
+            ))}
           </div>
         </>
       )}
