@@ -1,7 +1,9 @@
 # Allow all CORS for PDF files + long cache (bust by rename)
+# No Content-Type here: this folder also holds the .webp thumbnails, and forcing
+# application/pdf onto them (with nosniff below) made browsers refuse to show
+# them. Netlify already serves each file with the right type for its extension.
 /brochures/*
   Access-Control-Allow-Origin: *
-  Content-Type: application/pdf
   Cache-Control: public, max-age=31536000, immutable
 
 # Long-lived caching for static asset folders
