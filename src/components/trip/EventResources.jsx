@@ -51,10 +51,13 @@ function ResourceAction({ eventId, resource }) {
   );
 }
 
-// Every current brochure and one-pager, as a plain list of names. At the booth
-// nobody is browsing thumbnails: they know which sheet they want and need it
-// open. Reads the same list as the print collateral page, so a new piece shows
-// up here without anyone touching this file.
+// The brochures and one-pagers printed for shows, as a plain list of names. At
+// the booth nobody is browsing thumbnails: they know which sheet they want and
+// need it open. Reads the same list as the print collateral page, so a new
+// piece marked atBooth shows up here without anyone touching this file. Older
+// brochures stay on the collateral page and out of this list.
+const boothCollateral = currentCollateral.filter((item) => item.atBooth);
+
 function Brochures() {
   const [open, setOpen] = useState(false);
 
@@ -70,7 +73,7 @@ function Brochures() {
         <span>
           <span className="block text-[14.5px] font-semibold leading-[1.3] text-white">Brochures</span>
           <span className="mt-0.5 block text-[13px] leading-[1.5] text-[#93a0b4]">
-            {currentCollateral.length} brochures and one-pagers
+            {boothCollateral.length} brochures and one-pagers
           </span>
         </span>
         <ChevronDownIcon
@@ -87,7 +90,7 @@ function Brochures() {
                 {section}
               </h4>
               <ul>
-                {currentCollateral
+                {boothCollateral
                   .filter((item) => item.section === section)
                   .map((item) => (
                     <li key={item.id}>
