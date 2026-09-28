@@ -56,8 +56,29 @@ export function validateBriefing(items) {
 
     const text = clean(item.text, TEXT_MAX, { multiline: true });
     if (!text) return { error: "Add the note before saving it." };
-    value.push({ id, kind: "note", text, author, createdAt });
+    const note = { id, kind: "note", text, author, createdAt };
+    const links = validLinks(item.links);
+    if (links.length) note.links = links;
+    value.push(note);
   }
 
   return { value };
+}
+
+// A note can point at the card or the sheet that goes with it, so the pin
+// stays one sentence and the detail is a tap away. Only our own pages and
+// https addresses: nothing here should be able to run script when tapped.
+const LINKS_MAX = 3;
+
+function validLinks(links) {
+  if (!Array.isArray(links)) return [];
+  const out = [];
+  for (const link of links) {
+    const label = clean(link?.label, 40);
+    const url = clean(link?.url, 300);
+    if (!label || !/^(\/(?!\/)|https:\/\/)/.test(url)) continue;
+    out.push({ label, url });
+    if (out.length === LINKS_MAX) break;
+  }
+  return out;
 }

@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
-import { PaperClipIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { Link } from "react-router-dom";
+import { ArrowUpRightIcon, PaperClipIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { updateBriefing } from "../../api/tradeShows";
 import { sendPinPush } from "../../api/pushNotifications";
 import {
@@ -245,10 +246,29 @@ export default function KnowThisCold({ event, isAdmin, myName, user }) {
                 ) : (
                   <>
                     <span aria-hidden="true" className="mt-[1px] shrink-0 text-[13px] leading-[1.45] text-[#f59e0b]">▸</span>
-                    <p className="min-w-0 flex-1 whitespace-pre-line text-[13px] leading-[1.45] text-[#e8edf4]">
-                      {item.text}
-                      {item.author && <span className="text-[11.5px] text-[#75808d]"> — {item.author}</span>}
-                    </p>
+                    <div className="min-w-0 flex-1">
+                      <p className="whitespace-pre-line text-[13px] leading-[1.45] text-[#e8edf4]">
+                        {item.text}
+                        {item.author && <span className="text-[11.5px] text-[#75808d]"> — {item.author}</span>}
+                      </p>
+                      {item.links?.length > 0 && (
+                        <div className="mt-1.5 flex flex-wrap gap-1.5">
+                          {item.links.map((link) => {
+                            const isPage = link.url.startsWith("/") && !/\.[a-z0-9]{2,5}$/i.test(link.url.split("?")[0]);
+                            const className = "inline-flex min-h-[32px] items-center gap-1 rounded-lg border border-[#f59e0b]/35 bg-[#f59e0b]/10 px-2.5 text-[12px] font-semibold text-[#f59e0b]";
+                            return isPage ? (
+                              <Link key={link.url} to={link.url} className={className}>
+                                {link.label} <ArrowUpRightIcon aria-hidden="true" className="h-3 w-3" />
+                              </Link>
+                            ) : (
+                              <a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer" className={className}>
+                                {link.label} <ArrowUpRightIcon aria-hidden="true" className="h-3 w-3" />
+                              </a>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
                   </>
                 )}
                 {isAdmin && (
