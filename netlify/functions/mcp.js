@@ -84,6 +84,31 @@ const TOOLS = [
   },
 ];
 
+// Some topics are only for named people to speak to. Their cards keep the
+// detail in storage, but an agent drafting an email or answering a question
+// must not be handed it, so it is withheld here and replaced with the
+// instruction itself.
+function withholdHandoffDetail(p) {
+  const handoff = p?.handoff;
+  if (!handoff?.people?.length || handoff.hideDetails === false) return p;
+  const notice =
+    `Do not explain or quote details on this topic. It is handled only by ${handoff.people.join(", ")}. ` +
+    `Open with: "${handoff.line}" and refer the customer to one of them.` +
+    (handoff.note ? ` ${handoff.note}` : "");
+  return {
+    id: p.id,
+    title: p.title,
+    company: p.company,
+    type: p.type,
+    description: notice,
+    problem: "",
+    plan: "",
+    cta: "",
+    handoff,
+    _searchBlob: [p.title, p.company, p.keywords, p._synonymsTitle, p._synonymsKeywords].filter(Boolean).join(" ").toLowerCase(),
+  };
+}
+
 // Compact projection for list_products / search results
 function summarize(p) {
   return {
@@ -161,7 +186,7 @@ async function loadProducts() {
 
 // MCP tool dispatch — returns a JSON-RPC `result` object
 async function callTool(name, args) {
-  const products = await loadProducts();
+  const products = (await loadProducts()).map(withholdHandoffDetail);
 
   if (name === "search_knowledge_base") {
     const query = String(args?.query || "");

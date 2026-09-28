@@ -143,6 +143,11 @@ export default function ProductKnowledgeBase() {
     return 0;
   });
 
+  // A card with a hand-off keeps all of its detail in storage and shows none of
+  // it: only the named people speak to that topic. Removing `handoff` from the
+  // card, or setting hideDetails to false, brings everything back as it was.
+  const detailsHidden = Boolean(selected?.handoff?.people?.length) && selected.handoff.hideDetails !== false;
+
   return (
     <div className="p-4 sm:p-8 flex-1 bg-gradient-to-b from-gray-900 to-black">
       <h1 className="font-switch-bold text-4xl mb-6 text-center text-white tracking-wide">Product Knowledge Base</h1>
@@ -287,6 +292,8 @@ export default function ProductKnowledgeBase() {
           <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
             <Dialog.Panel className="bg-white dark:bg-gray-800/90 backdrop-blur-lg rounded-2xl max-w-2xl w-full mx-auto max-h-[90vh] flex flex-col text-gray-900 dark:text-white shadow-xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
               <div className="flex items-center justify-end gap-1 px-4 py-3 border-b border-gray-200/40 dark:border-gray-700/60 flex-shrink-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+                {!detailsHidden && (
+                  <>
                 <button
                   type="button"
                   onClick={(e) => {
@@ -323,6 +330,8 @@ export default function ProductKnowledgeBase() {
                     </>
                   )}
                 </button>
+                  </>
+                )}
                 <button
                   onClick={closeProduct}
                   className="p-1.5 rounded-full text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors"
@@ -337,11 +346,26 @@ export default function ProductKnowledgeBase() {
                 <div className="mb-6">
                   <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-[#0951fa] to-[#0951fa]/70 bg-clip-text text-transparent">{selected.title}</h2>
                   <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">{selected.company}</p>
-                  <div className="text-gray-700 dark:text-gray-300 italic">
-                    <RichText content={selected.description} tone="light" />
-                  </div>
+                  {selected.handoff?.people?.length > 0 && (
+                    <div className="mb-4 rounded-xl border border-amber-300 bg-amber-50 p-4">
+                      <p className="text-sm font-semibold text-amber-900">
+                        Hand this topic off to {selected.handoff.people.join(", ")}
+                      </p>
+                      <p className="mt-1 text-sm text-amber-900">
+                        Open with: “{selected.handoff.line}”
+                      </p>
+                      {selected.handoff.note && (
+                        <p className="mt-1 text-sm text-amber-800">{selected.handoff.note}</p>
+                      )}
+                    </div>
+                  )}
+                  {!detailsHidden && (
+                    <div className="text-gray-700 dark:text-gray-300 italic">
+                      <RichText content={selected.description} tone="light" />
+                    </div>
+                  )}
                 </div>
-                <div className="space-y-6">
+                <div className={detailsHidden ? "hidden" : "space-y-6"}>
                   <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4">
                     <h3 className="font-semibold text-lg mb-2 text-gray-900 dark:text-white">The Challenge</h3>
                     <div className="text-gray-700 dark:text-gray-300">
@@ -356,7 +380,7 @@ export default function ProductKnowledgeBase() {
                     </div>
                   </div>
                 </div>
-              {selected.resources && selected.resources.length > 0 && (
+              {!detailsHidden && selected.resources && selected.resources.length > 0 && (
                 <div className="mt-6">
                   <h3 className="font-semibold text-lg mb-3 text-gray-900 dark:text-white">Resources</h3>
                   <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 flex flex-wrap gap-4">

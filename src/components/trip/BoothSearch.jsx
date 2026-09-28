@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { DocumentTextIcon, MagnifyingGlassIcon, SparklesIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { ChatBubbleLeftIcon, DocumentTextIcon, MagnifyingGlassIcon, PhoneIcon, SparklesIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { listProducts } from "../../api/products";
 import { askProductSearch, logSearch } from "../../api/productSearch";
 import { downloadEventResourceFile } from "../../api/eventResources";
 import RichText from "../RichText";
 import { handoutsFor } from "../../data/collateral";
+import { phoneLinkValue } from "../../utils/phone";
 
 // Answering a question at the booth.
 //
@@ -32,6 +33,19 @@ function rank(title, haystack, terms) {
   if (terms.some((term) => name.includes(term))) return 0;
   if (terms.length > 1 && String(haystack || "").includes(terms.join(" "))) return 1;
   return 2;
+}
+
+// A hand-off card is an instruction, not one answer among several. When the
+// search is plainly about its topic — by name, synonym or keyword, not a stray
+// word deep in its text — it goes first, so the rep reads "walk them over"
+// before anything else.
+function rankProduct(product, terms) {
+  const handsOff = product.handoff?.people?.length && product.handoff.hideDetails !== false;
+  if (handsOff) {
+    const named = `${product.title} ${product._synonymsTitle || ""} ${product._synonymsKeywords || ""} ${product.keywords || ""}`.toLowerCase();
+    if (terms.every((term) => named.includes(term))) return -1;
+  }
+  return rank(product.title, product._searchBlob, terms);
 }
 
 function Badge({ tone, children }) {
@@ -96,7 +110,7 @@ export default function BoothSearch({ event, briefing = [], children }) {
   const productHits = terms.length
     ? products
         .filter((product) => matches(product._searchBlob || "", terms))
-        .sort((a, b) => rank(a.title, a._searchBlob, terms) - rank(b.title, b._searchBlob, terms))
+        .sort((a, b) => rankProduct(a, terms) - rankProduct(b, terms))
         .slice(0, 12)
     : [];
 
@@ -153,47 +167,123 @@ export default function BoothSearch({ event, briefing = [], children }) {
   // other half is which sheet to pick up off the table. Driven by the cards the
   // search found, keyword hits first and the interpreted ones when there were
   // none, and limited to what is printed for this show.
-  const foundTitles = productHits.length
-    ? productHits.map((product) => product.title)
-    : (interpreted?.matches || []).map((match) => match.product.title);
-  const handouts = searching ? handoutsFor(query, foundTitles, { show: event.shortName }) : [];
+  const found = productHits.length
+    ? productHits
+    : (interpreted?.matches || []).map((match) => match.product);
+  const isHandoff = (product) => Boolean(product?.handoff?.people?.length) && product.handoff.hideDetails !== false;
+  // A hand-off topic gets a person, not a sheet. When it is the best match,
+  // nothing is offered to hand over; further down the results, it just does
+  // not count towards what gets recommended.
+  const handouts = !searching || isHandoff(found[0])
+    ? []
+    : handoutsFor(query, found.filter((product) => !isHandoff(product)).map((product) => product.title), { show: event.shortName });
   const nothing = noKeywordHits && !asking && interpreted && !interpreted.matches.length;
 
   // One card shape for both passes. An interpreted hit carries the extra line
   // saying why it came back, since it did not match on any word that was typed.
+  //
+  // Some topics are not the rep's to explain. A card with a `handoff` says so:
+  // it gives the one line to open with and the people to walk the customer to,
+  // and shows none of the detail, so nothing gets quoted that only those people
+  // should say. That holds for interpreted hits too — the model's sentence is
+  // dropped in favour of the hand-off.
   const renderProduct = (product, reason) => {
     const open = openId === product.id;
     const isSwitch = /switch/i.test(product.company || "");
+    const handoff = product.handoff?.people?.length && product.handoff.hideDetails !== false ? product.handoff : null;
+    const firstNames = handoff ? handoff.people.map((name) => name.split(" ")[0]) : [];
+    const nameList = firstNames.length > 1
+      ? `${firstNames.slice(0, -1).join(", ")}, or ${firstNames[firstNames.length - 1]}`
+      : firstNames[0];
+
     return (
-      <button
+      <div
         key={product.id}
-        type="button"
-        onClick={() => setOpenId(open ? null : product.id)}
-        aria-expanded={open}
-        className="block w-full rounded-xl border border-white/10 bg-white/[0.045] p-3 text-left"
+        className={`rounded-xl border bg-white/[0.045] ${handoff ? "border-[#f59e0b]/35" : "border-white/10"}`}
       >
-        <span className="flex items-center gap-2">
-          <span className="min-w-0 flex-1 text-[13.5px] font-semibold leading-[1.3] text-white">
-            {product.title}
+        <button
+          type="button"
+          onClick={() => setOpenId(open ? null : product.id)}
+          aria-expanded={open}
+          className="block w-full p-3 text-left"
+        >
+          <span className="flex items-center gap-2">
+            <span className="min-w-0 flex-1 text-[13.5px] font-semibold leading-[1.3] text-white">
+              {product.title}
+            </span>
+            <Badge tone={isSwitch ? "switch" : "choice"}>{isSwitch ? "Switch" : "Clear Choice"}</Badge>
           </span>
-          <Badge tone={isSwitch ? "switch" : "choice"}>{isSwitch ? "Switch" : "Clear Choice"}</Badge>
-        </span>
-        {reason ? (
-          <p className="mt-1.5 text-[12.5px] leading-[1.4] text-[#cbd5e3]">{reason}</p>
-        ) : (
-          product.problem && (
-            // problem/plan/description are edited through the site's rich-text
-            // editor and stored as HTML — RichText sanitizes and renders it, so
-            // a bolded phrase or a link comes through as one, not as visible
-            // "<strong>" tags. It also degrades quietly to plain paragraphs for
-            // the products that only ever held plain text.
-            <div className="mt-1.5 text-[12.5px] leading-[1.4] text-[#93a0b4]">
-              <RichText content={product.problem} />
+          {handoff ? (
+            <span className="mt-1.5 block text-[12.5px] font-semibold leading-[1.4] text-[#f59e0b]">
+              Hand off to {nameList}
+            </span>
+          ) : reason ? (
+            <span className="mt-1.5 block text-[12.5px] leading-[1.4] text-[#cbd5e3]">{reason}</span>
+          ) : (
+            product.problem && (
+              // problem/plan/description are edited through the site's rich-text
+              // editor and stored as HTML — RichText sanitizes and renders it.
+              <span className="mt-1.5 block text-[12.5px] leading-[1.4] text-[#93a0b4]">
+                <RichText content={product.problem} />
+              </span>
+            )
+          )}
+        </button>
+
+        {open && handoff && (
+          <div className="space-y-3 border-t border-white/[0.07] px-3 pb-3 pt-2.5 text-[12.5px] leading-[1.5] text-[#cbd5e3]">
+            <div>
+              <span className="font-switch-reg block text-[10px] uppercase tracking-[0.15em] text-[#75808d]">Say this</span>
+              <p className="mt-1 text-[14px] leading-[1.45] text-white">“{handoff.line}”</p>
             </div>
-          )
+            <div>
+              <span className="font-switch-reg block text-[10px] uppercase tracking-[0.15em] text-[#75808d]">Then walk them to</span>
+              <ul className="mt-1.5 space-y-1.5">
+                {handoff.people.map((name) => {
+                  // Only people on this show's roster can be walked to. Anyone
+                  // else is named, so the rep knows, but marked as not here.
+                  const here = (event.travelingTeam || []).some((member) => member.toLowerCase() === name.toLowerCase());
+                  const phone = here ? event.teamContacts?.[name]?.phone : "";
+                  const dial = phone ? phoneLinkValue(phone) : "";
+                  return (
+                    <li key={name} className="flex min-h-[44px] items-center gap-2">
+                      <span className={`min-w-0 flex-1 text-[13.5px] font-semibold ${here ? "text-white" : "text-[#75808d]"}`}>
+                        {name}
+                        {!here && <span className="font-normal"> · not at this show</span>}
+                      </span>
+                      {dial && (
+                        <>
+                          <a
+                            href={`tel:${dial}`}
+                            aria-label={`Call ${name}`}
+                            className="grid h-10 w-10 place-items-center rounded-lg bg-white/[0.06] text-white"
+                          >
+                            <PhoneIcon className="h-4 w-4" />
+                          </a>
+                          <a
+                            href={`sms:${dial}`}
+                            aria-label={`Message ${name}`}
+                            className="grid h-10 w-10 place-items-center rounded-lg bg-white/[0.06] text-white"
+                          >
+                            <ChatBubbleLeftIcon className="h-4 w-4" />
+                          </a>
+                        </>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+            {handoff.note && (
+              <p className="rounded-lg border border-[#f59e0b]/25 bg-[#f59e0b]/[0.07] px-2.5 py-2 text-[12px] leading-[1.45] text-[#f5c37b]">
+                {handoff.note}
+              </p>
+            )}
+          </div>
         )}
-        {open && (
-          <div className="mt-2.5 space-y-3 border-t border-white/[0.07] pt-2.5 text-[12.5px] leading-[1.5] text-[#cbd5e3] [&_ul]:my-1.5 [&_ul]:list-disc [&_ul]:pl-4 [&_li]:mt-1 [&_li_strong]:text-white [&_p]:mt-1.5 first:[&_p]:mt-0 [&_a]:text-[#3d7bff] [&_h4]:text-white [&_h4]:border-white/10">
+
+        {open && !handoff && (
+          <div className="space-y-3 border-t border-white/[0.07] px-3 pb-3 pt-2.5 text-[12.5px] leading-[1.5] text-[#cbd5e3] [&_ul]:my-1.5 [&_ul]:list-disc [&_ul]:pl-4 [&_li]:mt-1 [&_li_strong]:text-white [&_p]:mt-1.5 first:[&_p]:mt-0 [&_a]:text-[#3d7bff] [&_h4]:text-white [&_h4]:border-white/10">
             {/* Three layers, in the order a booth conversation actually runs:
                 the line you open with, the substance for when they ask more,
                 and who this is really for. The CTA closes it. */}
@@ -221,7 +311,7 @@ export default function BoothSearch({ event, briefing = [], children }) {
             {product.cta && <p className="font-semibold text-white">{product.cta}</p>}
           </div>
         )}
-      </button>
+      </div>
     );
   };
 
