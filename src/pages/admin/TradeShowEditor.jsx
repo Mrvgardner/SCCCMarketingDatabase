@@ -223,7 +223,7 @@ export default function TradeShowEditor() {
     if (!(nextEvent.travel || []).some((traveler) => traveler.person?.toLowerCase() === name.toLowerCase())) {
       nextEvent.travel = [
         ...(nextEvent.travel || []),
-        { person: name, arrival: "TBD", departure: "TBD", carrier: "Optional", notes: "Flight info not added." },
+        { person: name, arrival: "TBD", departure: "TBD", carrier: "Optional", notes: "" },
       ];
     }
     const saved = await saveEvent(nextEvent, `${name} added to the traveling team.`);

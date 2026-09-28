@@ -75,7 +75,7 @@ function mergeSeedConfiguration(events) {
           arrival: "TBD",
           departure: "TBD",
           carrier: "Optional",
-          notes: "Flight info not added.",
+          notes: "",
         });
       }
     }
@@ -183,7 +183,7 @@ async function devUpdateMyTravel(eventId, travel, user) {
   if (travel.remove) {
     const remaining = currentTravel.filter((item) => item.email !== email);
     events[index].travel = ownedTravel && travelingTeam.some((name) => name.toLowerCase() === ownedTravel.person.toLowerCase())
-      ? [...remaining, { person: ownedTravel.person, arrival: "TBD", departure: "TBD", carrier: "Optional", notes: "Flight info not added." }]
+      ? [...remaining, { person: ownedTravel.person, arrival: "TBD", departure: "TBD", carrier: "Optional", notes: "" }]
       : remaining;
   } else {
     const claimedByAnother = currentTravel.some(
