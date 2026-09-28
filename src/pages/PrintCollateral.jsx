@@ -12,6 +12,12 @@ export default function PrintCollateralPage() {
       category: "Brochures",
       items: [
         {
+          name: "MultiFunction Kiosk Brochure - 2026",
+          description: "Eight-page Clear Choice brochure for convenience stores: ATM, Bill Break, Cash Advance, ticket redemption, Cash to Card, and the staff Business Center",
+          url: "/brochures/MultiFunction-Kiosk-Brochure.pdf",
+          thumbnail: "/brochures/thumbnails/MultiFunction-Kiosk-Brochure.webp"
+        },
+        {
           name: "Switch Commerce & Clear Choice Brochure - 2026",
           description: "Combined company brochure featuring both Switch Commerce and Clear Choice",
           url: "/brochures/SwitchCommerceClearChoiceBrochure.pdf",
@@ -32,19 +38,54 @@ export default function PrintCollateralPage() {
       ]
     },
     {
-      category: "One-Pagers",
+      category: "Switch Commerce One-Pagers",
       items: [
         {
-          name: "Watchdog One-Page - 2026",
-          description: "Clear Choice WatchDog monitoring and security services",
-          url: "/pdfs/CC-WatchDogOnline.pdf",
-          thumbnail: "/pdfs/thumbnails/watchdog-thumb.webp"
+          name: "Company Overview - Fall 2026",
+          description: "Switch to the best: ATM processing, vault cash, settlement, and the tools behind them",
+          url: "/pdfs/SC-Overview-One-Pager.pdf",
+          thumbnail: "/pdfs/thumbnails/SC-Overview-One-Pager.webp"
         },
         {
-          name: "Cash Recycler One-Page - 2026",
-          description: "ATEC Cash Recycler solutions for efficient cash management",
-          url: "/pdfs/Cash_Reccler.pdf",
-          thumbnail: "/pdfs/thumbnails/atec-thumb.webp"
+          name: "Terminal Management System - Fall 2026",
+          description: "One screen, full portfolio: terminals, cash, money, and people in real time",
+          url: "/pdfs/SC-TMS-One-Pager.pdf",
+          thumbnail: "/pdfs/thumbnails/SC-TMS-One-Pager.webp"
+        },
+        {
+          name: "International Transactions - Fall 2026",
+          description: "Dynamic Currency Conversion: turning cross-border traffic into revenue",
+          url: "/pdfs/SC-International-One-Pager.pdf",
+          thumbnail: "/pdfs/thumbnails/SC-International-One-Pager.webp"
+        }
+      ]
+    },
+    {
+      category: "Clear Choice One-Pagers",
+      items: [
+        {
+          name: "Company Overview - Fall 2026",
+          description: "Payments without limits: ATMs, cash, merchant services, and kiosks",
+          url: "/pdfs/CC-Overview-One-Pager.pdf",
+          thumbnail: "/pdfs/thumbnails/CC-Overview-One-Pager.webp"
+        },
+        {
+          name: "MultiFunction Kiosk - Fall 2026",
+          description: "One kiosk, multiple lines of revenue: the partner program for IADs and ISOs",
+          url: "/pdfs/CC-MultiFunction-Kiosk-One-Pager.pdf",
+          thumbnail: "/pdfs/thumbnails/CC-MultiFunction-Kiosk-One-Pager.webp"
+        },
+        {
+          name: "Watchdog - Fall 2026",
+          description: "Monitoring that never sleeps: 24/7 monitoring, security, and support",
+          url: "/pdfs/CC-Watchdog-One-Pager.pdf",
+          thumbnail: "/pdfs/thumbnails/CC-Watchdog-One-Pager.webp"
+        },
+        {
+          name: "StashPoint Cash Recycler - Fall 2026",
+          description: "We put the bank in your store: the cash recycling kiosk powered by ATEC America",
+          url: "/pdfs/CC-StashPoint-ATEC-One-Pager.pdf",
+          thumbnail: "/pdfs/thumbnails/CC-StashPoint-ATEC-One-Pager.webp"
         }
       ]
     }
