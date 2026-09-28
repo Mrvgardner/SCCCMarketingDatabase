@@ -121,7 +121,22 @@ export default withCors(async (request) => {
   if (!response.ok) {
     const providerMessage = await response.text().catch(() => "");
     console.error("AeroDataBox lookup failed", response.status, providerMessage.slice(0, 500));
-    return json({ error: "Flight lookup is temporarily unavailable" }, 502);
+    // "Temporarily unavailable" for every failure hid the difference between a
+    // provider blip and a key that will never work until someone fixes it. The
+    // status is not sensitive, and it is what whoever is asked about this needs.
+    if (response.status === 401 || response.status === 403) {
+      return json({
+        error: `Flight lookup is not authorized right now, so it needs fixing on our side. Enter the flight by hand below and let Vic know. (code ${response.status})`,
+      }, 502);
+    }
+    if (response.status === 429) {
+      return json({
+        error: "Flight lookup has used up its allowance for now. Enter the flight by hand below. (code 429)",
+      }, 502);
+    }
+    return json({
+      error: `Flight lookup is temporarily unavailable. Try again shortly, or enter the flight by hand below. (code ${response.status})`,
+    }, 502);
   }
 
   let rawFlights;

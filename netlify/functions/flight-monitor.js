@@ -37,7 +37,13 @@ async function fetchFlight(apiKey, flightNumber, date) {
   } catch {
     return null;
   }
-  if (response.status === 204 || !response.ok) return null;
+  if (response.status === 204) return null;
+  if (!response.ok) {
+    // Returning null quietly made a rejected key look identical to "no news":
+    // the job would run hourly through a whole show and alert nobody.
+    console.error('Flight monitor: AeroDataBox lookup failed', response.status, flightNumber, date);
+    return null;
+  }
   try {
     const flights = await response.json();
     return Array.isArray(flights) && flights.length ? flights[0] : null;

@@ -389,12 +389,6 @@ export const tradeShows = [
         type: "External",
       },
       {
-        title: "ATM operator talking points",
-        description: "Add the approved topics for independent deployers, owners, and suppliers.",
-        url: "",
-        type: "Internal",
-      },
-      {
         title: "Post-show follow-up",
         description: "Add lead routing, recap ownership, and email follow-up plan.",
         url: "",
