@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { ArrowTopRightOnSquareIcon, ClipboardDocumentIcon } from "@heroicons/react/24/outline";
+import { ArrowTopRightOnSquareIcon, ChevronDownIcon, ClipboardDocumentIcon } from "@heroicons/react/24/outline";
 import { downloadEventResourceFile } from "../../api/eventResources";
+import { COLLATERAL_SECTIONS, currentCollateral } from "../../data/collateral";
 import { Card } from "./TripChrome";
 
 // The event's link and document library. Moved here from the More tab so it
@@ -50,8 +51,67 @@ function ResourceAction({ eventId, resource }) {
   );
 }
 
+// Every current brochure and one-pager, as a plain list of names. At the booth
+// nobody is browsing thumbnails: they know which sheet they want and need it
+// open. Reads the same list as the print collateral page, so a new piece shows
+// up here without anyone touching this file.
+function Brochures() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Card className="overflow-hidden">
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls="booth-brochures"
+        onClick={() => setOpen(!open)}
+        className="flex min-h-[52px] w-full items-center justify-between gap-3 p-3.5 text-left"
+      >
+        <span>
+          <span className="block text-[14.5px] font-semibold leading-[1.3] text-white">Brochures</span>
+          <span className="mt-0.5 block text-[13px] leading-[1.5] text-[#93a0b4]">
+            {currentCollateral.length} brochures and one-pagers
+          </span>
+        </span>
+        <ChevronDownIcon
+          aria-hidden="true"
+          className={`h-4 w-4 shrink-0 text-[#93a0b4] transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      {open && (
+        <div id="booth-brochures" className="border-t border-white/[0.06] px-3.5 pb-2">
+          {COLLATERAL_SECTIONS.map((section) => (
+            <div key={section}>
+              <h4 className="pt-3 font-switch-reg text-[10px] uppercase tracking-[0.16em] text-[#75808d]">
+                {section}
+              </h4>
+              <ul>
+                {currentCollateral
+                  .filter((item) => item.section === section)
+                  .map((item) => (
+                    <li key={item.id}>
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex min-h-[44px] items-center text-[13.5px] font-semibold text-[#0951fa]"
+                      >
+                        {item.name}
+                      </a>
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
+    </Card>
+  );
+}
+
 export default function EventResources({ event }) {
-  if (!event.resources?.length) return null;
+  const resources = event.resources || [];
 
   return (
     <section>
@@ -59,7 +119,8 @@ export default function EventResources({ event }) {
         <ClipboardDocumentIcon className="h-4 w-4 text-[#ff4f00]" /> Resources
       </h2>
       <div className="space-y-2">
-        {event.resources.map((resource) => (
+        <Brochures />
+        {resources.map((resource) => (
           <Card key={resource.id || resource.title} className="p-3.5">
             <div className="flex items-start justify-between gap-3">
               <h3 className="text-[14.5px] font-semibold leading-[1.3] text-white">{resource.title}</h3>
