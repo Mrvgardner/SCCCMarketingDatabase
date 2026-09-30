@@ -8,6 +8,7 @@ import Login from './pages/Login.jsx';
 import SiteFooter from './components/SiteFooter.jsx';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ScrollToTop from './components/ScrollToTop.jsx';
+import Assistant from './components/Assistant.jsx';
 import { bootstrapNative } from './native/bootstrap';
 import { isNativeApp } from './api/apiBase';
 import { tradeShows as seedTradeShows } from './data/tradeShows';
@@ -442,6 +443,7 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         {isNativeApp() ? <NativeAppShell /> : <AppShell />}
+        <Assistant />
       </AuthProvider>
     </BrowserRouter>
   );
