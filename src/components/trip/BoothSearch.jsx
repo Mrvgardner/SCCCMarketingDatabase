@@ -24,13 +24,19 @@ function matches(haystack, terms) {
   return terms.every((term) => haystack.includes(term));
 }
 
+function escapeRegExp(text) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 // A hit on the name is what someone meant; a hit anywhere else is what they
 // described. Names first.
 // Then the phrase as typed: "bill break" should put the product that offers
 // Bill Break above one that merely mentions "bill pay" and "break" apart.
 function rank(title, haystack, terms) {
   const name = String(title || "").toLowerCase();
-  if (terms.some((term) => name.includes(term))) return 0;
+  // A term has to start a word in the name: "settle" finds Settlement, but
+  // "TMS" is not a match for ATMs.
+  if (terms.some((term) => new RegExp(`(^|[^a-z0-9])${escapeRegExp(term)}`).test(name))) return 0;
   if (terms.length > 1 && String(haystack || "").includes(terms.join(" "))) return 1;
   return 2;
 }
@@ -45,7 +51,12 @@ function rankProduct(product, terms) {
     const named = `${product.title} ${product._synonymsTitle || ""} ${product._synonymsKeywords || ""} ${product.keywords || ""}`.toLowerCase();
     if (terms.every((term) => named.includes(term))) return -1;
   }
-  return rank(product.title, product._searchBlob, terms);
+  // Synonyms are the other names a card goes by ("TMS" for Terminal
+  // Management System), so a match on one counts as a match on the name —
+  // just behind a card that has the word in its actual title.
+  const byTitle = rank(product.title, product._searchBlob, terms);
+  if (byTitle === 0 || !product._synonymsTitle) return byTitle;
+  return Math.min(byTitle, rank(product._synonymsTitle, product._searchBlob, terms) + 0.5);
 }
 
 function Badge({ tone, children }) {
