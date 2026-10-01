@@ -15,7 +15,6 @@ import { askAssistant } from "../api/assistant";
 const SUGGESTIONS = {
   trip: [
     "What's next on the schedule?",
-    "Who's on the team at this show, and when do they land?",
     "What do my receipts total?",
     "What do I hand out for TMS?",
   ],
