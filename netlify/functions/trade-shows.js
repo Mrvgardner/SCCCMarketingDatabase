@@ -65,9 +65,17 @@ function enrichTeamContacts(event) {
 // entries must never take the person from the request body: that let anyone
 // file flights under a colleague's name, and the ownership check below then
 // locked that colleague out of correcting it.
-function travelerForEmail(email, travelingTeam) {
+// The event's own roster first: that is what admins edit and what the client
+// matches against, so an email corrected there works without a code change.
+// The built-in list is the fallback for events saved before rosters carried
+// emails.
+function travelerForEmail(email, travelingTeam, teamContacts = {}) {
   const target = String(email || "").trim().toLowerCase();
   if (!target) return "";
+  const onRoster = (travelingTeam || []).find(
+    (name) => String(teamContacts?.[name]?.email || "").trim().toLowerCase() === target,
+  );
+  if (onRoster) return onRoster;
   const canonical = Object.keys(TRAVELER_CONTACTS).find(
     (name) => TRAVELER_CONTACTS[name].email.toLowerCase() === target,
   );
@@ -255,7 +263,7 @@ export default withCors(async (request) => {
       if (eventIndex === -1) return { error: "Event not found", status: 404 };
 
       const travelingTeam = events[eventIndex].travelingTeam || [];
-      const person = travelerForEmail(email, travelingTeam);
+      const person = travelerForEmail(email, travelingTeam, events[eventIndex].teamContacts);
       const currentTravel = events[eventIndex].travel || [];
       const ownedTravel = currentTravel.find((item) => item.email === email);
 

@@ -181,8 +181,10 @@ export default function FlightEntry({ event, user, myName, myTravel, onDone }) {
   if (!myName) {
     return (
       <p className="text-[12.5px] leading-[1.5] text-[#f59e0b]">
-        Flight information is filed against your sign-in email, and yours is not on this event's
-        traveling team. Ask Vic or Trip to add you, then come back.
+        Flight information is filed against your sign-in email, and{" "}
+        <span className="font-semibold text-white">{user?.email || "this address"}</span> is not on this
+        event's traveling team. If you are on the roster under a different address, ask Vic or Trip to
+        update it, then come back.
       </p>
     );
   }
