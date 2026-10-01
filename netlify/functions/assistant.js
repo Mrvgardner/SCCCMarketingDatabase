@@ -342,6 +342,9 @@ export default withCors(async (request) => {
     "- Settlement is next-day, never same-day.\n" +
     "- Be brief and direct, like a colleague answering across the booth. Plain text, no markdown. Give a URL only when asked where to find a document.";
 
+  // A failed call is recorded with what the gateway said, so "it didn't work
+  // for Trip yesterday" can be answered from the log rather than guessed at.
+  const startedAt = Date.now();
   let answer;
   try {
     const completion = await client().chat.completions.create({
@@ -354,10 +357,42 @@ export default withCors(async (request) => {
         ...history,
       ],
     });
-    answer = JSON.parse(completion.choices[0]?.message?.content || "{}");
+    const content = completion.choices[0]?.message?.content || "";
+    try {
+      answer = JSON.parse(content);
+    } catch {
+      // Not valid JSON despite the schema: the words are still an answer.
+      answer = { answer: content, followUps: [] };
+    }
+    if (!answer?.answer) {
+      const reason = completion.choices[0]?.finish_reason || "empty";
+      throw Object.assign(new Error(`empty answer (${reason})`), { status: 502, code: "empty_answer" });
+    }
   } catch (error) {
-    console.error("assistant failed:", error?.message || error);
-    return json({ error: "The assistant could not answer right now. Try again in a moment." }, 502);
+    const status = Number(error?.status) || 0;
+    const detail = {
+      at: new Date().toISOString(),
+      user: user.email,
+      isAdmin,
+      eventId,
+      question: history[history.length - 1].content.slice(0, 200),
+      turns: history.length,
+      briefingChars: JSON.stringify(briefing).length,
+      ms: Date.now() - startedAt,
+      status,
+      code: String(error?.code || error?.type || ""),
+      message: String(error?.message || error).slice(0, 500),
+    };
+    console.error("assistant failed:", JSON.stringify(detail));
+    await usage.setJSON(`errors/${detail.at.slice(0, 10)}/${Date.now()}-${userKey(user.email).slice(0, 8)}.json`, detail).catch(() => {});
+
+    const message =
+      status === 429
+        ? "The assistant is busy right now. Give it a minute and try again."
+        : status === 400 || status === 413
+          ? "That question was too much for the assistant in one go. Try a shorter one, or press Clear and ask again."
+          : "The assistant could not answer right now. Try again in a moment.";
+    return json({ error: message }, 502);
   }
 
   return json({
