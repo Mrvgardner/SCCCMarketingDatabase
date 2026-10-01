@@ -6,6 +6,7 @@ import { clean } from "../lib/travel-input.mjs";
 import { loadEvents } from "./trade-shows.js";
 import seedProducts from "./products-seed.json";
 import { currentCollateral } from "../../src/data/collateral.js";
+import { appGuide } from "../lib/app-guide.mjs";
 
 // The site's assistant: one place to ask anything the site already knows.
 //
@@ -324,15 +325,18 @@ export default withCors(async (request) => {
       atShows: item.shows || "all", onTheBoothTable: Boolean(item.atBooth), url: item.url,
     })),
     expenses: receipts,
+    howTheSiteWorks: appGuide,
   };
 
   const system =
     "You are the assistant inside Switch Commerce's team site, used by employees at trade shows and at their desks. " +
     "Answer only from the briefing. It holds everything the person asking is allowed to see: the shows (schedule, " +
     "team, flights, hotel, pinned notes, resources), the product knowledge base, the printed brochures and one-pagers, " +
-    "and their expense receipts.\n" +
+    "their expense receipts, and a guide to how the site itself works (howTheSiteWorks).\n" +
     "Rules:\n" +
     "- If the briefing does not contain the answer, say so plainly and name the screen or person that would have it. Never guess or invent.\n" +
+    "- Questions about using the site ('where do I...', 'how do I...', 'why can't I see...'): answer from howTheSiteWorks with the " +
+    "page or tab and the exact button to tap, as directions, e.g. 'More tab, Emergency contact, tap Add.' Mention when something is admin-only.\n" +
     "- A product marked handOffOnly: give exactly its instruction (who handles it and the opening line). Do not speculate about the topic beyond that.\n" +
     "- Flights: a traveler's arrivalFlight time is when they land at the show's airport; departureFlight time is when they leave it. " +
     "Quote the flight number and the field you read. If a live status is present, prefer it and say when it was checked.\n" +
