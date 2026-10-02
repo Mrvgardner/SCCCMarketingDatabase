@@ -46,13 +46,28 @@ const ANSWER_SCHEMA = {
         type: "string",
         description: "The reply, in plain text. Short paragraphs; a line per item for lists. No markdown.",
       },
+      links: {
+        type: "array",
+        description:
+          "Things to open, shown as buttons under the answer: a document's url, a product's link, or a page's path, copied exactly from the briefing. " +
+          "Include one whenever the answer names a specific document, product card, or screen. Empty otherwise.",
+        items: {
+          type: "object",
+          properties: {
+            label: { type: "string", description: "Short button text, e.g. 'MultiFunction Kiosk one-pager' or 'Open the More tab'." },
+            url: { type: "string", description: "Copied exactly from the briefing. Never invented." },
+          },
+          required: ["label", "url"],
+          additionalProperties: false,
+        },
+      },
       followUps: {
         type: "array",
         description: "Up to two short questions the person might ask next, answerable from the briefing. Empty if none are natural.",
         items: { type: "string" },
       },
     },
-    required: ["answer", "followUps"],
+    required: ["answer", "links", "followUps"],
     additionalProperties: false,
   },
 };
@@ -109,6 +124,7 @@ export function productBriefing(product) {
     return {
       title: product.title,
       company: product.company,
+      link: product.id ? `/products?id=${product.id}` : "",
       handOffOnly: true,
       instruction:
         `Reps do not explain this topic. Only ${handoff.people.join(", ")} speak to it. ` +
@@ -119,6 +135,7 @@ export function productBriefing(product) {
   return {
     title: product.title,
     company: product.company,
+    link: product.id ? `/products?id=${product.id}` : "",
     type: product.type,
     alsoCalled: product._synonymsTitle || "",
     opener: text(product.problem, 300),
@@ -164,6 +181,9 @@ export function eventBriefing(event, flightStates) {
 
   return {
     id: event.id,
+    tabLinks: Object.fromEntries(
+      ["today", "trip", "money", "booth", "team", "more"].map((tab) => [tab, `/trip/${event.id}/${tab}`]),
+    ),
     name: event.name,
     shortName: event.shortName,
     dates: event.dates,
@@ -344,7 +364,10 @@ export default withCors(async (request) => {
     "otherwise say that team expenses are visible to admins on the Money tab.\n" +
     "- Times are local to the show unless the briefing says otherwise. Use the 'now' field for 'today', 'tomorrow', 'next'.\n" +
     "- Settlement is next-day, never same-day.\n" +
-    "- Be brief and direct, like a colleague answering across the booth. Plain text, no markdown. Give a URL only when asked where to find a document.";
+    "- Be brief and direct, like a colleague answering across the booth. Plain text, no markdown.\n" +
+    "- Never write a URL or a file path in the answer text. When the answer points at a document, a product card, or a screen, " +
+    "put it in links (url copied exactly from the briefing: a collateral url, a product's link, a page's path, a show's tabLinks, " +
+    "or a resource url) and refer to it in words, e.g. 'Here is the one-pager.'";
 
   // A failed call is recorded with what the gateway said, so "it didn't work
   // for Trip yesterday" can be answered from the log rather than guessed at.
@@ -366,7 +389,7 @@ export default withCors(async (request) => {
       answer = JSON.parse(content);
     } catch {
       // Not valid JSON despite the schema: the words are still an answer.
-      answer = { answer: content, followUps: [] };
+      answer = { answer: content, links: [], followUps: [] };
     }
     if (!answer?.answer) {
       const reason = completion.choices[0]?.finish_reason || "empty";
@@ -399,7 +422,23 @@ export default withCors(async (request) => {
     return json({ error: message }, 502);
   }
 
+  // Trust the briefing, not the model: a link is kept only if its address is
+  // one the briefing actually contains. Anything else is dropped rather than
+  // sent to someone's phone as a button.
+  const known = new Set([
+    ...briefing.printedCollateral.map((item) => item.url),
+    ...briefing.products.map((product) => product.link),
+    ...briefing.shows.flatMap((show) => [...Object.values(show.tabLinks), ...show.resources.map((r) => r.url)]),
+    ...appGuide.pages.map((page) => page.path),
+  ].filter(Boolean));
+  const seenLinks = new Set();
+  const links = (Array.isArray(answer.links) ? answer.links : [])
+    .map((link) => ({ label: clean(link?.label, 60), url: clean(link?.url, 400) }))
+    .filter((link) => link.label && known.has(link.url) && !seenLinks.has(link.url) && seenLinks.add(link.url))
+    .slice(0, 4);
+
   return json({
+    links,
     answer: clean(answer.answer, 4000, { multiline: true }) || "I don't have an answer for that.",
     followUps: (Array.isArray(answer.followUps) ? answer.followUps : []).map((q) => clean(q, 120)).filter(Boolean).slice(0, 2),
   });

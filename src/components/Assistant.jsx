@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { ArrowUpIcon, SparklesIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Link, useLocation } from "react-router-dom";
+import { ArrowUpIcon, ArrowUpRightIcon, SparklesIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "../contexts/AuthContext";
 import { askAssistant } from "../api/assistant";
 
@@ -73,7 +73,7 @@ export default function Assistant() {
     setBusy(true);
     try {
       const reply = await askAssistant(next, { eventId });
-      setMessages([...next, { role: "assistant", content: reply.answer }]);
+      setMessages([...next, { role: "assistant", content: reply.answer, links: reply.links || [] }]);
       setFollowUps(reply.followUps || []);
     } catch (askError) {
       setError(askError.message || "The assistant could not answer.");
@@ -169,7 +169,7 @@ export default function Assistant() {
 
             <ol className="space-y-3">
               {messages.map((m, i) => (
-                <li key={i} className={m.role === "user" ? "flex justify-end" : "flex"}>
+                <li key={i} className={m.role === "user" ? "flex justify-end" : "flex flex-col items-start gap-1.5"}>
                   <p
                     className={
                       m.role === "user"
@@ -179,6 +179,26 @@ export default function Assistant() {
                   >
                     {m.content}
                   </p>
+                  {m.links?.length > 0 && (
+                    <div className="flex max-w-[92%] flex-wrap gap-1.5">
+                      {m.links.map((link) => {
+                        // A page of the app opens in place; a document or an
+                        // outside site opens in its own tab so the chat is
+                        // still there to come back to.
+                        const isPage = link.url.startsWith("/") && !/\.[a-z0-9]{2,5}$/i.test(link.url.split("?")[0]);
+                        const className = "inline-flex min-h-[36px] items-center gap-1.5 rounded-xl border border-[#0951fa]/50 bg-[#0951fa]/15 px-3 text-[13px] font-semibold text-[#9db8ff] hover:bg-[#0951fa]/25 hover:text-white";
+                        return isPage ? (
+                          <Link key={link.url} to={link.url} onClick={() => setOpen(false)} className={className}>
+                            {link.label} <ArrowUpRightIcon aria-hidden="true" className="h-3.5 w-3.5" />
+                          </Link>
+                        ) : (
+                          <a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer" className={className}>
+                            {link.label} <ArrowUpRightIcon aria-hidden="true" className="h-3.5 w-3.5" />
+                          </a>
+                        );
+                      })}
+                    </div>
+                  )}
                 </li>
               ))}
               {busy && (

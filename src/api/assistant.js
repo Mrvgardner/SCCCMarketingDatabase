@@ -15,7 +15,11 @@ export async function askAssistant(messages, { eventId = "" } = {}) {
   if (useDev) {
     // No gateway credentials locally. Say so rather than fake a reply.
     return {
-      answer: "The assistant answers on the deployed site, not in local development.",
+      answer: "The assistant answers on the deployed site, not in local development. These sample links show how a real answer points at things.",
+      links: [
+        { label: "MultiFunction Kiosk one-pager", url: "/pdfs/CC-MultiFunction-Kiosk-One-Pager.pdf" },
+        { label: "Open the Knowledge Base", url: "/products" },
+      ],
       followUps: [],
     };
   }
