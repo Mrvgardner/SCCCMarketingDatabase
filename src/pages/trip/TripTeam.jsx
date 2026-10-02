@@ -131,7 +131,9 @@ export default function TripTeam() {
               </div>
             )}
 
-            {isAdmin && theirIce && (
+            {/* Shown only with the itinerary: an emergency contact is not something
+                to have on screen for anyone glancing over a shoulder at the booth. */}
+            {isAdmin && open && theirIce && (
               <a
                 href={`tel:${phoneLinkValue(theirIce.phone)}`}
                 className="mb-2.5 flex items-baseline gap-2 rounded-lg border border-[#f59e0b]/25 bg-[#f59e0b]/[0.07] px-3 py-2"
