@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ArrowTopRightOnSquareIcon, ChevronDownIcon, ClipboardDocumentIcon } from "@heroicons/react/24/outline";
 import { downloadEventResourceFile } from "../../api/eventResources";
 import { COLLATERAL_SECTIONS, currentCollateral } from "../../data/collateral";
+import SharePdfButton from "../SharePdfButton";
 import { Card } from "./TripChrome";
 
 // The event's link and document library. Moved here from the More tab so it
@@ -93,15 +94,16 @@ function Brochures() {
                 {boothCollateral
                   .filter((item) => item.section === section)
                   .map((item) => (
-                    <li key={item.id}>
+                    <li key={item.id} className="flex items-center gap-2">
                       <a
                         href={item.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex min-h-[44px] items-center text-[13.5px] font-semibold text-[#0951fa]"
+                        className="flex min-h-[44px] min-w-0 flex-1 items-center text-[13.5px] font-semibold text-[#0951fa]"
                       >
                         {item.name}
                       </a>
+                      <SharePdfButton url={item.url} label={item.name} />
                     </li>
                   ))}
               </ul>

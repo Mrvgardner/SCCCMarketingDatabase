@@ -64,6 +64,7 @@ export const appGuide = {
         tab: "Booth",
         what: "What you need while standing at the booth: a search box ('What did they just ask you?') that finds the product card for a customer's question and tells you which brochure or one-pager to hand them ('Hand them this'); the 'Know this cold' pinned list; the venue map and directions to the booth; and Resources, including a 'Brochures' list that opens any current one-pager or brochure PDF.",
         howTo: [
+          "Send a customer a brochure or one-pager: tap 'Share' next to it (in 'Hand them this', the Brochures list, or a pinned link). It sends the PDF file itself through Messages, Mail, AirDrop and so on, never a link to this site. On a computer it saves the file to attach to an email.",
           "Find what to say about a product: type the topic in the Booth search box. The card opens with 'Say this', 'If they ask more', and 'Who it's for'.",
           "Pin something to 'Know this cold' (admins only): Booth tab, '+ Note' or 'File' next to the Know this cold heading. 'Notify the team' sends a push notification when it is pinned.",
         ],

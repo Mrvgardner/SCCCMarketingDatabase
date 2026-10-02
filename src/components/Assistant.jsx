@@ -3,6 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 import { ArrowUpIcon, ArrowUpRightIcon, SparklesIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "../contexts/AuthContext";
 import { askAssistant } from "../api/assistant";
+import SharePdfButton from "./SharePdfButton";
+import { isPdf } from "../utils/sharePdf";
 
 // The site's assistant, a button in the bottom-right corner of every signed-in
 // page. It answers from what the site already knows — the shows, the
@@ -192,9 +194,12 @@ export default function Assistant() {
                             {link.label} <ArrowUpRightIcon aria-hidden="true" className="h-3.5 w-3.5" />
                           </Link>
                         ) : (
-                          <a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer" className={className}>
-                            {link.label} <ArrowUpRightIcon aria-hidden="true" className="h-3.5 w-3.5" />
-                          </a>
+                          <span key={link.url} className="inline-flex items-center gap-1.5">
+                            <a href={link.url} target="_blank" rel="noopener noreferrer" className={className}>
+                              {link.label} <ArrowUpRightIcon aria-hidden="true" className="h-3.5 w-3.5" />
+                            </a>
+                            {isPdf(link.url) && <SharePdfButton url={link.url} label={link.label} />}
+                          </span>
                         );
                       })}
                     </div>

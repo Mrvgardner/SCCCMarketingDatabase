@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { ArrowUpRightIcon, PaperClipIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { updateBriefing } from "../../api/tradeShows";
 import { sendPinPush } from "../../api/pushNotifications";
+import SharePdfButton from "../SharePdfButton";
+import { isPdf } from "../../utils/sharePdf";
 import {
   RESOURCE_FILE_ACCEPT,
   RESOURCE_MAX_BYTES,
@@ -261,9 +263,12 @@ export default function KnowThisCold({ event, isAdmin, myName, user }) {
                                 {link.label} <ArrowUpRightIcon aria-hidden="true" className="h-3 w-3" />
                               </Link>
                             ) : (
-                              <a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer" className={className}>
-                                {link.label} <ArrowUpRightIcon aria-hidden="true" className="h-3 w-3" />
-                              </a>
+                              <span key={link.url} className="inline-flex items-center gap-1.5">
+                                <a href={link.url} target="_blank" rel="noopener noreferrer" className={className}>
+                                  {link.label} <ArrowUpRightIcon aria-hidden="true" className="h-3 w-3" />
+                                </a>
+                                {isPdf(link.url) && <SharePdfButton url={link.url} label={link.label} tone="green" />}
+                              </span>
                             );
                           })}
                         </div>

@@ -5,6 +5,7 @@ import { askProductSearch, logSearch } from "../../api/productSearch";
 import { downloadEventResourceFile } from "../../api/eventResources";
 import RichText from "../RichText";
 import { handoutsFor } from "../../data/collateral";
+import SharePdfButton from "../SharePdfButton";
 import { phoneLinkValue } from "../../utils/phone";
 
 // Answering a question at the booth.
@@ -410,12 +411,15 @@ export default function BoothSearch({ event, briefing = [], children }) {
           </p>
           <div className="mt-2 space-y-2">
             {handouts.map(({ item, forCard }) => (
-              <a
+              <div
                 key={item.id}
+                className="flex items-center gap-2 rounded-xl border border-[#10b981]/25 bg-[#10b981]/[0.06] p-2.5"
+              >
+              <a
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 rounded-xl border border-[#10b981]/25 bg-[#10b981]/[0.06] p-2.5"
+                className="flex min-w-0 flex-1 items-center gap-3"
               >
                 {/* The cover, because at the table people find a sheet by what
                     it looks like, not by what it is called. */}
@@ -437,6 +441,8 @@ export default function BoothSearch({ event, briefing = [], children }) {
                 </span>
                 <span className="shrink-0 pr-1 text-[12px] font-semibold text-[#10b981]">View</span>
               </a>
+              <SharePdfButton url={item.url} label={item.shortName || item.name} tone="green" />
+              </div>
             ))}
           </div>
         </>
