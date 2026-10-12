@@ -79,7 +79,7 @@ async function withinAnalysisBudget(store, email) {
 
 function eventIdFromReferer(request) {
   try {
-    return clean(new URL(request.headers.get("referer")).pathname.match(/\/events\/([^/]+)/)?.[1], 100);
+    return clean(new URL(request.headers.get("referer")).pathname.match(/\/(?:events|trip)\/([^/]+)/)?.[1], 100);
   } catch {
     return "";
   }

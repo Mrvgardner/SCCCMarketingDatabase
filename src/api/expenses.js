@@ -15,7 +15,7 @@ const ENDPOINT = apiUrl("/.netlify/functions/receipts");
 
 function resolveEventId(eventId) {
   if (eventId) return eventId;
-  return decodeURIComponent(window.location.pathname.match(/\/events\/([^/]+)/)?.[1] || "");
+  return decodeURIComponent(window.location.pathname.match(/\/(?:events|trip)\/([^/]+)/)?.[1] || "");
 }
 
 async function normalizeReceiptImage(file) {
@@ -264,7 +264,10 @@ export async function updateReceipt(receipt, user) {
     throw new Error("This receipt has not uploaded yet. It can be edited once it sends.");
   }
   if (useDev) return devUpdate(receipt, user);
-  return (await request("PUT", "", JSON.stringify(receipt))).json();
+  // The server finds the receipt within its event, so the event has to be
+  // named here. Every receipt carries its own.
+  const eventId = resolveEventId(receipt?.eventId);
+  return (await request("PUT", `?eventId=${encodeURIComponent(eventId)}`, JSON.stringify(receipt))).json();
 }
 
 export async function deleteReceipt(receiptId, eventId, user) {

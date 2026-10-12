@@ -4,7 +4,7 @@ export const tradeShows = [
     name: "NACS Show",
     shortName: "NACS",
     year: "2026",
-    status: "upcoming",
+    status: "past",
     detailsRevision: 1,
     scheduleRevision: 1,
     dates: "October 7-9, 2026",
