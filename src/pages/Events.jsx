@@ -113,6 +113,26 @@ function EventsIndex({ events }) {
               No archived trade shows yet.
             </div>
           )}
+          {past.length > 0 && (
+            <div className="mt-4 space-y-2">
+              {past.map((event) => (
+                <Link
+                  key={event.id}
+                  to={`/trip/${event.id}/today`}
+                  className="group flex items-center gap-4 rounded-lg border border-white/10 bg-white/[0.03] p-4 transition-colors hover:border-[#ff4f00]/50 hover:bg-white/[0.06]"
+                >
+                  <div className="shrink-0 rounded-lg bg-white/10 px-3 py-2 text-sm font-semibold text-white">{event.shortName}</div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="truncate font-semibold text-white">{event.name}</h3>
+                    <p className="mt-0.5 text-sm text-gray-400">
+                      {[event.dates, event.city].filter(Boolean).join(" · ")}
+                    </p>
+                  </div>
+                  <span className="shrink-0 text-sm font-semibold text-[#93a0b4] group-hover:text-white">Open</span>
+                </Link>
+              ))}
+            </div>
+          )}
         </section>
       </div>
     </main>
