@@ -328,8 +328,11 @@ export default withCors(async (request) => {
 
   // The show the person is looking at comes first, so "the schedule" and
   // "the booth" resolve to it without their saying which one.
-  const ordered = [...events].sort((a, b) => (a.id === eventId ? -1 : b.id === eventId ? 1 : 0));
-  const current = ordered.find((event) => event.id === eventId) || ordered[0];
+  // Asked from anywhere else, "the show" is the next one that has not
+  // happened yet, never an archived one that happens to be listed first.
+  const rank = (event) => (event.id === eventId ? 0 : event.status === "past" ? 2 : 1);
+  const ordered = [...events].sort((a, b) => rank(a) - rank(b));
+  const current = ordered[0];
 
   const receipts = await receiptBriefing(getStore({ name: RECEIPT_STORE, consistency: "strong" }), events, user, isAdmin);
 
@@ -362,6 +365,7 @@ export default withCors(async (request) => {
     "Quote the flight number and the field you read. If a live status is present, prefer it and say when it was checked.\n" +
     "- Money: use the precomputed totals. 'My' receipts are under expenses.mine. Team totals exist only if expenses.team is present; " +
     "otherwise say that team expenses are visible to admins on the Money tab.\n" +
+    "- A show with status 'past' is archived and over. Unless the person names it, questions about 'the show', the schedule, the booth, or flights are about currentShow.\n" +
     "- Times are local to the show unless the briefing says otherwise. Use the 'now' field for 'today', 'tomorrow', 'next'.\n" +
     "- Settlement is next-day, never same-day.\n" +
     "- Be brief and direct, like a colleague answering across the booth. Plain text, no markdown.\n" +

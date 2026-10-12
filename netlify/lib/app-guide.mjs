@@ -26,7 +26,7 @@ export const appGuide = {
     { path: "/email-signature", name: "Email Signatures", what: "Build and copy a company email signature." },
     { path: "/wallpapers", name: "Wallpapers", what: "Branded desktop and phone wallpapers to download." },
     { path: "/marketing-request", name: "Marketing Request", what: "The form for asking marketing for something (collateral, design, campaigns). Questions go to marketing@switchcommerce.com." },
-    { path: "/events", name: "Trade Shows", what: "The trade show hub: upcoming shows with 'Open event' to go into a show's trip app, and a past-event archive. In the top nav it is under Other." },
+    { path: "/events", name: "Trade Shows", what: "The trade show hub: upcoming shows with 'Open event' to go into a show's trip app, and the Past Event Archive below them, which lists finished shows (NACS 2026 is there); tap one to open its pages, receipts and recap. In the top nav it is under Other." },
     { path: "/birthdays", name: "Birthdays", what: "Team birthdays." },
     { path: "/anniversaries", name: "Anniversaries", what: "Team work anniversaries." },
     { path: "/admin", name: "Admin", adminOnly: true, what: "Admins only. Manage the Knowledge Base cards, Field Notes, and Trade Shows (edit an event's schedule, team, hotel, resources, updates)." },
@@ -72,7 +72,7 @@ export const appGuide = {
       },
       {
         tab: "Team",
-        what: "Everyone traveling to this show, with call and text buttons. Admins can also open each person to see their flights and their emergency contact.",
+        what: "Everyone traveling to this show, with call and text buttons. Admins can tap a person's name to open their flights and their emergency contact; both stay hidden until the name is tapped, and tapping again hides them.",
       },
       {
         tab: "More",
