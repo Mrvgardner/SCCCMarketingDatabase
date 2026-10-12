@@ -55,6 +55,7 @@ export const appGuide = {
         what: "Your expenses for this show: the running total, each receipt, and the trip report.",
         howTo: [
           "Add a receipt: Money tab, 'Snap a receipt'. Take a photo; it reads the merchant, date, category, and total automatically and uploads when you have signal.",
+          "Add a receipt you already have (a photo, a screenshot, an emailed folio saved as an image): Money tab, 'Upload'. You can pick several at once.",
           "Each receipt is marked Review until you check the amounts and confirm it. Tap a receipt to edit the fields.",
           "When every receipt is confirmed, 'Finalize trip report' downloads your expense report with the receipt images for reimbursement.",
           "You see only your own receipts here. Admins see the team's totals through this assistant.",

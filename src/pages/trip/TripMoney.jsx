@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import { CameraIcon } from "@heroicons/react/24/outline";
+import { CameraIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import {
   createReceipt,
   deleteReceipt,
@@ -32,6 +32,10 @@ export default function TripMoney() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const fileInput = useRef(null);
+  // A second picker without the camera hint, for receipts already in Photos
+  // or on the computer: a hotel folio emailed as a screenshot, a photo taken
+  // earlier in the day.
+  const libraryInput = useRef(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -88,26 +92,46 @@ export default function TripMoney() {
     return { sum, ready, review: receipts.length - ready };
   }, [receipts]);
 
-  const addReceipt = async (file) => {
-    if (!file) return;
-    setBusy(true); setError(""); setMessage("Reading the receipt…");
-    try {
-      const receipt = await createReceipt(event.id, file, user);
-      setReceipts((current) => [receipt, ...current]);
-      if (receipt.pendingUpload) {
-        setPendingCount((current) => current + 1);
-        setMessage("No connection — the photo is saved and will upload automatically.");
-      } else {
-        setMessage("Receipt added. Check the amounts and confirm.");
-        setOpenId(receipt.id);
+  // One or several. Several come from the photo library, where picking a
+  // day's worth of receipts at once beats adding them one at a time.
+  const addReceipts = async (fileList) => {
+    const files = [...(fileList || [])].filter(Boolean);
+    if (!files.length) return;
+    setBusy(true); setError("");
+    let added = 0;
+    let queued = 0;
+    const failed = [];
+    let lastId = null;
+    for (const [index, file] of files.entries()) {
+      setMessage(files.length > 1 ? `Reading receipt ${index + 1} of ${files.length}…` : "Reading the receipt…");
+      try {
+        if (file.type && !file.type.startsWith("image/")) throw new Error("not an image");
+        const receipt = await createReceipt(event.id, file, user);
+        setReceipts((current) => [receipt, ...current]);
+        if (receipt.pendingUpload) {
+          queued += 1;
+          setPendingCount((current) => current + 1);
+        } else {
+          added += 1;
+          lastId = receipt.id;
+        }
+      } catch (addError) {
+        failed.push(files.length > 1 ? file.name || `receipt ${index + 1}` : addError.message);
       }
-    } catch (addError) {
-      setError(addError.message || "Could not add the receipt.");
-      setMessage("");
-    } finally {
-      setBusy(false);
-      if (fileInput.current) fileInput.current.value = "";
     }
+    if (files.length === 1 && lastId) setOpenId(lastId);
+    const parts = [];
+    if (added) parts.push(`${added === 1 && files.length === 1 ? "Receipt" : `${added} receipt${added === 1 ? "" : "s"}`} added. Check the amounts and confirm.`);
+    if (queued) parts.push(`No connection — ${queued === 1 ? "the photo is" : `${queued} photos are`} saved and will upload automatically.`);
+    setMessage(parts.join(" "));
+    if (failed.length) {
+      setError(files.length > 1
+        ? `Could not add ${failed.join(", ")}. Receipts need to be photos or screenshots.`
+        : failed[0] || "Could not add the receipt.");
+    }
+    setBusy(false);
+    if (fileInput.current) fileInput.current.value = "";
+    if (libraryInput.current) libraryInput.current.value = "";
   };
 
   const saveReceipt = async (receipt, patch) => {
@@ -198,19 +222,38 @@ export default function TripMoney() {
         accept="image/*"
         capture="environment"
         className="sr-only"
-        onChange={(e) => addReceipt(e.target.files?.[0])}
+        onChange={(e) => addReceipts(e.target.files)}
       />
-      <button
-        type="button"
-        disabled={busy}
-        onClick={() => fileInput.current?.click()}
-        className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-[#0951fa] text-[15px] font-semibold text-white disabled:opacity-60"
-      >
-        <CameraIcon className="h-5 w-5" />
-        Snap a receipt
-      </button>
+      <input
+        ref={libraryInput}
+        type="file"
+        accept="image/*"
+        multiple
+        className="sr-only"
+        onChange={(e) => addReceipts(e.target.files)}
+      />
+      <div className="flex gap-2">
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => fileInput.current?.click()}
+          className="flex min-h-[52px] flex-1 items-center justify-center gap-2 rounded-2xl bg-[#0951fa] text-[15px] font-semibold text-white disabled:opacity-60"
+        >
+          <CameraIcon className="h-5 w-5" />
+          Snap a receipt
+        </button>
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => libraryInput.current?.click()}
+          className="flex min-h-[52px] items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/[0.045] px-4 text-[14px] font-semibold text-white disabled:opacity-60"
+        >
+          <PhotoIcon className="h-5 w-5" />
+          Upload
+        </button>
+      </div>
       <p className="text-center text-[11.5px] leading-[1.5] text-[#75808d]">
-        Shoot it now — it reads the merchant and total, and uploads when you get signal.
+        Snap it now, or upload photos and screenshots you already have. It reads the merchant and total, and uploads when you get signal.
       </p>
 
       {pendingCount > 0 && (
