@@ -191,6 +191,13 @@ export function eventBriefing(event, flightStates) {
     city: event.city,
     venue: event.venue,
     booth: event.booth,
+    directionsToBooth: event.floorMap
+      ? {
+          directions: event.floorMap.description || "",
+          boothArea: event.floorMap.area || "",
+          stopsOnTheWay: (event.floorMap.checkpoints || []).map((point) => point.label),
+        }
+      : undefined,
     timezone: event.timezone,
     airport: event.airportCode,
     status: event.status,

@@ -91,6 +91,24 @@ export default function TripBooth() {
           {map.start && (
             <circle cx={map.start.x} cy={map.start.y} r={radius} fill="#0951fa" stroke="#fff" strokeWidth="7" />
           )}
+          {/* Stops on the way, like badge pick-up: somewhere to go before the
+              booth, not instead of it. */}
+          {(map.checkpoints || []).map((point) => (
+            <g key={`${point.x}-${point.y}`}>
+              {point.area && (
+                <ellipse
+                  cx={point.area.cx}
+                  cy={point.area.cy}
+                  rx={point.area.rx}
+                  ry={point.area.ry}
+                  fill="rgba(16,185,129,0.18)"
+                  stroke="#10b981"
+                  strokeWidth="5"
+                />
+              )}
+              <circle cx={point.x} cy={point.y} r={radius} fill="#10b981" stroke="#fff" strokeWidth="7" />
+            </g>
+          ))}
           {map.destination && (
             <>
               <circle
@@ -113,11 +131,17 @@ export default function TripBooth() {
         </svg>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
         <span className="flex items-center gap-2 text-[12px] text-[#93a0b4]">
           <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-[#0951fa]" />
-          Elevators
+          {map.startLabel || "Elevators"}
         </span>
+        {(map.checkpoints || []).map((point) => (
+          <span key={point.label} className="flex items-center gap-2 text-[12px] text-[#93a0b4]">
+            <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-[#10b981]" />
+            {point.label}
+          </span>
+        ))}
         <span className="flex items-center gap-2 text-[12px] text-[#93a0b4]">
           <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-[#ff4f00]" />
           {event.booth || "Booth"}
