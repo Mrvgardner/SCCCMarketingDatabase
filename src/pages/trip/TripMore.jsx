@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
-import { Link, useOutletContext } from "react-router-dom";
+import { useEffect, useMemo } from "react";
+import { Link, useLocation, useOutletContext } from "react-router-dom";
+import { useReadUpdates } from "../../utils/updateReads";
 import {
   ArrowLeftIcon,
   BellAlertIcon,
@@ -21,26 +22,16 @@ import SearchInsights from "../../components/trip/SearchInsights";
 export default function TripMore() {
   const { event, isAdmin, user } = useOutletContext();
   const updates = useMemo(() => event.latestUpdates || [], [event]);
-  const readStateKey = `scc:event-updates-read:${event.id}`;
-  const [readIds, setReadIds] = useState([]);
+  // Shared with the floating banner: dismissing it there marks it read here.
+  const { readIds, save: persist } = useReadUpdates(event.id);
+  const { hash } = useLocation();
 
-  // Same per-event read tracking the hub used, same storage key — so anything
-  // already marked read stays read.
+  // Opened from the banner or a notification: bring that update into view.
   useEffect(() => {
-    try {
-      setReadIds(JSON.parse(localStorage.getItem(readStateKey) || "[]"));
-    } catch {
-      setReadIds([]);
-    }
-  }, [readStateKey]);
-
-  const persist = (ids) => {
-    const unique = [...new Set(ids)];
-    setReadIds(unique);
-    try {
-      localStorage.setItem(readStateKey, JSON.stringify(unique));
-    } catch { /* storage unavailable; the list still works this session */ }
-  };
+    if (!hash.startsWith("#update-")) return;
+    const target = document.getElementById(hash.slice(1));
+    target?.scrollIntoView({ block: "center", behavior: "smooth" });
+  }, [hash, updates.length]);
 
   const unreadCount = updates.filter((update) => !readIds.includes(update.id)).length;
 
@@ -73,10 +64,10 @@ export default function TripMore() {
             {updates.map((update) => {
               const isRead = readIds.includes(update.id);
               return (
-                <Card key={update.id} className={`p-3.5 ${isRead ? "opacity-70" : ""}`}>
+                <Card key={update.id} id={`update-${update.id}`} className={`scroll-mt-24 p-3.5 ${isRead ? "opacity-70" : ""} ${hash === `#update-${update.id}` ? "ring-2 ring-[#0951fa]/70" : ""}`}>
                   <div className="flex items-center gap-2">
                     <span className="rounded-[5px] border border-white/15 bg-white/[0.06] px-2 py-1 text-[9.5px] font-bold uppercase tracking-[0.08em] text-[#93a0b4]">
-                      {update.severity || "Normal"}
+                      {update.level || update.severity || "Normal"}
                     </span>
                     <span className="text-[12px] text-[#75808d]">{update.date}</span>
                   </div>

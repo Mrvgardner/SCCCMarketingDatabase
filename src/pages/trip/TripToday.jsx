@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { nextUp, formatCountdown } from "../../utils/schedule";
 import { BellIcon } from "@heroicons/react/24/outline";
+import { useReadUpdates } from "../../utils/updateReads";
 import { Avatar, Card, Eyebrow, ThreeBars } from "../../components/trip/TripChrome";
 
 function ReadinessRow({ item, eventId, isLast }) {
@@ -38,6 +39,8 @@ function ReadinessRow({ item, eventId, isLast }) {
 
 export default function TripToday() {
   const { event, daysOut, readiness, doneCount, loading } = useOutletContext();
+  const { readIds } = useReadUpdates(event.id);
+  const unreadCount = (event.latestUpdates || []).filter((update) => update?.id && !readIds.includes(update.id)).length;
   const eventId = event.id;
   const firstItems = (event.schedule?.[0]?.items || []).slice(0, 2);
 
@@ -70,12 +73,12 @@ export default function TripToday() {
           <Eyebrow>Trade show travel</Eyebrow>
         </div>
         <Link
-          to={`/trip/${eventId}/trip`}
-          aria-label="Updates"
+          to={`/trip/${eventId}/more`}
+          aria-label={unreadCount ? `Updates, ${unreadCount} unread` : "Updates"}
           className="relative grid h-[34px] w-[34px] place-items-center rounded-full bg-white/[0.06]"
         >
           <BellIcon className="h-4 w-4 text-white" />
-          {event.latestUpdates?.length > 0 && (
+          {unreadCount > 0 && (
             <span className="absolute right-0 top-0 h-[7px] w-[7px] rounded-full bg-[#ff4f00] ring-[1.5px] ring-[#05101f]" />
           )}
         </Link>

@@ -55,10 +55,17 @@ export function useTripEvent(eventId) {
         .finally(() => !cancelled && setLoading(false));
     };
     load();
+    // Back in the app (from a notification, another app, a locked phone):
+    // fetch again so a just-posted update is there to float over the screen.
+    const onVisible = () => document.visibilityState === "visible" && load();
     window.addEventListener("trade-shows:updated", load);
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("focus", onVisible);
     return () => {
       cancelled = true;
       window.removeEventListener("trade-shows:updated", load);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("focus", onVisible);
     };
   }, [eventId]);
 

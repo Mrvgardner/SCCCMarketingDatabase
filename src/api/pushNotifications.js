@@ -92,8 +92,9 @@ export function sendEventPush(eventId, update) {
     title: update.level === 'Urgent' ? `Urgent: ${update.title}` : update.title,
     body: update.body,
     urgent: update.level === 'Urgent',
-    url: `/events/${eventId}#updates`,
+    url: `/trip/${eventId}/more#update-${update.id}`,
     tag: `event-${eventId}-${update.id}`,
+    persistent: true,
   });
 }
 

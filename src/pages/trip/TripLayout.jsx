@@ -1,5 +1,6 @@
 import { Navigate, Outlet, useParams } from "react-router-dom";
 import TripTabBar from "../../components/trip/TripTabBar";
+import UpdateBanner from "../../components/trip/UpdateBanner";
 import { useTripEvent } from "./useTripEvent";
 
 export default function TripLayout() {
@@ -20,6 +21,7 @@ export default function TripLayout() {
       >
         <Outlet context={trip} />
       </main>
+      <UpdateBanner event={trip.event} />
       <TripTabBar eventId={eventId} />
     </div>
   );

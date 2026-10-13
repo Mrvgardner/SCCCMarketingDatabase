@@ -85,6 +85,7 @@ export default withCors(async (request) => {
     title: clean(payload.title, 120),
     body: clean(payload.body, 280),
     urgent: payload.urgent === true,
+    persistent: payload.persistent === true,
     url,
     tag: clean(payload.tag, 120),
   });

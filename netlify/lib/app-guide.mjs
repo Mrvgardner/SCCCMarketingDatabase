@@ -36,6 +36,7 @@ export const appGuide = {
   // the bottom. On a phone this can be installed to the home screen as
   // "Trade Shows", and it is what the iOS app contains.
   tripApp: {
+    updates: "When an admin posts an update, it floats at the top of every trip screen until the person taps it (opens it on the More tab) or swipes it away (or taps the X). Either marks it read. Several unread updates show one at a time, newest first, urgent ones in orange. Only updates from the last week float. The bell on the Today tab shows a dot while any are unread. Admins post updates from Manage event; ticking 'Send push' also sends a phone notification, which on Android and computers stays on screen until it is tapped or dismissed.",
     where: "Open a show from Trade Shows (/events) with 'Open event'. Six tabs along the bottom: Today, Trip, Money, Booth, Team, More.",
     tabs: [
       {

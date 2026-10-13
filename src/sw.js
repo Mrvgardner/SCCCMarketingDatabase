@@ -57,7 +57,9 @@ self.addEventListener('push', (event) => {
     badge: '/favicon-32x32.png',
     tag: payload.tag || 'trade-show-update',
     renotify: urgent,
-    requireInteraction: urgent,
+    // Updates stay on screen until tapped or dismissed, where the platform
+    // allows it (Android, desktop). iPhones keep them in Notification Center.
+    requireInteraction: urgent || payload.persistent === true,
     data: { url: payload.url || '/events' },
   }));
 });
