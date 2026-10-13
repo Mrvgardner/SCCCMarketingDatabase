@@ -105,7 +105,8 @@ export default function TripMoney() {
     for (const [index, file] of files.entries()) {
       setMessage(files.length > 1 ? `Reading receipt ${index + 1} of ${files.length}…` : "Reading the receipt…");
       try {
-        if (file.type && !file.type.startsWith("image/")) throw new Error("not an image");
+        const isPdf = file.type === "application/pdf" || /\.pdf$/i.test(file.name || "");
+        if (file.type && !file.type.startsWith("image/") && !isPdf) throw new Error("not an image");
         const receipt = await createReceipt(event.id, file, user);
         setReceipts((current) => [receipt, ...current]);
         if (receipt.pendingUpload) {
@@ -126,7 +127,7 @@ export default function TripMoney() {
     setMessage(parts.join(" "));
     if (failed.length) {
       setError(files.length > 1
-        ? `Could not add ${failed.join(", ")}. Receipts need to be photos or screenshots.`
+        ? `Could not add ${failed.join(", ")}. Receipts need to be photos, screenshots, or PDFs.`
         : failed[0] || "Could not add the receipt.");
     }
     setBusy(false);
@@ -227,7 +228,7 @@ export default function TripMoney() {
       <input
         ref={libraryInput}
         type="file"
-        accept="image/*"
+        accept="image/*,application/pdf,.pdf"
         multiple
         className="sr-only"
         onChange={(e) => addReceipts(e.target.files)}
@@ -253,7 +254,7 @@ export default function TripMoney() {
         </button>
       </div>
       <p className="text-center text-[11.5px] leading-[1.5] text-[#75808d]">
-        Snap it now, or upload photos and screenshots you already have. It reads the merchant and total, and uploads when you get signal.
+        Snap it now, or upload photos, screenshots, or PDFs you already have. It reads the merchant and total, and uploads when you get signal.
       </p>
 
       {pendingCount > 0 && (

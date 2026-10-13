@@ -1,5 +1,6 @@
 import { expenseCategories, suggestExpenseCategory } from "../data/expenseCategories";
 import { apiUrl } from "./apiBase";
+import { isPdfFile, pdfToReceiptImage } from "../utils/pdfReceipt";
 import {
   queueReceipt,
   queuedAsReceipt,
@@ -19,6 +20,9 @@ function resolveEventId(eventId) {
 }
 
 async function normalizeReceiptImage(file) {
+  // Already sized and compressed for reading, and stacked taller than the
+  // photo limit below allows on purpose.
+  if (isPdfFile(file)) return pdfToReceiptImage(file);
   const bitmap = await createImageBitmap(file);
   const maxDimension = 2400;
   const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
