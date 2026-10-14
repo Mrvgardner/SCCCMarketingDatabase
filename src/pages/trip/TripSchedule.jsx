@@ -85,7 +85,7 @@ export default function TripSchedule() {
         <Eyebrow>
           {event.shortName} {event.year} · {event.city}
         </Eyebrow>
-        <ScreenTitle className="mt-2">Your trip</ScreenTitle>
+        <ScreenTitle className="mt-2">Agenda</ScreenTitle>
       </div>
 
       <div className="flex gap-2.5">

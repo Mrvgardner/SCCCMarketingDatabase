@@ -4,7 +4,8 @@ import { NavLink } from "react-router-dom";
 // #75808D. The tab lives in the URL so back/forward and PWA restore work.
 const TABS = [
   { id: "today", label: "Today" },
-  { id: "trip", label: "Trip" },
+  // Labelled Agenda; the path stays /trip so existing links keep working.
+  { id: "trip", label: "Agenda" },
   { id: "money", label: "Money" },
   { id: "booth", label: "Booth" },
   { id: "team", label: "Team" },

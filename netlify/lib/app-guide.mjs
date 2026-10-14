@@ -37,17 +37,17 @@ export const appGuide = {
   // "Trade Shows", and it is what the iOS app contains.
   tripApp: {
     updates: "When an admin posts an update, it floats at the top of every trip screen until the person taps it (opens it on the More tab) or swipes it away (or taps the X). Either marks it read. Several unread updates show one at a time, newest first, urgent ones in orange. Only updates from the last week float. The bell on the Today tab shows a dot while any are unread. Admins post updates from Manage event; ticking 'Send push' also sends a phone notification, which on Android and computers stays on screen until it is tapped or dismissed.",
-    where: "Open a show from Trade Shows (/events) with 'Open event'. Six tabs along the bottom: Today, Trip, Money, Booth, Team, More.",
+    where: "Open a show from Trade Shows (/events) with 'Open event'. Six tabs along the bottom: Today, Agenda, Money, Booth, Team, More. (Agenda was called Trip until October 2026; its address still ends in /trip.)",
     tabs: [
       {
         tab: "Today",
         what: "The show at a glance: days until it starts, a 'Trip readiness' checklist (registered, hotel, flight added, expense capture), the countdown to what is next on the schedule once the show has started, and the first thing to do on the ground.",
       },
       {
-        tab: "Trip",
+        tab: "Agenda",
         what: "Your flights, the hotel and venue, and the dress code for each day.",
         howTo: [
-          "Add or change your flight: Trip tab, 'Your flights', tap 'Add your flight' (or 'Edit flight'). Enter the flight number and date for the arrival and the departure, tap 'Find flight' to fill in the airline and times, then 'Save flight info'. Flights save under your own name only.",
+          "Add or change your flight: Agenda tab, 'Your flights', tap 'Add your flight' (or 'Edit flight'). Enter the flight number and date for the arrival and the departure, tap 'Find flight' to fill in the airline and times, then 'Save flight info'. Flights save under your own name only.",
           "The Today tab's readiness checklist also has an 'Add' link that opens the same form.",
         ],
       },
