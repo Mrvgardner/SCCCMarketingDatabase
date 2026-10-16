@@ -406,6 +406,64 @@ export const tradeShows = [
       notes: "After the show, preserve final schedule, booth notes, resources, and lessons for future NAC planning.",
     },
   },
+  // Announced with only its name and dates; the rest is filled in through
+  // Manage event. placeholder keeps the app opening on the last show until then.
+  {
+    "id": "atmia-2027",
+    "name": "ATMIA Conference",
+    "shortName": "ATMIA",
+    "year": "2027",
+    "status": "upcoming",
+    "placeholder": true,
+    "dates": "February 17-19, 2027",
+    "city": "Las Vegas, NV",
+    "venue": "Caesars Palace",
+    "booth": "Booth TBD",
+    "audience": "ATM Industry Association",
+    "owner": "Marketing",
+    "timezone": "America/Los_Angeles",
+    "venueMapUrl": "https://www.google.com/maps/search/?api=1&query=Caesars+Palace+Las+Vegas",
+    "airportCode": "LAS",
+    "detailsRevision": 1,
+    "scheduleRevision": 1,
+    "schedule": [
+      {
+        "day": "Wednesday, February 17",
+        "date": "2027-02-17",
+        "items": []
+      },
+      {
+        "day": "Thursday, February 18",
+        "date": "2027-02-18",
+        "items": []
+      },
+      {
+        "day": "Friday, February 19",
+        "date": "2027-02-19",
+        "items": []
+      }
+    ],
+    "hotel": {
+      "name": "Hotel TBD",
+      "address": "Add hotel address",
+      "checkIn": "TBD",
+      "checkOut": "TBD",
+      "confirmation": "Group block / reservation details TBD",
+      "notes": "Add once the hotel is booked."
+    },
+    "travelingTeam": [],
+    "teamContacts": {},
+    "travel": [],
+    "resources": [],
+    "latestUpdates": [],
+    "briefing": [],
+    "recap": {
+      "status": "Not started",
+      "wins": [],
+      "improve": [],
+      "notes": "After the show, capture what worked, what to change, useful contacts, and final resource links."
+    }
+  },
 ];
 
 export function getTradeShowById(id) {

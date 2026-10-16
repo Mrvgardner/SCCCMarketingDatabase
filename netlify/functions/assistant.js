@@ -7,6 +7,7 @@ import { loadEvents } from "./trade-shows.js";
 import seedProducts from "./products-seed.json";
 import { currentCollateral } from "../../src/data/collateral.js";
 import { appGuide } from "../lib/app-guide.mjs";
+import { launchShow } from "../../src/data/showStatus.js";
 
 // The site's assistant: one place to ask anything the site already knows.
 //
@@ -337,7 +338,8 @@ export default withCors(async (request) => {
   // "the booth" resolve to it without their saying which one.
   // Asked from anywhere else, "the show" is the next one that has not
   // happened yet, never an archived one that happens to be listed first.
-  const rank = (event) => (event.id === eventId ? 0 : event.status === "past" ? 2 : 1);
+  const home = launchShow(events)?.id;
+  const rank = (event) => (event.id === eventId ? 0 : event.id === home ? 1 : event.status === "past" ? 3 : 2);
   const ordered = [...events].sort((a, b) => rank(a) - rank(b));
   const current = ordered[0];
 

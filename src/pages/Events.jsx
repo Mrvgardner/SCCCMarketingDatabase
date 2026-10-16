@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { effectiveStatus } from "../data/showStatus";
+import { effectiveStatus, isPlaceholder } from "../data/showStatus";
 import { Link, Navigate, useParams } from "react-router-dom";
 import {
   ArrowLeftIcon,
@@ -81,6 +81,9 @@ function EventsIndex({ events }) {
                     </div>
                     <h3 className="mt-4 text-2xl font-bold text-white">{event.name}</h3>
                     <p className="mt-1 text-sm text-gray-400">{event.audience}</p>
+                    {isPlaceholder(event) && (
+                      <p className="mt-2 text-xs font-semibold uppercase tracking-[0.14em] text-[#f59e0b]">Details to come</p>
+                    )}
                   </div>
                   <div className="rounded-lg bg-white/10 px-3 py-2 text-sm font-semibold text-white">{event.shortName}</div>
                 </div>

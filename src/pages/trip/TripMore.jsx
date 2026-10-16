@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import { Link, useLocation, useOutletContext } from "react-router-dom";
 import { useReadUpdates } from "../../utils/updateReads";
 import { useSurveyPrompt } from "../../utils/useSurveyPrompt";
+import { effectiveStatus } from "../../data/showStatus";
 import {
   ArrowLeftIcon,
   BellAlertIcon,
@@ -25,7 +26,9 @@ export default function TripMore() {
   // Shared with the floating banner: dismissing it there marks it read here.
   const { readIds, save: persist } = useReadUpdates(event.id);
   const { survey } = useSurveyPrompt(event.id);
-  const showSurvey = Boolean(survey && ((survey.open && survey.canAnswer) || survey.mine || isAdmin));
+  // Admins see it once a show is over, to open it; before that there is
+  // nothing to ask about.
+  const showSurvey = Boolean(survey && ((survey.open && survey.canAnswer) || survey.mine || (isAdmin && effectiveStatus(event) === "past")));
   const { hash } = useLocation();
 
   // Opened from the banner or a notification: bring that update into view.
