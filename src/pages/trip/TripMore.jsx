@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { Link, useLocation, useOutletContext } from "react-router-dom";
 import { useReadUpdates } from "../../utils/updateReads";
+import { useSurveyPrompt } from "../../utils/useSurveyPrompt";
 import {
   ArrowLeftIcon,
   BellAlertIcon,
@@ -23,6 +24,8 @@ export default function TripMore() {
   const updates = useMemo(() => event.latestUpdates || [], [event]);
   // Shared with the floating banner: dismissing it there marks it read here.
   const { readIds, save: persist } = useReadUpdates(event.id);
+  const { survey } = useSurveyPrompt(event.id);
+  const showSurvey = Boolean(survey && ((survey.open && survey.canAnswer) || survey.mine || isAdmin));
   const { hash } = useLocation();
 
   // Opened from the banner or a notification: bring that update into view.
@@ -87,6 +90,26 @@ export default function TripMore() {
             })}
           </div>
         </section>
+      )}
+
+      {/* Always here once open, for anyone who swiped the prompt away. */}
+      {showSurvey && (
+        <Link
+          to={`/trip/${event.id}/survey`}
+          className="flex min-h-[64px] items-center gap-3 rounded-2xl border border-[#0951fa]/35 bg-[#0951fa]/[0.08] px-4 py-3"
+        >
+          <span className="min-w-0 flex-1">
+            <span className="block text-[14.5px] font-semibold text-white">Post-show survey</span>
+            <span className="mt-0.5 block text-[12.5px] leading-[1.4] text-[#93a0b4]">
+              {survey.mine
+                ? "Thanks, your answers are in. Tap to review or change them."
+                : survey.open
+                  ? "Five quick questions about the show and the app."
+                  : "Closed. Open it, or read the results."}
+            </span>
+          </span>
+          <span className="shrink-0 text-[13px] font-semibold text-[#0951fa]">{isAdmin ? "Open" : survey.mine ? "Review" : "Start"}</span>
+        </Link>
       )}
 
       {event.recap?.notes && (

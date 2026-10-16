@@ -1,7 +1,8 @@
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { BellAlertIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useLocation, useNavigate } from "react-router-dom";
+import { BellAlertIcon, ChatBubbleBottomCenterTextIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useReadUpdates } from "../../utils/updateReads";
+import { useSurveyPrompt } from "../../utils/useSurveyPrompt";
 
 // A posted update floats over the trip app until the person does something
 // with it: tap to open it on the More tab, or swipe it away (or tap the X).
@@ -29,22 +30,46 @@ export default function UpdateBanner({ event }) {
   const start = useRef(null);
   const moved = useRef(false);
 
+  const survey = useSurveyPrompt(event.id);
+  const { pathname } = useLocation();
+  // Not while they are already on the survey.
+  const askSurvey = survey.shouldPrompt && !pathname.endsWith("/survey");
+
   const unread = (event.latestUpdates || []).filter((update) => update?.id && !readIds.includes(update.id) && isRecent(update));
-  const update = unread[0];
+  // Updates first; the survey asks once they have been dealt with. It floats
+  // the same way and goes away the same ways: answer it, or swipe it off.
+  const update = unread[0] || (askSurvey
+    ? {
+        id: "survey",
+        isSurvey: true,
+        title: `How did ${event.shortName || "the show"} go?`,
+        body: "Five quick questions about the show and the app. Anonymous unless you add your name.",
+      }
+    : null);
   if (!update) return null;
 
   const urgent = update.level === "Urgent";
+  const queued = unread.length + (askSurvey ? 1 : 0);
+
+  const settle = () => {
+    if (update.isSurvey) survey.dismiss();
+    else markRead(update.id);
+  };
 
   const dismiss = (direction = 1) => {
     setLeaving(direction);
     setTimeout(() => {
-      markRead(update.id);
+      settle();
       setLeaving(0);
       setDragX(0);
     }, 180);
   };
 
   const open = () => {
+    if (update.isSurvey) {
+      navigate(`/trip/${event.id}/survey`);
+      return;
+    }
     markRead(update.id);
     navigate(`/trip/${event.id}/more#update-${update.id}`);
   };
@@ -98,13 +123,13 @@ export default function UpdateBanner({ event }) {
           <span
             className={`mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full ${urgent ? "bg-[#ff4f00]/20 text-[#ff8a4c]" : "bg-[#0951fa]/20 text-[#7aa2ff]"}`}
           >
-            <BellAlertIcon className="h-4 w-4" />
+            {update.isSurvey ? <ChatBubbleBottomCenterTextIcon className="h-4 w-4" /> : <BellAlertIcon className="h-4 w-4" />}
           </span>
           <span className="min-w-0 flex-1">
             <span className="flex items-center gap-2 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-[#93a0b4]">
-              {urgent ? <span className="text-[#ff8a4c]">Urgent</span> : "Update"}
+              {urgent ? <span className="text-[#ff8a4c]">Urgent</span> : update.isSurvey ? "Survey" : "Update"}
               {event.shortName && <span>· {event.shortName}</span>}
-              {unread.length > 1 && <span>· 1 of {unread.length}</span>}
+              {queued > 1 && <span>· 1 of {queued}</span>}
             </span>
             <span id={`update-title-${update.id}`} className="mt-1 block text-[14.5px] font-semibold leading-[1.3] text-white">
               {update.title}
@@ -120,7 +145,7 @@ export default function UpdateBanner({ event }) {
         <button
           type="button"
           onClick={() => dismiss(1)}
-          aria-label="Dismiss update"
+          aria-label={update.isSurvey ? "Not now" : "Dismiss update"}
           className="absolute right-1.5 top-1.5 grid h-9 w-9 place-items-center rounded-full text-[#93a0b4] hover:bg-white/10 hover:text-white"
         >
           <XMarkIcon className="h-5 w-5" />

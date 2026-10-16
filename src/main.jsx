@@ -85,6 +85,7 @@ const routes = {
   tradeShowEditor:        () => import('./pages/admin/TradeShowEditor.jsx'),
   appAuthRedirect:        () => import('./pages/AppAuthRedirect.jsx'),
   tripLayout:             () => import('./pages/trip/TripLayout.jsx'),
+  tripSurvey:             () => import('./pages/trip/TripSurvey.jsx'),
   tripToday:              () => import('./pages/trip/TripToday.jsx'),
   tripSchedule:           () => import('./pages/trip/TripSchedule.jsx'),
   tripMoney:              () => import('./pages/trip/TripMoney.jsx'),
@@ -121,6 +122,7 @@ const TripMoney              = lazy(routes.tripMoney);
 const TripBooth              = lazy(routes.tripBooth);
 const TripTeam               = lazy(routes.tripTeam);
 const TripMore               = lazy(routes.tripMore);
+const TripSurvey             = lazy(routes.tripSurvey);
 
 // Idempotent fire-and-forget; ignore the resolved module.
 const prefetch = (imp) => { try { imp(); } catch {} };
@@ -365,6 +367,7 @@ function NativeAppShell() {
             <Route path="booth" element={<TripBooth />} />
             <Route path="team" element={<TripTeam />} />
             <Route path="more" element={<TripMore />} />
+            <Route path="survey" element={<TripSurvey />} />
           </Route>
           <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>} />
           <Route path="/events/:eventId" element={<ProtectedRoute><Events /></ProtectedRoute>} />
@@ -419,6 +422,7 @@ function AppShell() {
           <Route path="booth" element={<TripBooth />} />
           <Route path="team" element={<TripTeam />} />
             <Route path="more" element={<TripMore />} />
+            <Route path="survey" element={<TripSurvey />} />
         </Route>
         <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>} />
         <Route path="/events/:eventId" element={<ProtectedRoute><Events /></ProtectedRoute>} />

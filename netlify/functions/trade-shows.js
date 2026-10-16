@@ -70,7 +70,7 @@ function enrichTeamContacts(event) {
 // matches against, so an email corrected there works without a code change.
 // The built-in list is the fallback for events saved before rosters carried
 // emails.
-function travelerForEmail(email, travelingTeam, teamContacts = {}) {
+export function travelerForEmail(email, travelingTeam, teamContacts = {}) {
   const target = String(email || "").trim().toLowerCase();
   if (!target) return "";
   const onRoster = (travelingTeam || []).find(
