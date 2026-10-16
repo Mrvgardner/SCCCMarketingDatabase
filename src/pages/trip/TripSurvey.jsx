@@ -3,6 +3,7 @@ import { Link, useOutletContext } from "react-router-dom";
 import { ArrowLeftIcon, CheckCircleIcon, StarIcon } from "@heroicons/react/24/solid";
 import { getSurvey, setSurveyOpen, submitSurvey } from "../../api/survey";
 import { Card, Eyebrow, ScreenTitle } from "../../components/trip/TripChrome";
+import { SURVEY_SECTIONS, isShown } from "../../data/surveyQuestions";
 
 // The post-show survey. Staff answer five questions, anonymously unless they
 // choose to attach their name. Admins also get the open/close switch and the
@@ -28,6 +29,65 @@ function Stars({ value, onChange, label }) {
   );
 }
 
+function Choice({ question, value, onChange }) {
+  return (
+    <div role="radiogroup" aria-label={question.label} className="mt-2 flex flex-wrap gap-2">
+      {question.options.map((option) => {
+        const on = value === option;
+        return (
+          <button
+            key={option}
+            type="button"
+            role="radio"
+            aria-checked={on}
+            onClick={() => onChange(on ? undefined : option)}
+            className={`min-h-[44px] rounded-xl border px-4 text-[14px] font-semibold transition-colors ${on ? "border-[#0951fa] bg-[#0951fa]/20 text-white" : "border-white/10 bg-white/[0.04] text-[#c7d0dd]"}`}
+          >
+            {option}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function Multi({ question, value = [], onChange }) {
+  const toggle = (option) => onChange(value.includes(option) ? value.filter((v) => v !== option) : [...value, option]);
+  return (
+    <div className="mt-2 grid grid-cols-1 gap-1.5 sm:grid-cols-2">
+      {question.options.map((option) => (
+        <label key={option} className="flex min-h-[44px] items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-3 text-[14px] text-[#e8edf4]">
+          <input
+            type="checkbox"
+            checked={value.includes(option)}
+            onChange={() => toggle(option)}
+            className="h-5 w-5 rounded border-white/20 bg-gray-950/55 text-[#0951fa]"
+          />
+          {option}
+        </label>
+      ))}
+    </div>
+  );
+}
+
+function Bars({ rows, total }) {
+  return (
+    <div className="mt-2 space-y-1.5">
+      {rows.map(({ label, count }) => {
+        const pct = total ? Math.round((count / total) * 100) : 0;
+        return (
+          <div key={label} className="text-[12px] text-[#93a0b4]">
+            <div className="flex justify-between gap-2"><span className="text-[#c7d0dd]">{label}</span><span className="tabular-nums">{count}</span></div>
+            <span className="mt-0.5 block h-2 overflow-hidden rounded-full bg-white/[0.06]">
+              <span className="block h-full rounded-full bg-[#0951fa]" style={{ width: `${pct}%` }} />
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function Results({ results }) {
   if (!results) return <p className="text-[13px] text-[#93a0b4]">Loading…</p>;
   if (!results.total) return <p className="text-[13px] text-[#93a0b4]">No responses yet.</p>;
@@ -40,7 +100,12 @@ function Results({ results }) {
       {results.questions.map((q) => (
         <Card key={q.id} className="p-3.5">
           <h3 className="text-[13.5px] font-semibold leading-[1.35] text-white">{q.label}</h3>
-          {q.kind === "rating" ? (
+          {q.kind === "choice" || q.kind === "multi" ? (
+            <>
+              <p className="mt-1 text-[12px] text-[#75808d]">{q.count} answered{q.kind === "multi" ? " · ticked any that apply" : ""}</p>
+              <Bars rows={q.counts.map((c) => ({ label: c.option, count: c.count }))} total={q.count} />
+            </>
+          ) : q.kind === "rating" ? (
             <div className="mt-2">
               <p className="text-[24px] font-bold text-white">
                 {q.average ?? "—"}<span className="text-[13px] font-semibold text-[#75808d]"> / 5 · {q.count} answered</span>
@@ -107,7 +172,13 @@ export default function TripSurvey() {
     e.preventDefault();
     setBusy(true); setError("");
     try {
-      await submitSurvey(event.id, answers, named);
+      const asked = Object.fromEntries(
+        Object.entries(answers).filter(([id]) => {
+          const question = SURVEY_SECTIONS.flatMap((s) => s.questions).find((q) => q.id === id);
+          return question && isShown(question, answers) && !(Array.isArray(answers[id]) && !answers[id].length);
+        }),
+      );
+      await submitSurvey(event.id, asked, named);
       setSent(true);
       await load();
     } catch (submitError) {
@@ -200,27 +271,43 @@ export default function TripSurvey() {
       ) : (
         <form onSubmit={submit} className="space-y-5">
           <p className="text-[13px] leading-[1.55] text-[#93a0b4]">
-            Five quick questions about the show and the app. Only the first is required. Your answers are anonymous unless you choose to add your name.
+            About three minutes: the show, the app, and anything else. Only the first question is required. Your answers are anonymous unless you choose to add your name.
           </p>
-          {survey.questions.map((q, i) => (
-            <div key={q.id}>
-              <label htmlFor={`q-${q.id}`} className="block text-[14px] font-semibold leading-[1.35] text-white">
-                {i + 1}. {q.label}{q.required && <span className="text-[#f59e0b]"> *</span>}
-              </label>
-              {q.kind === "rating" ? (
-                <Stars value={answers[q.id]} onChange={(v) => set(q.id, v)} label={q.label} />
-              ) : (
-                <textarea
-                  id={`q-${q.id}`}
-                  rows={3}
-                  maxLength={2000}
-                  value={answers[q.id] || ""}
-                  onChange={(e) => set(q.id, e.target.value)}
-                  className="mt-2 w-full resize-y rounded-xl border border-white/10 bg-gray-950/55 px-3 py-2.5 text-[14.5px] text-white"
-                />
-              )}
-            </div>
-          ))}
+          {(() => {
+            let number = 0;
+            return SURVEY_SECTIONS.map((section) => (
+              <fieldset key={section.title} className="space-y-5">
+                <legend className="font-switch-reg text-[10.5px] uppercase tracking-[0.16em] text-[#75808d]">{section.title}</legend>
+                {section.questions.filter((q) => isShown(q, answers)).map((q) => {
+                  number += 1;
+                  return (
+                    <div key={q.id}>
+                      <label htmlFor={`q-${q.id}`} className="block text-[14px] font-semibold leading-[1.35] text-white">
+                        {number}. {q.label}{q.required && <span className="text-[#f59e0b]"> *</span>}
+                        {q.kind === "multi" && <span className="font-normal text-[#75808d]"> Tick any.</span>}
+                      </label>
+                      {q.kind === "rating" ? (
+                        <Stars value={answers[q.id]} onChange={(v) => set(q.id, v)} label={q.label} />
+                      ) : q.kind === "choice" ? (
+                        <Choice question={q} value={answers[q.id]} onChange={(v) => set(q.id, v)} />
+                      ) : q.kind === "multi" ? (
+                        <Multi question={q} value={answers[q.id] || []} onChange={(v) => set(q.id, v)} />
+                      ) : (
+                        <textarea
+                          id={`q-${q.id}`}
+                          rows={3}
+                          maxLength={2000}
+                          value={answers[q.id] || ""}
+                          onChange={(e) => set(q.id, e.target.value)}
+                          className="mt-2 w-full resize-y rounded-xl border border-white/10 bg-gray-950/55 px-3 py-2.5 text-[14.5px] text-white"
+                        />
+                      )}
+                    </div>
+                  );
+                })}
+              </fieldset>
+            ));
+          })()}
 
           <label className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-3">
             <input

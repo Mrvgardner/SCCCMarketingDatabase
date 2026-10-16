@@ -104,7 +104,7 @@ export default function TripMore() {
               {survey.mine
                 ? "Thanks, your answers are in. Tap to review or change them."
                 : survey.open
-                  ? "Five quick questions about the show and the app."
+                  ? "About three minutes on the show and the app."
                   : "Closed. Open it, or read the results."}
             </span>
           </span>

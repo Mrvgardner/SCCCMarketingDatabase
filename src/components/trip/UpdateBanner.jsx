@@ -43,7 +43,7 @@ export default function UpdateBanner({ event }) {
         id: "survey",
         isSurvey: true,
         title: `How did ${event.shortName || "the show"} go?`,
-        body: "Five quick questions about the show and the app. Anonymous unless you add your name.",
+        body: "About three minutes on the show and the app. Anonymous unless you add your name.",
       }
     : null);
   if (!update) return null;

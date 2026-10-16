@@ -1,4 +1,5 @@
 import { apiUrl } from "./apiBase";
+import { SURVEY_QUESTIONS, SURVEY_SECTIONS, isShown } from "../data/surveyQuestions";
 
 const ENDPOINT = apiUrl("/.netlify/functions/survey");
 const useDev = import.meta.env.DEV;
@@ -27,13 +28,7 @@ async function request(method, query, body) {
 
 // Local development has no functions; keep a stand-in in localStorage so the
 // screens can be exercised end to end.
-const DEV_QUESTIONS = [
-  { id: "show", kind: "rating", label: "Overall, how was the show for you?", required: true },
-  { id: "app", kind: "rating", label: "How useful was the app at this show?" },
-  { id: "worked", kind: "text", label: "What worked well, at the show or in the app?" },
-  { id: "didnt", kind: "text", label: "What didn't work, or what should we do differently next time?" },
-  { id: "else", kind: "text", label: "Anything else?" },
-];
+const DEV_QUESTIONS = SURVEY_QUESTIONS;
 const devKey = (eventId) => `scc:survey-dev:${eventId}`;
 function devRead(eventId) {
   try { return JSON.parse(localStorage.getItem(devKey(eventId)) || "null") || { open: false, responses: {} }; } catch { return { open: false, responses: {} }; }
@@ -47,6 +42,10 @@ function devResults(state) {
     total: all.length,
     named: all.filter((r) => r.name).length,
     questions: DEV_QUESTIONS.map((q) => {
+      if (q.kind === "choice" || q.kind === "multi") {
+        const picks = all.map((r) => r.answers[q.id]).filter(Boolean);
+        return { ...q, count: picks.length, counts: q.options.map((option) => ({ option, count: picks.filter((p) => (Array.isArray(p) ? p.includes(option) : p === option)).length })) };
+      }
       if (q.kind === "rating") {
         const values = all.map((r) => r.answers[q.id]).filter(Boolean);
         return { ...q, count: values.length, average: values.length ? Math.round((values.reduce((a, b) => a + b, 0) / values.length) * 10) / 10 : null, spread: [1, 2, 3, 4, 5].map((s) => values.filter((v) => v === s).length) };
@@ -62,7 +61,7 @@ export async function getSurvey(eventId, { results = false } = {}) {
     const state = devRead(eventId);
     const mine = state.responses.me;
     return {
-      open: state.open, questions: DEV_QUESTIONS, canAnswer: true, name: "Local Dev",
+      open: state.open, questions: DEV_QUESTIONS, sections: SURVEY_SECTIONS, canAnswer: true, name: "Local Dev",
       mine: mine ? { answers: mine.answers, named: Boolean(mine.name), submittedAt: mine.submittedAt } : null,
       results: results ? devResults(state) : undefined,
     };
@@ -75,6 +74,8 @@ export async function submitSurvey(eventId, answers, named) {
     const state = devRead(eventId);
     if (!state.open) throw new Error("This survey is closed.");
     if (!answers.show) throw new Error("Please answer: Overall, how was the show for you?");
+    const kept = Object.fromEntries(Object.entries(answers).filter(([id]) => isShown(DEV_QUESTIONS.find((q) => q.id === id) || {}, answers)));
+    answers = kept;
     state.responses.me = { answers, name: named ? "Local Dev" : "", submittedAt: new Date().toISOString().slice(0, 10) };
     devWrite(eventId, state);
   } else {

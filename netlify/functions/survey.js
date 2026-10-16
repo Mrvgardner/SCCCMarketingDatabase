@@ -4,6 +4,7 @@ import { authenticate } from "../lib/auth.mjs";
 import { withCors } from "../lib/http.mjs";
 import { clean } from "../lib/travel-input.mjs";
 import { loadEvents, travelerForEmail } from "./trade-shows.js";
+import { SURVEY_QUESTIONS, SURVEY_SECTIONS, isShown } from "../../src/data/surveyQuestions.js";
 
 // The post-show survey: five questions to the people who worked a show.
 //
@@ -20,13 +21,7 @@ import { loadEvents, travelerForEmail } from "./trade-shows.js";
 const STORE = "staff-surveys";
 const SECRET_KEY = "secret.json";
 
-export const QUESTIONS = [
-  { id: "show", kind: "rating", label: "Overall, how was the show for you?", required: true },
-  { id: "app", kind: "rating", label: "How useful was the app at this show?" },
-  { id: "worked", kind: "text", label: "What worked well, at the show or in the app?" },
-  { id: "didnt", kind: "text", label: "What didn't work, or what should we do differently next time?" },
-  { id: "else", kind: "text", label: "Anything else?" },
-];
+const QUESTIONS = SURVEY_QUESTIONS;
 
 function json(body, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -56,10 +51,19 @@ function validAnswers(raw) {
     if (question.kind === "rating") {
       const n = Number(value);
       if (Number.isInteger(n) && n >= 1 && n <= 5) answers[question.id] = n;
+    } else if (question.kind === "choice") {
+      if (question.options.includes(value)) answers[question.id] = value;
+    } else if (question.kind === "multi") {
+      const picked = (Array.isArray(value) ? value : []).filter((option) => question.options.includes(option));
+      if (picked.length) answers[question.id] = [...new Set(picked)];
     } else {
       const text = clean(value, 2000, { multiline: true });
       if (text) answers[question.id] = text;
     }
+  }
+  // A follow-up only counts if its question was actually asked.
+  for (const question of QUESTIONS) {
+    if (!isShown(question, answers)) delete answers[question.id];
   }
   const missing = QUESTIONS.find((question) => question.required && answers[question.id] === undefined);
   return missing ? { error: `Please answer: ${missing.label}` } : { answers };
@@ -79,6 +83,14 @@ async function results(store, eventId) {
   const responses = (await Promise.all(blobs.map((blob) => store.get(blob.key, { type: "json" }).catch(() => null)))).filter(Boolean);
 
   const summary = QUESTIONS.map((question) => {
+    if (question.kind === "choice" || question.kind === "multi") {
+      const picks = responses.map((r) => r.answers?.[question.id]).filter(Boolean);
+      const counts = question.options.map((option) => ({
+        option,
+        count: picks.filter((pick) => (Array.isArray(pick) ? pick.includes(option) : pick === option)).length,
+      }));
+      return { ...question, count: picks.length, counts };
+    }
     if (question.kind === "rating") {
       const values = responses.map((r) => r.answers?.[question.id]).filter((v) => Number.isInteger(v));
       const spread = [1, 2, 3, 4, 5].map((score) => values.filter((v) => v === score).length);
@@ -130,6 +142,7 @@ export default withCors(async (request) => {
       open: state.open === true,
       openedAt: state.openedAt || "",
       questions: QUESTIONS,
+      sections: SURVEY_SECTIONS,
       canAnswer,
       name: person || user.user_metadata?.full_name || "",
       mine: mine ? { answers: mine.answers, named: Boolean(mine.name), submittedAt: mine.submittedAt } : null,
