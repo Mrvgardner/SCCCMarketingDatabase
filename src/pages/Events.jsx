@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { effectiveStatus } from "../data/showStatus";
 import { Link, Navigate, useParams } from "react-router-dom";
 import {
   ArrowLeftIcon,
@@ -29,8 +30,10 @@ function EventStatusBadge({ status }) {
 }
 
 function EventsIndex({ events }) {
-  const upcoming = events.filter((event) => event.status !== "past");
-  const past = events.filter((event) => event.status === "past");
+  // Asked fresh on each render, so a page left open past an archive time
+  // still sorts correctly.
+  const upcoming = events.filter((event) => effectiveStatus(event) !== "past");
+  const past = events.filter((event) => effectiveStatus(event) === "past");
 
   return (
     <main className="flex-1 bg-gradient-to-b from-gray-950 via-gray-900 to-gray-800 text-white">

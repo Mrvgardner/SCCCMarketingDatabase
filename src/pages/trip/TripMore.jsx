@@ -8,7 +8,6 @@ import {
   PencilSquareIcon,
 } from "@heroicons/react/24/outline";
 import PwaControls from "../../components/PwaControls";
-import { isNativeApp } from "../../api/apiBase";
 import { Card, Eyebrow, ScreenTitle } from "../../components/trip/TripChrome";
 import EmergencyContact from "../../components/trip/EmergencyContact";
 import SearchInsights from "../../components/trip/SearchInsights";
@@ -121,9 +120,9 @@ export default function TripMore() {
             <PencilSquareIcon className="h-5 w-5 text-[#0951fa]" /> Manage event
           </Link>
         )}
-        {/* On the web there is a wider site to go back to. In the app there is
-            not, so this is omitted there. */}
-        {!isNativeApp() && (
+        {/* The way to every show, including past ones in the archive. The app
+            carries the trade show list too, so this shows there as well. */}
+        {(
           <Link
             to="/events"
             className="flex min-h-[52px] items-center gap-3 rounded-2xl border border-white/10 px-4 text-[14px] font-semibold text-[#93a0b4]"

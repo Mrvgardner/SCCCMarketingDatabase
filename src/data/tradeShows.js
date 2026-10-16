@@ -152,6 +152,8 @@ export const tradeShows = [
     shortName: "NAC",
     year: "2026",
     status: "upcoming",
+    // Noon Central on Friday, October 16, 2026 (CDT, UTC-5).
+    archiveAt: "2026-10-16T17:00:00Z",
     dates: "October 13-15, 2026",
     expoDates: "Oct. 13 at 4:30 PM through Oct. 15 at 12:00 PM",
     teamRevision: 1,

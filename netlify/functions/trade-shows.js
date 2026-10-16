@@ -4,6 +4,7 @@ import { withCors } from "../lib/http.mjs";
 import { clean, validateFlightLeg } from "../lib/travel-input.mjs";
 import { validateBriefing } from "../lib/briefing.mjs";
 import { tradeShows as seedTradeShows } from "../../src/data/tradeShows.js";
+import { withEffectiveStatus } from "../../src/data/showStatus.js";
 
 const STORE_NAME = "knowledge-base";
 const KEY = "trade-shows.json";
@@ -181,7 +182,7 @@ const MAX_WRITE_ATTEMPTS = 5;
 export async function loadEvents(store) {
   const stored = await store.getWithMetadata(KEY, { type: "json" });
   if (stored?.data) {
-    return { events: mergeSeedConfiguration(stored.data).map(enrichTeamContacts), etag: stored.etag };
+    return { events: mergeSeedConfiguration(stored.data).map(enrichTeamContacts).map((event) => withEffectiveStatus(event)), etag: stored.etag };
   }
 
   const seeded = clone(seedTradeShows);

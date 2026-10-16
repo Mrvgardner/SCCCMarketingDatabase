@@ -17,8 +17,9 @@ import { forwardTokenToAppIfPending, startAppAuthFromRoot, deepLinkFromIdentityS
 // The app opens straight into the current show rather than a list of one.
 // Read from the seed because this has to resolve synchronously at route time;
 // the screens themselves then load live data over the top.
+import { launchShow } from './data/showStatus';
 const firstUpcomingEventId =
-  (seedTradeShows.find((event) => event.status !== 'past') || seedTradeShows[0])?.id || '';
+  launchShow(seedTradeShows)?.id || '';
 import './index.css'
 
 // Service workers do not exist on the capacitor:// origin, and calling
