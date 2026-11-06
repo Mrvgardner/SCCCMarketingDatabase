@@ -111,7 +111,7 @@ export default function Home() {
                     </h4>
                     {latestFieldNote.highlights?.length ? (
                       // A highlights week leads with the recognitions themselves.
-                      <HighlightPreview highlights={latestFieldNote.highlights} max={2} className="mb-4" />
+                      <HighlightPreview highlights={latestFieldNote.highlights} max={2} height={210} className="mb-4" />
                     ) : (
                       <p className="text-white/90 text-sm leading-relaxed mb-4 line-clamp-5">
                         {latestFieldNote.excerpt}

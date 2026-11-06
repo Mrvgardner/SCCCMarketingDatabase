@@ -112,7 +112,7 @@ function FieldNoteCard({ note, onOpen, isNew }) {
         {note.title}
       </h3>
       {note.highlights?.length ? (
-        <HighlightPreview highlights={note.highlights} max={4} className="mb-4 flex-1" />
+        <HighlightPreview highlights={note.highlights} max={4} height={340} className="mb-4 flex-1" />
       ) : (
         <p className="text-sm text-gray-300 line-clamp-4 mb-4 flex-1">{note.excerpt}</p>
       )}

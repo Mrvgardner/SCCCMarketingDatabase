@@ -134,3 +134,24 @@
     font-size: 16px;
   }
 }
+
+/* Weekly highlights: the recognitions drift upward in a loop. The list is
+   rendered twice, so moving it up by half lands exactly where it started. */
+@keyframes highlights-ticker {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+.highlights-ticker {
+  animation: highlights-ticker var(--ticker-duration, 30s) linear infinite;
+}
+.highlights-ticker-window:hover .highlights-ticker,
+.highlights-ticker-window:focus-within .highlights-ticker {
+  animation-play-state: paused;
+}
+.highlights-ticker-window {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 14px, #000 calc(100% - 22px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 14px, #000 calc(100% - 22px), transparent 100%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .highlights-ticker { animation: none; }
+}
