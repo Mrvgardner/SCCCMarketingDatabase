@@ -10,9 +10,10 @@ import { highlightsExcerpt, highlightsText, splitOthers } from "../../src/data/h
 // Assembly (Quantum Recognition) emails each person a weekly digest of who was
 // recognized and why. Vic forwards it here: a mail rule sends it to a Make
 // mailhook, and Make posts the message to this function. This reads the
-// recognitions out of the email, files them as a draft "This Week's
-// Highlights" note with a card per recognition, and pings the reviewers to
-// publish it. Nothing goes live without a person approving it.
+// recognitions out of the email and files a "This Week's Highlights" note with
+// a card per recognition. Sent straight from Assembly, it publishes on its own
+// (Vic's call: that sender is good enough); anything else waits as a draft.
+// Either way the reviewers get a push.
 //
 // The raw email is kept too, so a parsing miss can be looked at and replayed
 // rather than guessed about.
@@ -108,7 +109,14 @@ function weekOf(dateLike) {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Chicago" }).format(valid);
 }
 
-function buildNote(highlights, day) {
+// Straight from Assembly (what Vic's Gmail filter forwards, sender intact)
+// is trusted and goes live on its own. Anything else that reaches the address,
+// a hand-forward or a stranger who found it, waits as a draft for a person.
+function fromAssembly(sender) {
+  return /@joinassembly\.com$/i.test(String(sender || "").trim());
+}
+
+function buildNote(highlights, day, publish) {
   const excerpt = highlightsExcerpt(highlights);
   // Plain-text body for search, the home page preview, and the kitchen TV,
   // which do not know about cards.
@@ -122,7 +130,7 @@ function buildNote(highlights, day) {
     excerpt,
     content,
     highlights,
-    published: false,
+    published: publish,
     source: "assembly",
   };
 }
@@ -166,13 +174,13 @@ async function notifyReviewers(note) {
       targets.push(record.subscription);
     }
   }
-  const payload = JSON.stringify({
-    title: "Weekly highlights ready to publish",
-    body: note.excerpt,
-    url: `/admin/field-notes/${note.id}/edit`,
-    tag: note.id,
-    persistent: true,
-  });
+  // Published: a heads-up with a link to the post. A draft: a nudge to
+  // review it, which stays until handled.
+  const payload = JSON.stringify(
+    note.published
+      ? { title: "This Week's Highlights posted", body: note.excerpt, url: `/field-notes/${note.id}`, tag: note.id }
+      : { title: "Weekly highlights ready to publish", body: note.excerpt, url: `/admin/field-notes/${note.id}/edit`, tag: note.id, persistent: true },
+  );
   const results = await Promise.allSettled(targets.map((subscription) => webpush.sendNotification(subscription, payload)));
   return results.filter((r) => r.status === "fulfilled").length;
 }
@@ -243,7 +251,7 @@ export default async (request) => {
     return json({ status: "ignored", reason: "No recognitions found", rawKey });
   }
 
-  const note = buildNote(highlights, day);
+  const note = buildNote(highlights, day, fromAssembly(body.from));
   const saved = await saveNote(note);
   const notified = saved.status === "already-published" ? 0 : await notifyReviewers(note).catch(() => 0);
   return json({ status: saved.status, id: note.id, recognitions: highlights.length, notified, rawKey });

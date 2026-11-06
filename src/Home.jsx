@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { BookOpenIcon, CalendarDaysIcon, DocumentTextIcon, NewspaperIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 import { listFieldNotes } from "./api/fieldNotes";
+import { recipientLabel } from "./data/highlights";
 import GlobalSearch from "./components/GlobalSearch.jsx";
 import { extractFirstImage } from "./utils/extractFirstImage";
 
@@ -108,9 +109,32 @@ export default function Home() {
                     <h4 className="text-xl font-semibold text-white mb-3">
                       {latestFieldNote.title}
                     </h4>
-                    <p className="text-white/90 text-sm leading-relaxed mb-4 line-clamp-5">
-                      {latestFieldNote.excerpt}
-                    </p>
+                    {latestFieldNote.highlights?.length ? (
+                      // A highlights week leads with the recognitions themselves,
+                      // not a list of names: the first two, then a count of the rest.
+                      <div className="mb-4 space-y-2.5">
+                        {latestFieldNote.highlights.slice(0, 2).map((h, i) => (
+                          <div key={i} className="rounded-lg bg-black/20 px-3 py-2.5">
+                            <p className="text-sm font-semibold text-white">
+                              🎉 {recipientLabel(h)}
+                              {h.from && <span className="font-normal text-white/60"> · from {h.from}</span>}
+                            </p>
+                            {h.message && (
+                              <p className="mt-1 text-[13px] leading-snug text-white/85 line-clamp-2">“{h.message}”</p>
+                            )}
+                          </div>
+                        ))}
+                        {latestFieldNote.highlights.length > 2 && (
+                          <p className="text-sm text-white/75">
+                            + {latestFieldNote.highlights.length - 2} more recognition{latestFieldNote.highlights.length - 2 === 1 ? "" : "s"} this week
+                          </p>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-white/90 text-sm leading-relaxed mb-4 line-clamp-5">
+                        {latestFieldNote.excerpt}
+                      </p>
+                    )}
                     <div className="mt-auto pt-4 border-t border-white/20 text-white/80 text-sm font-medium">
                       Read more →
                     </div>
