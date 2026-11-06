@@ -39,6 +39,34 @@ function getReactionCount(note, emoji) {
   return getReactionUsers(note, emoji).length;
 }
 
+// A weekly highlights note carries its recognitions as data, one card each.
+// The plain-text body stays for search and for screens that only read text.
+function HighlightCards({ highlights }) {
+  return (
+    <div className="space-y-3">
+      {highlights.map((h, i) => (
+        <figure key={i} className="rounded-xl border border-[#5fae4b]/25 bg-[#5fae4b]/[0.07] p-4">
+          <figcaption className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+            <span aria-hidden="true">🎉</span>
+            <span className="font-semibold text-white">{h.recipients.join(", ")}</span>
+            {h.from && <span className="text-sm text-gray-400">from {h.from}</span>}
+            {h.badge && (
+              <span className="rounded-full bg-[#5fae4b]/20 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-[#9be08a]">
+                {h.badge}
+              </span>
+            )}
+          </figcaption>
+          {h.message && (
+            <blockquote className="mt-2 whitespace-pre-line text-[15px] leading-relaxed text-gray-200">
+              “{h.message}”
+            </blockquote>
+          )}
+        </figure>
+      ))}
+    </div>
+  );
+}
+
 function FieldNoteCard({ note, onOpen, isNew }) {
   const hasReactions = REACTION_EMOJIS.some((emoji) => getReactionCount(note, emoji) > 0);
   const cover = extractFirstImage(note.content);
@@ -63,8 +91,13 @@ function FieldNoteCard({ note, onOpen, isNew }) {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="text-xs uppercase tracking-wider text-[#7bc966] font-semibold">
-            Field Note
+            {note.kind === "highlights" ? "🎉 Highlights" : "Field Note"}
           </span>
+          {note.published === false && (
+            <span className="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-amber-500 text-black leading-none">
+              Draft
+            </span>
+          )}
           {isNew && (
             <span className="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-green-500 text-white leading-none">
               New
@@ -177,9 +210,13 @@ function NoteModal({
           <h2 className="font-switch-bold text-3xl text-white mb-6 pr-10 bg-gradient-to-r from-[#5fae4b] to-[#7bc966] bg-clip-text text-transparent">
             {note.title}
           </h2>
-          <div className="prose prose-invert max-w-none text-gray-200">
-            <RichText content={note.content} />
-          </div>
+          {note.highlights?.length ? (
+            <HighlightCards highlights={note.highlights} />
+          ) : (
+            <div className="prose prose-invert max-w-none text-gray-200">
+              <RichText content={note.content} />
+            </div>
+          )}
           <div className="mt-8 pt-5 border-t border-white/10">
             <div className="flex items-center justify-between mb-3">
               <div className="text-xs uppercase tracking-wider text-gray-400">Reactions</div>

@@ -47,6 +47,22 @@ function TextAreaField({ label, name, value, onChange, placeholder, hint, rows =
   );
 }
 
+// Keep a highlights note's text in step with its cards when one is removed:
+// the excerpt names who was recognized, and the plain body is what search and
+// the kitchen TV read.
+function withHighlights(note, highlights) {
+  const list = (names) => (names.length <= 2 ? names.join(" and ") : `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`);
+  const everyone = [...new Set(highlights.flatMap((h) => h.recipients))];
+  return {
+    ...note,
+    highlights,
+    excerpt: everyone.length ? `${list(everyone)} ${everyone.length === 1 ? "was" : "were"} recognized this week.` : note.excerpt,
+    content: highlights
+      .map((h) => `🎉 ${list(h.recipients)}${h.from ? ` (from ${h.from})` : ""}${h.badge ? ` · ${h.badge}` : ""}${h.message ? `\n"${h.message}"` : ""}`)
+      .join("\n\n"),
+  };
+}
+
 export default function FieldNoteForm() {
   const { id } = useParams();
   const isNew = !id;
@@ -199,13 +215,44 @@ export default function FieldNoteForm() {
             />
           </section>
 
-          <section className="bg-gray-800/40 rounded-xl p-6 space-y-3">
-            <div>
-              <h2 className="text-lg font-semibold text-gray-200">Content</h2>
-              <p className="text-xs text-gray-500">The full note. Supports bold, italic, lists, and links.</p>
-            </div>
-            <RichTextEditor value={note.content} onChange={handleContentChange} />
-          </section>
+          {note.highlights ? (
+            <section className="bg-gray-800/40 rounded-xl p-6 space-y-3">
+              <div>
+                <h2 className="text-lg font-semibold text-gray-200">Recognitions</h2>
+                <p className="text-xs text-gray-500">
+                  Read from the Friday highlights email. Remove any that should not go out, then publish.
+                </p>
+              </div>
+              {note.highlights.length === 0 && <p className="text-sm text-gray-400">No recognitions left.</p>}
+              {note.highlights.map((h, i) => (
+                <div key={i} className="flex items-start gap-3 rounded-lg border border-white/10 bg-gray-900/50 p-3">
+                  <div className="min-w-0 flex-1">
+                    <p className="font-semibold text-white">
+                      🎉 {h.recipients.join(", ")}
+                      {h.from && <span className="font-normal text-gray-400"> · from {h.from}</span>}
+                      {h.badge && <span className="font-normal text-[#9be08a]"> · {h.badge}</span>}
+                    </p>
+                    {h.message && <p className="mt-1 whitespace-pre-line text-sm text-gray-300">“{h.message}”</p>}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setNote((prev) => withHighlights(prev, prev.highlights.filter((_, j) => j !== i)))}
+                    className="shrink-0 rounded-md border border-white/15 px-2.5 py-1 text-xs font-semibold text-gray-300 hover:border-red-400/60 hover:text-red-300"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </section>
+          ) : (
+            <section className="bg-gray-800/40 rounded-xl p-6 space-y-3">
+              <div>
+                <h2 className="text-lg font-semibold text-gray-200">Content</h2>
+                <p className="text-xs text-gray-500">The full note. Supports bold, italic, lists, and links.</p>
+              </div>
+              <RichTextEditor value={note.content} onChange={handleContentChange} />
+            </section>
+          )}
 
           <div className="flex items-center justify-between gap-3 pt-2">
             <div className="flex items-center gap-3">
