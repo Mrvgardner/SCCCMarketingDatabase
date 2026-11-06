@@ -3,6 +3,7 @@ import { getStore } from "@netlify/blobs";
 import OpenAI from "openai";
 import webpush from "web-push";
 import { configuredVapid, SUBSCRIPTION_STORE } from "../lib/push.js";
+import { highlightsExcerpt, highlightsText, splitOthers } from "../../src/data/highlights.js";
 
 // The Friday "This Week's Highlights" email, turned into a Field Note.
 //
@@ -107,21 +108,11 @@ function weekOf(dateLike) {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Chicago" }).format(valid);
 }
 
-function names(list) {
-  if (list.length <= 2) return list.join(" and ");
-  return `${list.slice(0, -1).join(", ")}, and ${list[list.length - 1]}`;
-}
-
 function buildNote(highlights, day) {
-  const everyone = [...new Set(highlights.flatMap((h) => h.recipients))];
-  const excerpt = everyone.length
-    ? `${names(everyone)} ${everyone.length === 1 ? "was" : "were"} recognized this week.`
-    : "This week's recognitions from across the team.";
+  const excerpt = highlightsExcerpt(highlights);
   // Plain-text body for search, the home page preview, and the kitchen TV,
   // which do not know about cards.
-  const content = highlights
-    .map((h) => `🎉 ${names(h.recipients)}${h.from ? ` (from ${h.from})` : ""}${h.badge ? ` · ${h.badge}` : ""}${h.message ? `\n"${h.message}"` : ""}`)
-    .join("\n\n");
+  const content = highlightsText(highlights);
   return {
     id: `highlights-${day}`,
     kind: "highlights",
@@ -240,7 +231,7 @@ export default async (request) => {
 
   const highlights = (parsed.recognitions || [])
     .map((h) => ({
-      recipients: (h.recipients || []).map((name) => clean(name, 80)).filter(Boolean).slice(0, 12),
+      ...splitOthers((h.recipients || []).map((name) => clean(name, 80)).filter(Boolean).slice(0, 12)),
       from: clean(h.from, 80),
       message: clean(h.message, 1500),
       badge: clean(h.badge, 80),

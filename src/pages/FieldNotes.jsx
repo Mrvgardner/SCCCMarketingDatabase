@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { recipientLabel } from "../data/highlights";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   ArrowLeftIcon,
@@ -48,7 +49,7 @@ function HighlightCards({ highlights }) {
         <figure key={i} className="rounded-xl border border-[#5fae4b]/25 bg-[#5fae4b]/[0.07] p-4">
           <figcaption className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
             <span aria-hidden="true">🎉</span>
-            <span className="font-semibold text-white">{h.recipients.join(", ")}</span>
+            <span className="font-semibold text-white">{recipientLabel(h)}</span>
             {h.from && <span className="text-sm text-gray-400">from {h.from}</span>}
             {h.badge && (
               <span className="rounded-full bg-[#5fae4b]/20 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-[#9be08a]">

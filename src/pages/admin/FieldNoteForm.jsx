@@ -4,6 +4,7 @@ import { ArrowLeftIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import { listAllFieldNotes, createFieldNote, updateFieldNote, deleteFieldNote } from "../../api/fieldNotes";
 import RichTextEditor from "../../components/RichTextEditor.jsx";
+import { highlightsExcerpt, highlightsText, recipientLabel } from "../../data/highlights";
 import { useAuth } from "../../contexts/AuthContext";
 
 function today() {
@@ -51,16 +52,7 @@ function TextAreaField({ label, name, value, onChange, placeholder, hint, rows =
 // the excerpt names who was recognized, and the plain body is what search and
 // the kitchen TV read.
 function withHighlights(note, highlights) {
-  const list = (names) => (names.length <= 2 ? names.join(" and ") : `${names.slice(0, -1).join(", ")}, and ${names[names.length - 1]}`);
-  const everyone = [...new Set(highlights.flatMap((h) => h.recipients))];
-  return {
-    ...note,
-    highlights,
-    excerpt: everyone.length ? `${list(everyone)} ${everyone.length === 1 ? "was" : "were"} recognized this week.` : note.excerpt,
-    content: highlights
-      .map((h) => `🎉 ${list(h.recipients)}${h.from ? ` (from ${h.from})` : ""}${h.badge ? ` · ${h.badge}` : ""}${h.message ? `\n"${h.message}"` : ""}`)
-      .join("\n\n"),
-  };
+  return { ...note, highlights, excerpt: highlightsExcerpt(highlights), content: highlightsText(highlights) };
 }
 
 export default function FieldNoteForm() {
@@ -228,7 +220,7 @@ export default function FieldNoteForm() {
                 <div key={i} className="flex items-start gap-3 rounded-lg border border-white/10 bg-gray-900/50 p-3">
                   <div className="min-w-0 flex-1">
                     <p className="font-semibold text-white">
-                      🎉 {h.recipients.join(", ")}
+                      🎉 {recipientLabel(h)}
                       {h.from && <span className="font-normal text-gray-400"> · from {h.from}</span>}
                       {h.badge && <span className="font-normal text-[#9be08a]"> · {h.badge}</span>}
                     </p>
