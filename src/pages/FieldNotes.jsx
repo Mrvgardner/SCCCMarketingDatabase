@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { recipientLabel } from "../data/highlights";
+import HighlightPreview from "../components/HighlightPreview";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   ArrowLeftIcon,
@@ -110,7 +111,11 @@ function FieldNoteCard({ note, onOpen, isNew }) {
       <h3 className="font-switch-bold text-xl text-white group-hover:text-[#7bc966] transition-colors mb-3 leading-tight">
         {note.title}
       </h3>
-      <p className="text-sm text-gray-300 line-clamp-4 mb-4 flex-1">{note.excerpt}</p>
+      {note.highlights?.length ? (
+        <HighlightPreview highlights={note.highlights} max={4} className="mb-4 flex-1" />
+      ) : (
+        <p className="text-sm text-gray-300 line-clamp-4 mb-4 flex-1">{note.excerpt}</p>
+      )}
       {hasReactions && (
         <div className="flex items-center flex-wrap gap-2 mb-3">
           {REACTION_EMOJIS.map((emoji) => {
