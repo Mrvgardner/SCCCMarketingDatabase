@@ -190,11 +190,16 @@ export default async (request) => {
   if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
   if (!tokenMatches(request.headers.get("x-highlights-token"))) return json({ error: "Unauthorized" }, 401);
 
+  // JSON, or a plain form: Make sends the email as form fields, which needs
+  // no escaping of the quotes and markup an HTML email is full of.
   let body;
   try {
-    body = await request.json();
+    const type = request.headers.get("content-type") || "";
+    body = type.includes("application/json")
+      ? await request.json()
+      : Object.fromEntries((await request.formData()).entries());
   } catch {
-    return json({ error: "Invalid JSON" }, 400);
+    return json({ error: "Could not read the request" }, 400);
   }
 
   const subject = clean(body.subject, 300);
