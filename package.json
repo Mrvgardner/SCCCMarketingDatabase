@@ -2,13 +2,11 @@
   "name": "switch-team-portal",
   "version": "1.0.0",
   "scripts": {
-    "predev": "node -e \"require('fs').existsSync('src/data/celebrations.generated.js') || require('child_process').execSync('node scripts/fetch-celebrations.mjs', {stdio:'inherit'})\"",
     "dev": "vite",
-    "fetch-celebrations": "node scripts/fetch-celebrations.mjs",
-    "prebuild": "node scripts/fetch-celebrations.mjs",
     "build": "vite build",
     "preview": "vite preview",
-    "generate-vapid-keys": "web-push generate-vapid-keys --json"
+    "generate-vapid-keys": "web-push generate-vapid-keys --json",
+    "test:celebrations": "node --test test/celebrations-containment.test.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",
@@ -54,7 +52,6 @@
     "@tailwindcss/forms": "^0.5.10",
     "@vitejs/plugin-react": "^4.0.0",
     "autoprefixer": "^10.4.21",
-    "node-ical": "^0.26.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
     "vite": "^4.4.9"
