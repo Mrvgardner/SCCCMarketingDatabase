@@ -1,6 +1,8 @@
 import { getStore } from "@netlify/blobs";
 import OpenAI from "openai";
+import { randomUUID } from "node:crypto";
 import { authenticate } from "../lib/auth.mjs";
+import { assistantGatewayConfig, requestAssistantCompletion } from "../lib/assistant-gateway.mjs";
 import { withCors } from "../lib/http.mjs";
 import { clean } from "../lib/travel-input.mjs";
 import { loadEvents } from "./trade-shows.js";
@@ -78,12 +80,6 @@ function json(body, status = 200) {
     status,
     headers: { "Content-Type": "application/json", "Cache-Control": "private, no-store" },
   });
-}
-
-function client() {
-  const apiKey = process.env.NETLIFY_AI_GATEWAY_KEY;
-  const baseURL = process.env.NETLIFY_AI_GATEWAY_BASE_URL;
-  return apiKey && baseURL ? new OpenAI({ apiKey, baseURL }) : new OpenAI();
 }
 
 function userKey(email) {
@@ -323,6 +319,12 @@ export default withCors(async (request) => {
   }
   const eventId = clean(body?.eventId, 80);
 
+  const gateway = assistantGatewayConfig();
+  if (gateway.code) {
+    console.error("assistant failed:", JSON.stringify({ at: new Date().toISOString(), status: 503, code: gateway.code }));
+    return json({ error: "Ask is temporarily unavailable. Please try again later." }, 503);
+  }
+
   const usage = getStore({ name: USAGE_STORE, consistency: "strong" });
   if (!(await withinBudget(usage, user.email))) {
     return json({ error: "The assistant has hit today's limit for your account. Try again tomorrow." }, 429);
@@ -387,7 +389,7 @@ export default withCors(async (request) => {
   const startedAt = Date.now();
   let answer;
   try {
-    const completion = await client().chat.completions.create({
+    const completion = await requestAssistantCompletion(gateway, {
       model: ASSISTANT_MODEL,
       reasoning_effort: "none",
       response_format: { type: "json_schema", json_schema: ANSWER_SCHEMA },
@@ -396,7 +398,7 @@ export default withCors(async (request) => {
         { role: "system", content: `Briefing:\n${JSON.stringify(briefing)}` },
         ...history,
       ],
-    });
+    }, (config) => new OpenAI(config));
     const content = completion.choices[0]?.message?.content || "";
     try {
       answer = JSON.parse(content);
@@ -409,22 +411,16 @@ export default withCors(async (request) => {
       throw Object.assign(new Error(`empty answer (${reason})`), { status: 502, code: "empty_answer" });
     }
   } catch (error) {
-    const status = Number(error?.status) || 0;
+    const upstreamStatus = Number(error?.status);
+    const status = Number.isInteger(upstreamStatus) && upstreamStatus >= 400 && upstreamStatus <= 599 ? upstreamStatus : 0;
     const detail = {
       at: new Date().toISOString(),
-      user: user.email,
-      isAdmin,
-      eventId,
-      question: history[history.length - 1].content.slice(0, 200),
-      turns: history.length,
-      briefingChars: JSON.stringify(briefing).length,
       ms: Date.now() - startedAt,
       status,
-      code: String(error?.code || error?.type || ""),
-      message: String(error?.message || error).slice(0, 500),
+      code: error?.code === "empty_answer" ? "empty_answer" : "gateway_request_failed",
     };
     console.error("assistant failed:", JSON.stringify(detail));
-    await usage.setJSON(`errors/${detail.at.slice(0, 10)}/${Date.now()}-${userKey(user.email).slice(0, 8)}.json`, detail).catch(() => {});
+    await usage.setJSON(`errors/${detail.at.slice(0, 10)}/${Date.now()}-${randomUUID()}.json`, detail).catch(() => {});
 
     const message =
       status === 429
