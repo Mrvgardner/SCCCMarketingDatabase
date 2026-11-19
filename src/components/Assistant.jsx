@@ -64,17 +64,17 @@ export default function Assistant() {
 
   if (!user || pathname === "/login" || pathname === "/app-auth") return null;
 
-  const ask = async (question) => {
+  const ask = async (question, history = messages) => {
     const content = question.trim();
     if (!content || busy) return;
-    const next = [...messages, { role: "user", content }];
+    const next = [...history, { role: "user", content }];
     setMessages(next);
     setDraft("");
     setFollowUps([]);
     setError("");
     setBusy(true);
     try {
-      const reply = await askAssistant(next, { eventId });
+      const reply = await askAssistant(next, { eventId, user });
       setMessages([...next, { role: "assistant", content: reply.answer, links: reply.links || [] }]);
       setFollowUps(reply.followUps || []);
     } catch (askError) {
@@ -87,8 +87,7 @@ export default function Assistant() {
   const retry = () => {
     const last = [...messages].reverse().find((m) => m.role === "user");
     if (!last) return;
-    setMessages(messages.slice(0, messages.lastIndexOf(last)));
-    setTimeout(() => ask(last.content), 0);
+    void ask(last.content, messages.slice(0, messages.lastIndexOf(last)));
   };
 
   const reset = () => {

@@ -1,17 +1,12 @@
 import { apiUrl } from "./apiBase";
+import { sendAssistantRequest } from "./assistant-session.mjs";
 
 const ENDPOINT = apiUrl("/.netlify/functions/assistant");
 const useDev = import.meta.env.DEV;
 
-async function authHeaders() {
-  const user = window.netlifyIdentity?.currentUser();
-  if (!user) throw new Error("Not authenticated");
-  return { Authorization: `Bearer ${await user.jwt()}` };
-}
-
 // One turn of the conversation. `messages` is the whole exchange so far, the
 // new question last; the server keeps no state between calls.
-export async function askAssistant(messages, { eventId = "" } = {}) {
+export async function askAssistant(messages, { eventId = "", user } = {}) {
   if (useDev) {
     // No gateway credentials locally. Say so rather than fake a reply.
     return {
@@ -24,20 +19,7 @@ export async function askAssistant(messages, { eventId = "" } = {}) {
     };
   }
 
-  const send = async () => fetch(ENDPOINT, {
-    method: "POST",
-    headers: { ...(await authHeaders()), "Content-Type": "application/json" },
-    body: JSON.stringify({ messages, eventId }),
-  });
-
-  // A failed model call is usually a passing blip on the hosting side (the
-  // log has shown the AI credentials missing for a few seconds at a time).
-  // One quiet retry, a moment later, usually lands on a healthy server.
-  let response = await send();
-  if (response.status === 502 || response.status === 503) {
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    response = await send();
-  }
+  const response = await sendAssistantRequest({ user, endpoint: ENDPOINT, messages, eventId });
 
   const text = await response.text().catch(() => "");
   if (!response.ok) {
