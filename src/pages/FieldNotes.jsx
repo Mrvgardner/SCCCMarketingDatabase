@@ -14,7 +14,7 @@ import {
 import { listFieldNotes, toggleFieldNoteReaction } from "../api/fieldNotes";
 import { useAuth } from "../contexts/AuthContext";
 import RichText from "../components/RichText.jsx";
-import { birthdays, anniversaries } from "../data/celebrations";
+import { useCelebrations } from "../hooks/useCelebrations";
 import { getUpcoming, formatDate as formatCelebDate, yearsOfService } from "../utils/celebrations";
 import { extractFirstImage } from "../utils/extractFirstImage";
 
@@ -262,9 +262,17 @@ function NoteModal({
   );
 }
 
-function SidebarBirthdays() {
+function CelebrationPlaceholder({ status, empty }) {
+  return (
+    <li className="px-5 py-3 text-sm text-gray-400" role="status">
+      {status === "loading" ? "Loading…" :
+        status === "unavailable" ? "Calendar temporarily unavailable." : empty}
+    </li>
+  );
+}
+
+function SidebarBirthdays({ birthdays, status }) {
   const list = getUpcoming(birthdays, 6);
-  if (list.length === 0) return null;
   return (
     <div className="rounded-2xl bg-gray-900/40 border border-white/10 backdrop-blur-md shadow-xl overflow-hidden">
       <div className="flex items-center gap-2 px-5 py-4 border-b border-white/10">
@@ -272,6 +280,7 @@ function SidebarBirthdays() {
         <h3 className="font-switch-bold text-sm tracking-wider uppercase text-white">Birthdays</h3>
       </div>
       <ul className="divide-y divide-white/5">
+        {list.length === 0 && <CelebrationPlaceholder status={status} empty="No upcoming birthdays." />}
         {list.map((b) => (
           <li
             key={b.name}
@@ -294,9 +303,8 @@ function SidebarBirthdays() {
   );
 }
 
-function SidebarAnniversaries() {
+function SidebarAnniversaries({ anniversaries, status }) {
   const list = getUpcoming(anniversaries, 6);
-  if (list.length === 0) return null;
   return (
     <div className="rounded-2xl bg-gray-900/40 border border-white/10 backdrop-blur-md shadow-xl overflow-hidden">
       <div className="flex items-center gap-2 px-5 py-4 border-b border-white/10">
@@ -304,6 +312,7 @@ function SidebarAnniversaries() {
         <h3 className="font-switch-bold text-sm tracking-wider uppercase text-white">Anniversaries</h3>
       </div>
       <ul className="divide-y divide-white/5">
+        {list.length === 0 && <CelebrationPlaceholder status={status} empty="No upcoming work anniversaries." />}
         {list.map((a) => {
           const years = yearsOfService(a.startYear, a.next);
           const isMilestone = years > 0 && years % 5 === 0;
@@ -342,6 +351,7 @@ function SidebarAnniversaries() {
 
 export default function FieldNotes() {
   const { user } = useAuth();
+  const celebrations = useCelebrations();
   const { id: routeId } = useParams();
   const navigate = useNavigate();
   const [notes, setNotes] = useState([]);
@@ -489,8 +499,12 @@ export default function FieldNotes() {
                 Upcoming birthdays and work anniversaries across the team.
               </p>
             </div>
-            <SidebarBirthdays />
-            <SidebarAnniversaries />
+            {celebrations.status !== "hidden" && (
+              <>
+                <SidebarBirthdays birthdays={celebrations.birthdays} status={celebrations.status} />
+                <SidebarAnniversaries anniversaries={celebrations.anniversaries} status={celebrations.status} />
+              </>
+            )}
           </aside>
         </div>
       </div>

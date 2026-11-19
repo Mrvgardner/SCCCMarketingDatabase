@@ -6,7 +6,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "generate-vapid-keys": "web-push generate-vapid-keys --json",
-    "test:celebrations": "node --test test/celebrations-containment.test.mjs"
+    "test:celebrations": "node --test test/celebrations-*.test.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",
@@ -36,6 +36,7 @@
     "framer-motion": "^12.23.12",
     "fuse.js": "^6.6.2",
     "jszip": "^3.10.1",
+    "node-ical": "0.26.0",
     "openai": "^7.4.0",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^4.10.38",

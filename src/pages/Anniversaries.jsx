@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
 import { ArrowLeftIcon, SparklesIcon } from "@heroicons/react/24/solid";
-import { anniversaries } from "../data/celebrations";
+import { useCelebrations } from "../hooks/useCelebrations";
 import { getUpcoming, formatDate, yearsOfService } from "../utils/celebrations";
 
 export default function Anniversaries() {
+  const { anniversaries, status } = useCelebrations();
   const all = getUpcoming(anniversaries, anniversaries.length);
 
   return (
@@ -24,7 +25,7 @@ export default function Anniversaries() {
           </h1>
         </div>
         <p className="text-gray-400 mb-10">
-          {all.length} {all.length === 1 ? "anniversary" : "anniversaries"} on the calendar, sorted by what's next.
+          {status === "ready" && `${all.length} ${all.length === 1 ? "anniversary" : "anniversaries"} on the calendar, sorted by what's next.`}
         </p>
 
         {all.length > 0 ? (
@@ -81,7 +82,10 @@ export default function Anniversaries() {
           </div>
         ) : (
           <div className="text-center text-gray-400 py-12 bg-gray-800/40 rounded-xl">
-            No anniversaries found. The BambooHR feed may be empty.
+            {status === "loading" ? "Loading…" :
+              status === "unavailable" ? "Calendar temporarily unavailable." :
+              status === "hidden" ? "This calendar is available to authorized staff." :
+              "No upcoming anniversaries."}
           </div>
         )}
       </div>

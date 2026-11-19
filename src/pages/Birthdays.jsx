@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
 import { ArrowLeftIcon, CakeIcon } from "@heroicons/react/24/solid";
-import { birthdays } from "../data/celebrations";
+import { useCelebrations } from "../hooks/useCelebrations";
 import { getUpcoming, formatDate } from "../utils/celebrations";
 
 export default function Birthdays() {
+  const { birthdays, status } = useCelebrations();
   const all = getUpcoming(birthdays, birthdays.length);
 
   return (
@@ -24,7 +25,7 @@ export default function Birthdays() {
           </h1>
         </div>
         <p className="text-gray-400 mb-10">
-          {all.length} {all.length === 1 ? "birthday" : "birthdays"} on the calendar, sorted by what's next.
+          {status === "ready" && `${all.length} ${all.length === 1 ? "birthday" : "birthdays"} on the calendar, sorted by what's next.`}
         </p>
 
         {all.length > 0 ? (
@@ -67,7 +68,10 @@ export default function Birthdays() {
           </div>
         ) : (
           <div className="text-center text-gray-400 py-12 bg-gray-800/40 rounded-xl">
-            No birthdays found. The BambooHR feed may be empty.
+            {status === "loading" ? "Loading…" :
+              status === "unavailable" ? "Calendar temporarily unavailable." :
+              status === "hidden" ? "This calendar is available to authorized staff." :
+              "No upcoming birthdays."}
           </div>
         )}
       </div>
