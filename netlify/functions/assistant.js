@@ -2,6 +2,7 @@ import { getStore } from "@netlify/blobs";
 import OpenAI from "openai";
 import { authenticate } from "../lib/auth.mjs";
 import { withCors } from "../lib/http.mjs";
+import { assistantClient, missingAssistantCredentials } from "../lib/assistant-client.mjs";
 import { clean } from "../lib/travel-input.mjs";
 import { loadEvents } from "./trade-shows.js";
 import seedProducts from "./products-seed.json";
@@ -78,12 +79,6 @@ function json(body, status = 200) {
     status,
     headers: { "Content-Type": "application/json", "Cache-Control": "private, no-store" },
   });
-}
-
-function client() {
-  const apiKey = process.env.NETLIFY_AI_GATEWAY_KEY;
-  const baseURL = process.env.NETLIFY_AI_GATEWAY_BASE_URL;
-  return apiKey && baseURL ? new OpenAI({ apiKey, baseURL }) : new OpenAI();
 }
 
 function userKey(email) {
@@ -323,6 +318,18 @@ export default withCors(async (request) => {
   }
   const eventId = clean(body?.eventId, 80);
 
+  let modelClient;
+  try {
+    modelClient = assistantClient(process.env, (options) => new OpenAI(options));
+  } catch (error) {
+    if (!missingAssistantCredentials(error)) throw error;
+    console.error("assistant: gateway_credentials_unavailable");
+    return json({
+      code: "assistant_unavailable",
+      error: "You’re signed in, but Ask is temporarily unavailable. Try again later.",
+    }, 503);
+  }
+
   const usage = getStore({ name: USAGE_STORE, consistency: "strong" });
   if (!(await withinBudget(usage, user.email))) {
     return json({ error: "The assistant has hit today's limit for your account. Try again tomorrow." }, 429);
@@ -387,7 +394,7 @@ export default withCors(async (request) => {
   const startedAt = Date.now();
   let answer;
   try {
-    const completion = await client().chat.completions.create({
+    const completion = await modelClient.chat.completions.create({
       model: ASSISTANT_MODEL,
       reasoning_effort: "none",
       response_format: { type: "json_schema", json_schema: ANSWER_SCHEMA },

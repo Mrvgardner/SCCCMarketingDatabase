@@ -5,7 +5,6 @@ import { ASK_SIGN_IN_MESSAGE, sendAssistantRequest } from "../src/api/assistant-
 function fixture(statuses, jwt) {
   const requests = [];
   const refresh = [];
-  const waits = [];
   const user = { jwt: async (force) => {
     refresh.push(force);
     return jwt ? jwt(force) : (refresh.includes(true) ? "new-session" : "current-session");
@@ -19,9 +18,8 @@ function fixture(statuses, jwt) {
       requests.push({ url, ...request });
       return { status: statuses.shift() };
     },
-    wait: async (ms) => { waits.push(ms); },
   };
-  return { options, requests, refresh, waits };
+  return { options, requests, refresh };
 }
 
 test("uses the same signed-in user even when no widget global exists", async () => {
@@ -33,12 +31,11 @@ test("uses the same signed-in user even when no widget global exists", async () 
 });
 
 test("on 401 forces one refresh and resubmits the same question with the fresh token", async () => {
-  const { options, requests, refresh, waits } = fixture([401, 200]);
+  const { options, requests, refresh } = fixture([401, 200]);
   assert.equal((await sendAssistantRequest(options)).status, 200);
   assert.deepEqual(refresh, [false, true]);
   assert.equal(requests[1].headers.Authorization, "Bearer new-session");
   assert.equal(requests[0].body, requests[1].body);
-  assert.deepEqual(waits, []);
 });
 
 test("a rejected refresh or invalid token produces sign-in guidance without leaking the error", async () => {
@@ -62,21 +59,23 @@ test("401 after refresh fails closed", async () => {
   assert.equal(requests.length, 2);
 });
 
-test("gateway and auth retries remain independently bounded", async () => {
-  for (const statuses of [[502, 401, 503], [401, 503, 503]]) {
-    const { options, requests, refresh, waits } = fixture(statuses);
-    assert.equal((await sendAssistantRequest(options)).status, 503);
-    assert.equal(requests.length, 3);
-    assert.equal(refresh.filter(Boolean).length, 1);
-    assert.deepEqual(waits, [1500]);
+test("a model or server failure is never automatically replayed", async () => {
+  for (const status of [500, 502, 503]) {
+    const { options, requests, refresh } = fixture([status]);
+    assert.equal((await sendAssistantRequest(options)).status, status);
+    assert.equal(requests.length, 1);
+    assert.deepEqual(refresh, [false]);
   }
+  const { options, requests, refresh } = fixture([401, 503]);
+  assert.equal((await sendAssistantRequest(options)).status, 503);
+  assert.equal(requests.length, 2);
+  assert.deepEqual(refresh, [false, true]);
 });
 
 test("authorization/validation/rate errors are not retried", async () => {
   for (const status of [400, 403, 429]) {
-    const { options, requests, waits } = fixture([status]);
+    const { options, requests } = fixture([status]);
     assert.equal((await sendAssistantRequest(options)).status, status);
     assert.equal(requests.length, 1);
-    assert.deepEqual(waits, []);
   }
 });

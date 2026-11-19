@@ -12,7 +12,6 @@ export async function sendAssistantRequest({
   messages,
   eventId,
   fetchImpl = fetch,
-  wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
 }) {
   async function send(forceRefresh = false) {
     if (typeof user?.jwt !== "function") throw signInError();
@@ -31,22 +30,10 @@ export async function sendAssistantRequest({
     });
   }
 
-  // A server rejection may be a stale cached token. Try a forced refresh once.
-  // Preserve the independent, bounded retry for transient gateway failures.
-  let refreshed = false;
-  let retriedGateway = false;
+  // Auth is checked before any processing or usage write. Only a 401
+  // authorizes one automatic repeat; backend failures may already be billed.
   let response = await send();
-  while (true) {
-    if (response.status === 401) {
-      if (refreshed) throw signInError();
-      refreshed = true;
-      response = await send(true);
-    } else if ((response.status === 502 || response.status === 503) && !retriedGateway) {
-      retriedGateway = true;
-      await wait(1500);
-      response = await send();
-    } else {
-      return response;
-    }
-  }
+  if (response.status === 401) response = await send(true);
+  if (response.status === 401) throw signInError();
+  return response;
 }
