@@ -20,11 +20,47 @@ test("retains a complete explicit legacy gateway configuration", () => {
   }), { apiKey: key, baseURL: "https://legacy.example.test/custom-path" });
 });
 
-test("provider credentials cannot substitute for missing gateway configuration", () => {
+test("an incomplete provider pair cannot substitute for missing gateway configuration", () => {
   assert.deepEqual(assistantGatewayConfig({ OPENAI_API_KEY: "test-provider-key", OPENAI_BASE_URL: "https://api.openai.com/v1" }),
-    { code: "gateway_config_missing" });
+    { code: "gateway_url_invalid" });
+  assert.deepEqual(assistantGatewayConfig({ OPENAI_API_KEY: "test-provider-key" }), { code: "gateway_config_missing" });
+  assert.deepEqual(assistantGatewayConfig({ OPENAI_BASE_URL: "https://site.example.test/.netlify/ai" }), { code: "gateway_config_missing" });
   assert.deepEqual(assistantGatewayConfig({ NETLIFY_AI_GATEWAY_KEY: key }), { code: "gateway_config_missing" });
   assert.deepEqual(assistantGatewayConfig({ NETLIFY_AI_GATEWAY_URL: env.NETLIFY_AI_GATEWAY_URL }), { code: "gateway_config_missing" });
+});
+
+test("uses a complete provider pair only on the canonical Netlify AI path", async () => {
+  const site = "https://site.example.test";
+  const providerKey = "synthetic-netlify-provider-key";
+  for (const urlPath of ["/.netlify/ai", "/.netlify/ai/", "/.netlify/ai/v1", "/.netlify/ai/v1/"]) {
+    const config = assistantGatewayConfig({ URL: site, OPENAI_API_KEY: providerKey, OPENAI_BASE_URL: site + urlPath });
+    assert.deepEqual(config, { apiKey: providerKey, baseURL: site + "/.netlify/ai/v1" });
+  }
+  let calls = 0;
+  const config = assistantGatewayConfig({ URL: site, OPENAI_API_KEY: providerKey, OPENAI_BASE_URL: site + "/.netlify/ai" });
+  await requestAssistantCompletion(config, { model: "fixture", messages: [{ role: "user", content: "synthetic" }] },
+    (options) => new OpenAI({ ...options, maxRetries: 0, fetch: async (url, init) => {
+      calls++;
+      assert.equal(String(url), site + "/.netlify/ai/v1/chat/completions");
+      assert.equal(new Headers(init.headers).get("authorization"), `Bearer ${providerKey}`);
+      return Response.json({ choices: [] });
+    } }));
+  assert.equal(calls, 1);
+});
+
+test("rejects missing trusted site URL, other origins, direct providers, or invalid route details", () => {
+  const site = "https://site.example.test";
+  const providerKey = "synthetic-netlify-provider-key";
+  for (const baseURL of ["invalid", "http://site.example.test/.netlify/ai", "https://other.example.test/.netlify/ai",
+    "https://site.example.test:8443/.netlify/ai", "https://api.openai.com/.netlify/ai", site + "/v1",
+    site + "/.netlify/ai/v2", site + "/.netlify/ai/v1/chat/completions", site + "/.netlify/ai?x=1",
+    site + "/.netlify/ai#x", "https://user@site.example.test/.netlify/ai"]) {
+    assert.deepEqual(assistantGatewayConfig({ URL: site, OPENAI_API_KEY: providerKey, OPENAI_BASE_URL: baseURL }),
+      { code: "gateway_url_invalid" }, baseURL);
+  }
+  assert.deepEqual(assistantGatewayConfig({ OPENAI_API_KEY: providerKey, OPENAI_BASE_URL: site + "/.netlify/ai" }),
+    { code: "gateway_url_invalid" });
+  assert.equal(assistantGatewayConfig({ ...env, URL: site, OPENAI_API_KEY: providerKey, OPENAI_BASE_URL: site + "/.netlify/ai" }).apiKey, key);
 });
 
 test("rejects invalid URLs and direct-provider URLs without accepting a secondary URL", () => {
