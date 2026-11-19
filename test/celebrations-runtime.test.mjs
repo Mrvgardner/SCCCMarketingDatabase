@@ -69,6 +69,7 @@ test("verified signed-in user without roles receives only intended calendar fiel
       ) : calendar(
         event("fixture-a", "Synthetic Test’s 5 Year Anniversary", "DTSTART;VALUE=DATE:20261024"),
         event("fixture-m", "Missing Tenure - Work Anniversary", "DTSTART;VALUE=DATE:20261024"),
+        event("fixture-p", "Paren Form (8 yrs)", "DTSTART;VALUE=DATE:20270115"),
       ));
     },
   });
@@ -84,7 +85,7 @@ test("verified signed-in user without roles receives only intended calendar fiel
   const raw = await res.text();
   assert.deepEqual(JSON.parse(raw), {
     birthdays:[{name:"Synthetic Test",date:"03-08"},{name:"Synthetic Timed",date:"06-30"}],
-    anniversaries:[{name:"Synthetic Test",date:"10-24",startYear:2021}],
+    anniversaries:[{name:"Synthetic Test",date:"10-24",startYear:2021},{name:"Paren Form",date:"01-15",startYear:2019}],
   });
   assert.doesNotMatch(raw,/PRIVATE_SENTINEL|PRIVATE_PLACE|20260308|fixture-|BirthdayFixture/);
   assert.deepEqual(calls,["switch.bamboohr.com","switch.bamboohr.com"]);

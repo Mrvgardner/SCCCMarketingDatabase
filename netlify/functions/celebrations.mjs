@@ -56,7 +56,11 @@ function project(text, kind) {
       const name = match && validName(match[1]);
       if (name) items.set(name + "|" + when.date, { name, date: when.date });
     } else {
-      const match = /^(.*?)(?:\s*[-–—:]\s*|['’]s\s+|\s+)(\d{1,2})(?:\s*(?:years?|yrs?)|(?:st|nd|rd|th)(?:\s+work)?)\s+(?:work\s+)?anniversary\s*$/i.exec(event.summary);
+      // BambooHR's feed writes "Jane Doe (5 yrs)"; the longer forms are kept
+      // in case the feed's wording changes.
+      const match =
+        /^(.*?)\s*\(\s*(\d{1,2})\s*(?:years?|yrs?)\s*\)\s*$/i.exec(event.summary) ||
+        /^(.*?)(?:\s*[-–—:]\s*|['’]s\s+|\s+)(\d{1,2})(?:\s*(?:years?|yrs?)|(?:st|nd|rd|th)(?:\s+work)?)\s+(?:work\s+)?anniversary\s*$/i.exec(event.summary);
       const name = match && validName(match[1]);
       const years = match ? Number(match[2]) : 0;
       if (name && years > 0 && years <= 70) {
