@@ -1,7 +1,6 @@
 import ical from "node-ical";
 import { authenticate } from "../lib/auth.mjs";
 
-const STAFF_ROLE = "celebrations-staff";
 const IDENTITY_ORIGIN = "https://switchcommerce.team";
 const MAX_FEED_BYTES = 1024 * 1024;
 const MAX_ITEMS = 300;
@@ -120,12 +119,6 @@ export function makeCelebrationsHandler({
     let user;
     try { user = await verifyIdentity(request); } catch { user = null; }
     if (!user?.id) return reply({ error: "unauthenticated" }, 401);
-    // GoTrue's app_metadata is administrator-managed. User metadata, caller
-    // email domains, and browser-side roles can never grant this access.
-    if (!Array.isArray(user.app_metadata?.roles) || !user.app_metadata.roles.includes(STAFF_ROLE)) {
-      return reply({ error: "forbidden" }, 403);
-    }
-
     const birthdayUrl = feedUrl(env.BAMBOOHR_BIRTHDAYS_FEED_URL);
     const anniversaryUrl = feedUrl(env.BAMBOOHR_ANNIVERSARIES_FEED_URL);
     if (!birthdayUrl || !anniversaryUrl) return reply({ error: "celebrations_unavailable" }, 503);

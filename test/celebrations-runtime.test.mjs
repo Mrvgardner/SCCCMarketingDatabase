@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { authenticate } from "../netlify/lib/auth.mjs";
 import { makeCelebrationsHandler } from "../netlify/functions/celebrations.mjs";
 
-const staff = { id: "staff-test", app_metadata: { roles: ["celebrations-staff"] } };
+const rolelessUser = { id: "signed-in-test", email: "signed-in@example.invalid" };
 const context = Object.freeze({
   BAMBOOHR_BIRTHDAYS_FEED_URL: "https://switch.bamboohr.com/feeds/feed.php?id=BirthdayFixture0001",
   BAMBOOHR_ANNIVERSARIES_FEED_URL: "https://switch.bamboohr.com/feeds/feed.php?id=AnniversaryFixture0001",
@@ -48,19 +48,14 @@ test("missing Identity, unverified tokens and malformed cookies fail closed", as
   }
 });
 
-test("valid signed-in nonstaff and user-editable roles are insufficient", async () => {
-  const handler = makeCelebrationsHandler({
-    env: context,
-    verifyIdentity:async () => ({id:"nonstaff", email:"person@switchcommerce.com", app_metadata:{roles:["admin"]}, user_metadata:{roles:["celebrations-staff"]}}),
-    fetchImpl:failFetch,
-  });
-  const res = await handler(request()); assert.equal(res.status,403); noStore(res);
-});
-
-test("server-managed staff receives only intended birthday and anniversary fields", async () => {
+test("verified signed-in user without roles receives only intended calendar fields", async () => {
   const calls = [];
   const handler = makeCelebrationsHandler({
-    env:context, verifyIdentity:async () => staff,
+    env:context, verifyIdentity: (req) => authenticate(req, {fetchImpl: (url, options) => {
+      assert.equal(url, "https://switchcommerce.team/.netlify/identity/user");
+      assert.equal(options.headers.Authorization, "Bearer synthetic-verified");
+      return Response.json(rolelessUser);
+    }}),
     fetchImpl:async (url,options) => {
       calls.push(url.hostname);
       assert.equal(options.redirect,"error"); assert.equal(options.cache,"no-store");
@@ -77,7 +72,14 @@ test("server-managed staff receives only intended birthday and anniversary field
       ));
     },
   });
-  const res = await handler(request());
+  const prior = process.env.URL;
+  process.env.URL = "https://switchcommerce.team";
+  let res;
+  try {
+    res = await handler(new Request(request().url, {headers:{Authorization:"Bearer synthetic-verified"}}));
+  } finally {
+    if (prior === undefined) delete process.env.URL; else process.env.URL = prior;
+  }
   assert.equal(res.status,200); noStore(res);
   const raw = await res.text();
   assert.deepEqual(JSON.parse(raw), {
@@ -94,7 +96,7 @@ test("missing or invalid configuration never falls back or fetches", async () =>
     {...context,BAMBOOHR_BIRTHDAYS_FEED_URL:"https://switch.bamboohr.com.invalid/feeds/feed.php?id=SyntheticWrongHost1"},
     {...context,BAMBOOHR_BIRTHDAYS_FEED_URL:"https://switch.bamboohr.com/feeds/feed.php?id=SyntheticDuplicate1&id=SyntheticDuplicate2"},
   ]) {
-    const handler = makeCelebrationsHandler({env,verifyIdentity:async()=>staff,fetchImpl:failFetch});
+    const handler = makeCelebrationsHandler({env,verifyIdentity:async()=>rolelessUser,fetchImpl:failFetch});
     const res=await handler(request()); assert.equal(res.status,503); noStore(res);
   }
 });
@@ -105,7 +107,7 @@ test("upstream errors and oversized or non-calendar results do not expose source
     async()=>new Response("Not a calendar PRIVATE_SOURCE_VALUE"),
     async()=>new Response("x",{headers:{"Content-Length":"1048577"}}),
   ]) {
-    const res=await makeCelebrationsHandler({env:context,verifyIdentity:async()=>staff,fetchImpl})(request());
+    const res=await makeCelebrationsHandler({env:context,verifyIdentity:async()=>rolelessUser,fetchImpl})(request());
     assert.equal(res.status,503); noStore(res);
     assert.deepEqual(await res.json(),{error:"celebrations_unavailable"});
   }
